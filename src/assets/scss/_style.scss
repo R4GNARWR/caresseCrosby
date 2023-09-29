@@ -1,0 +1,89 @@
+@import './fonts.scss';
+@import './vars.scss';
+@import './global.scss';
+
+
+.btn
+{
+    display: flex;
+    padding: 1.4rem 3.2rem;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 1.6rem;
+    line-height: 1.5em;
+    transition: .3s;
+    border-radius: 0;
+    cursor: pointer;
+    &-primary
+    {
+        color: #FFF;
+        background: $primary;
+        border: 1px solid $primary;
+        outline: 0;
+        &:focus-visible,
+        &:hover,
+        &:active,
+        :not(.btn-check)+&:active,
+        &:first-child:active,
+        &.active,
+        &.show
+        {
+            border: 1px solid $primary;
+            background-color: #FFFFFF !important;
+            color: $primary;
+        }
+    }
+    &-white
+    {
+        color: $primary;
+        background: #FFF;
+        border: 1px solid #FFF;
+        outline: 0;
+        &:focus-visible,
+        &:hover,
+        &:active,
+        :not(.btn-check)+&:active,
+        &:first-child:active,
+        &.active,
+        &.show
+        {
+            border: 1px solid $primary;
+            background-color: $primary !important;
+            color: #FFF;
+        }
+    }
+}
+.swiper-navigation
+{
+    display: flex;
+    column-gap: 1.4rem;
+}
+.swiper-button
+{
+    width: 4rem;
+    height: 4rem;
+    cursor: pointer;
+    img
+    {
+        width: 100%;
+        height: 100%;
+    }
+}
+.main-section
+{
+    padding: 4.8rem 0;
+}
+.section-head
+{
+    display: flex;
+    justify-content: space-between;
+}
+.section-label
+{
+    color: $primary;
+    font-size: 4.8rem;
+    font-weight: 500;
+    line-height: 1em;
+    letter-spacing: -0.48px;
+}

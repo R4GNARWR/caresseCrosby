@@ -1,0 +1,25 @@
+html 
+{
+	font-size: calc($index * 0.33333);
+}
+
+body 
+{
+	font-size: 1rem;
+	font-family: 'Manrope';
+}
+.v-container
+{
+	padding: 0;
+}
+@media (min-width: 1600px) {
+	.v-container
+	{
+		max-width: 1364px;
+	}
+}
+
+.w-ft
+{
+	width: fit-content;
+}
