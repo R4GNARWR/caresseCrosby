@@ -12,33 +12,47 @@
                     <div class="swiper-button swiper-button-next swiper-cards__navigation-next">
                         <img src="/svg/swiper-next.svg" alt="">
                     </div>
-
+                    
                 </div>
             </div>
-
+            
             <div class="swiper-cards">
                 <swiper-container
                 class="swiper"
-                space-between="28"
-                loop="true"
-                slides-per-view="4"
+                :slidesPerView="1"
+                :loop= "true"
+                :spaceBetween= "28"
                 :navigation="{
                     nextEl: '.swiper-cards__navigation-next',
-                    prevEl: '.swiper-cards__navigation-prev',
-                }"
+                    prevEl: '.swiper-cards__navigation-prev'
+                }" 
+                :breakpoints="{
+                    0:
+                    {
+                        slidesPerView: 2,
+                        spaceBetween: 16,
+                    },
+                    600: {
+                        slidesPerView: 3,
+                    },
+                    960: {
+                        slidesPerView: 4,
+                    }
+                }" 
+                
                 >
-                    <swiper-slide class="swiper-slide " v-for="product in slidesArray">
-                        <ProductCard
-                        :product-data="product"
-                        ></ProductCard>
-                    </swiper-slide>
-                    
-                </swiper-container>
-                <a class="swiper-cards__more" href="">Смотреть все</a>
-            </div>
-
-        </v-container>
-    </section>
+                <swiper-slide class="swiper-slide " v-for="product in slidesArray">
+                    <ProductCard
+                    :product-data="product"
+                    ></ProductCard>
+                </swiper-slide>
+                
+            </swiper-container>
+            <a class="swiper-cards__more" href="">Смотреть все</a>
+        </div>
+        
+    </v-container>
+</section>
 </template>
 <script>
 import {useProductsStore} from "../store/productsStore"
@@ -57,33 +71,44 @@ export default {
     },
     data() {
         return {
-            
+            swiperParams:  {
+                
+            },
         }
     },
-    
     beforeCreate() {
         register()
     },
 }
 </script>
 <style lang="scss">
+.swiper-cards
+{
+    display: flex;
+    flex-direction: column;
+    margin-top: 3.2rem;
+    padding-bottom: .8rem;
+    border-bottom: 1px solid rgba(83, 83, 83, .3) !important;
+    
+    &__more
+    {
+        margin-top: 3.2rem;
+        margin-left: auto;
+        color: $primary;
+        font-size: 1.6rem;
+        line-height: 1.5em;
+        letter-spacing: -0.16px;
+        text-decoration: none;
+    }
+}
+@media (max-width: 600px) {
     .swiper-cards
     {
-        display: flex;
-        flex-direction: column;
-        margin-top: 3.2rem;
-        padding-bottom: .8rem;
-        border-bottom: 1px solid rgba(83, 83, 83, .3) !important;
-
-        &__more
-        {
-            margin-top: 3.2rem;
-            margin-left: auto;
-            color: $primary;
-            font-size: 1.6rem;
-            line-height: 1.5em;
-            letter-spacing: -0.16px;
-            text-decoration: none;
-        }
+        margin-top: 40px;
     }
+    .swiper-navigation.swiper-cards__navigation
+    {
+        display: none;
+    }
+}
 </style>

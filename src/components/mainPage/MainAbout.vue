@@ -2,7 +2,7 @@
 <section class="main-section main-about" id="mainAbout">
     <v-container>
         <v-row>
-            <v-col lg="5">
+            <v-col sm="5" cols="12">
                 <div class="main-about__left">
                     <div class="main-about__left-name">
                         О бренде
@@ -12,13 +12,14 @@
                     </div>
                     <div class="main-about__left-img">
                         <img src="/img/about1.jpg" alt="">
+                        <img class="d-md-block d-none" src="/img/about2.jpg" alt="">
                     </div>
                 </div>
             </v-col>
-            <v-col lg="7">
+            <v-col sm="7" cols="12">
                 <div class="main-about__right">
                     <div class="main-about__right-img">
-                        <img src="/img/about2.jpg" alt="">
+                        <img class="d-md-none d-block" src="/img/about2.jpg" alt="">
                     </div>
                     <div class="main-about__right-label">
                         Caresse Crosby — это магазин удобного белья. Тщательно, кропотливо и вдумчиво мы подбираем товары.
@@ -108,6 +109,47 @@ export default {
             font-size: 2rem;
             line-height: 1.8em;
             letter-spacing: -0.2px;
+        }
+    }
+    @media (max-width: 600px) {
+        .main-about__left
+        {
+            &-name
+            {
+                font-size: 14px;
+            }
+            &-label
+            {
+                font-size: 40px;
+            }
+            &-img
+            {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                column-gap: 16px;
+                img
+                {
+                    width: 100%;
+                    aspect-ratio: 1/1;
+                }
+            }
+        }
+        .main-about__right
+        {
+            &-img
+            {
+                margin: 0;
+            }
+            &-label
+            {
+                margin-top: initial;
+                margin-bottom: 24px;
+                font-size: 24px;
+            }
+            &-text
+            {
+                font-size: 17px;
+            }
         }
     }
 </style>

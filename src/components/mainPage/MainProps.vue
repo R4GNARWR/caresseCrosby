@@ -2,7 +2,7 @@
     <section class="main-section" id="main-props">
         <v-container>
             <v-row>
-                <v-col lg="3">
+                <v-col sm="3" cols="12">
                     <div class="main-props__card">
                         <img src="/svg/props1.svg" alt="">
                         <div class="main-props__card-content">
@@ -11,7 +11,7 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col lg="3">
+                <v-col sm="3" cols="12">
                     <div class="main-props__card">
                         <img src="/svg/props2.svg" alt="">
                         <div class="main-props__card-content">
@@ -20,7 +20,7 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col lg="3">
+                <v-col sm="3" cols="12">
                     <div class="main-props__card">
                         <img src="/svg/props3.svg" alt="">
                         <div class="main-props__card-content">
@@ -29,7 +29,7 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col lg="3">
+                <v-col sm="3" cols="12">
                     <div class="main-props__card">
                         <img src="/svg/props4.svg" alt="">
                         <div class="main-props__card-content">
@@ -48,31 +48,53 @@ export default {
 }
 </script>
 <style lang="scss">
+.main-props__card
+{
+    display: flex;
+    column-gap: 2.4rem;
+    align-items: center;
+    img
+    {
+        width: 3.2rem;
+        height: 3.2rem;
+        object-fit: contain;
+    }
+    &-content
+    {
+        &-label
+        {
+            margin-bottom: .4rem;
+            color: $primary;
+            font-size: 1.8rem;
+            font-weight: 500;
+        }
+        &-text
+        {
+            color: #9C9C9C;
+            font-size: 1.4rem;
+        }
+    }
+}
+@media (max-width: 600px) {
     .main-props__card
     {
-        display: flex;
-        column-gap: 2.4rem;
-        align-items: center;
+        column-gap: 24px;
         img
         {
-            width: 3.2rem;
-            height: 3.2rem;
-            object-fit: contain;
+            width: 32px;
+            height: 32px;
         }
         &-content
         {
             &-label
             {
-                margin-bottom: .4rem;
-                color: $primary;
-                font-size: 1.8rem;
-                font-weight: 500;
+                font-size: 16px;
             }
             &-text
             {
-                color: #9C9C9C;
-                font-size: 1.4rem;
+                font-size: 13px;
             }
         }
     }
+}
 </style>

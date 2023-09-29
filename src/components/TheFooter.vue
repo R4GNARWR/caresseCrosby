@@ -2,7 +2,7 @@
     <footer>
         <v-container>
             <v-row>
-                <v-col cols="5">
+                <v-col md="5" cols="12">
                     <div class="footer-left">
                         <div class="footer-left__logo">
                             <img src="/svg/logo.svg" alt="">
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col cols="2" offset="1">
+                <v-col md="2" cols="12" offset-md="1">
                     <div class="footer-links">
                         <div class="footer-links__label">КАТАЛОГ</div>
                         <ul class="footer-links__list">
@@ -37,9 +37,9 @@
                         </ul>
                     </div>
                 </v-col>
-                <v-col cols="2">
+                <v-col md="2" cols="12" >
                     <div class="footer-links">
-                        <div class="footer-links__label">КАТАЛОГ</div>
+                        <div class="footer-links__label">О МАГАЗИНЕ</div>
                         <ul class="footer-links__list">
                             <li><a href="">О нас</a></li>
                             <li><a href="">Фотогалерея</a></li>
@@ -47,9 +47,9 @@
                         </ul>
                     </div>
                 </v-col>
-                <v-col cols="2">
+                <v-col md="2" cols="12" >
                     <div class="footer-links">
-                        <div class="footer-links__label">КАТАЛОГ</div>
+                        <div class="footer-links__label">ПОЛЬЗОВАТЕЛЯМ</div>
                         <ul class="footer-links__list">
                             <li><a href="">Доставка и оплата</a></li>
                             <li><a href="">Помощь</a></li>
@@ -155,6 +155,43 @@ footer
             }
         }
     }
-    
+}
+@media (max-width: 600px) {
+    footer
+    {
+        padding: 48px 0;
+    }
+    .footer
+    {
+        &-left
+        {
+            &__logo
+            {
+                display: none;
+            }
+            &__text
+            {
+                margin-bottom: 32px;
+                padding-bottom: 18px;
+                font-size: 14px;
+                line-height: 20px; /* 142.857% */
+            }
+            &__info
+            {
+                display: none;
+            }
+        }
+        &-links
+        {
+            &__label
+            {
+                font-size: 16px;
+            }
+            &__list
+            {
+                display: none;
+            }
+        }
+    }
 }
 </style>

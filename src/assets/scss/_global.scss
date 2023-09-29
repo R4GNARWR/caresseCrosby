@@ -8,10 +8,30 @@ body
 	font-size: 1rem;
 	font-family: 'Manrope';
 }
+main
+{
+	overflow: hidden;
+}
 .v-container
 {
 	padding: 0;
 }
+@media (max-width: 960px) {
+	.v-container
+	{
+		max-width: 540px;
+	}
+}
+
+@media (max-width: 600px) {
+	.v-container
+	{
+		max-width: 320px;
+	}
+}
+
+
+
 @media (min-width: 1600px) {
 	.v-container
 	{
@@ -22,4 +42,22 @@ body
 .w-ft
 {
 	width: fit-content;
+}
+.d-none
+{
+	display: none !important;
+}
+.d-block
+{
+	display: block !important;
+}
+@media (max-width: 600px) {
+	.d-md-none
+	{
+		display: none !important;
+	}
+	.d-md-block
+	{
+		display: block !important;
+	}
 }

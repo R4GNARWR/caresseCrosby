@@ -54,11 +54,21 @@
         }
     }
 }
+@media (max-width: 600px) {
+    .btn
+    {
+        font-size: 14px;
+        line-height: 114%;
+        padding: 24px 48px;
+        width: 100%;
+    }
+}
 .swiper-navigation
 {
     display: flex;
     column-gap: 1.4rem;
 }
+
 .swiper-button
 {
     width: 4rem;
@@ -70,9 +80,22 @@
         height: 100%;
     }
 }
+@media (max-width: 600px) {
+    .swiper-button
+    {
+        width: 40px;
+        height: 40px;
+    }
+}
 .main-section
 {
-    padding: 4.8rem 0;
+    padding: 6rem 0;
+}
+@media (max-width: 600px) {
+    .main-section
+    {
+        padding: 32px 0;
+    }
 }
 .section-head
 {
@@ -86,4 +109,10 @@
     font-weight: 500;
     line-height: 1em;
     letter-spacing: -0.48px;
+}
+@media (max-width: 600px) {
+    .section-label
+    {
+        font-size: 40px;
+    }
 }

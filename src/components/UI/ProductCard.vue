@@ -30,38 +30,100 @@ export default {
 }
 </script>
 <style lang="scss">
+.product-card
+{
+    &__img
+    {
+        margin-bottom: 1.2rem;
+        position: relative;
+        height: 44rem;
+        img
+        {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        &-new
+        {
+            position: absolute;
+            left: 1.2rem;
+            top: 1.2rem;
+            padding: .2rem .8rem;
+            color: $primary;
+            font-size: 1.2rem;
+            background-color: #BFB09D;
+        }
+        &-like
+        {
+            position: absolute;
+            right: 1.2rem;
+            top: 1.2rem;
+            cursor: pointer;
+            i
+            {
+                font-size: 2rem;
+            }
+        }
+    }
+    &__info
+    {    
+        &-name
+        {
+            margin-bottom: .4rem;
+            color: $primary;
+            font-size: 1.6rem;
+            line-height: 1.5em;
+            letter-spacing: -0.16px;
+        }
+        &-props
+        {
+            display: flex;
+            justify-content: space-between;
+            &__price
+            {
+                color: $primary;
+                font-size: 1.5rem;
+                font-weight: 700;
+                line-height: 1.5em; 
+            }
+            &__colors
+            {
+                display: flex;
+                column-gap: .4rem;
+                div
+                {
+                    width: 1.4rem;
+                    height: 1.4rem;
+                    border-radius: 50%;
+                }
+            }
+        }
+    }
+}
+@media (max-width: 600px) {
     .product-card
     {
         &__img
         {
-            margin-bottom: 1.2rem;
-            position: relative;
-            height: 44rem;
-            img
-            {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
+            margin-bottom: 12px;
+            height: 208px;
             &-new
             {
-                position: absolute;
-                left: 1.2rem;
-                top: 1.2rem;
-                padding: .2rem .8rem;
-                color: $primary;
-                font-size: 1.2rem;
+                left: 10px;
+                top: 10px;
+                padding: 2px 8px;
+                font-size: 12px;
                 background-color: #BFB09D;
             }
             &-like
             {
                 position: absolute;
-                right: 1.2rem;
-                top: 1.2rem;
+                right: 10px;
+                top: 10px;
                 cursor: pointer;
                 i
                 {
-                    font-size: 2rem;
+                    font-size: 20px;
                 }
             }
         }
@@ -69,11 +131,14 @@ export default {
         {    
             &-name
             {
-                margin-bottom: .4rem;
-                color: $primary;
-                font-size: 1.6rem;
-                line-height: 1.5em;
-                letter-spacing: -0.16px;
+                margin-bottom: 4px;
+                font-size: 14px;
+                letter-spacing: -0.056px;
+                display: -webkit-box;
+                height: 42px;
+                -webkit-line-clamp: 2; // количество строк
+                -webkit-box-orient: vertical;
+                overflow: hidden;
             }
             &-props
             {
@@ -81,23 +146,20 @@ export default {
                 justify-content: space-between;
                 &__price
                 {
-                    color: $primary;
-                    font-size: 1.5rem;
-                    font-weight: 700;
-                    line-height: 1.5em; 
+                    font-size: 13px;
                 }
                 &__colors
                 {
-                    display: flex;
-                    column-gap: .4rem;
+                    column-gap: 4px;
                     div
                     {
-                        width: 1.4rem;
-                        height: 1.4rem;
+                        width: 14px;
+                        height: 14px;
                         border-radius: 50%;
                     }
                 }
             }
         }
     }
+}
 </style>

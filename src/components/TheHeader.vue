@@ -3,10 +3,13 @@
         <v-container>
             <div class="header-top">
                 <v-row>
-                    <v-col lg="5">
+                    <v-col lg="5" sm="auto">
                         <div class="header-search">
+                            <div class="header-search__icon d-md-block d-none">
+                                <img src="/svg/lines.svg" alt="">
+                            </div>
                             <div class="header-search__icon">
-                                <img width="35" height="35" src="/svg/search.svg" alt="">
+                                <img src="/svg/search.svg" alt="">
                             </div>
                             <span>Поиск</span> 
                         </div>
@@ -21,7 +24,7 @@
                             <a class="header-links__item" href="#">
                                 <img  src="/svg/heart.svg" alt="">
                             </a>
-                            <a class="header-links__item" href="#">
+                            <a class="header-links__item d-md-none" href="#">
                                 <img  src="/svg/account.svg" alt="">
                             </a>
                             <a class="header-links__item" href="#">
@@ -194,6 +197,43 @@ header
             }
         }
     }
-    
+}
+
+@media (max-width: 768px) {
+    .header-catalog
+    {
+        display: none;
+    }
+    .header
+    {
+        &-search
+        {
+            column-gap: 24px;
+            span
+            {
+                display: none;
+            }
+            &__icon
+            {
+                width: 24px;
+                height: 24px;
+            }
+        }
+        &-logo
+        {
+            width: 126px;
+            height: 36px;
+        }
+        &-links
+        {
+            column-gap: 24px;
+            &__item
+            {
+                width: 24px;
+                height: 24px;
+            }
+        }
+
+    }
 }
 </style>

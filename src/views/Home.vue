@@ -34,7 +34,7 @@ export default {
             mainSlides: [
                 {
                     id: 1,
-                    labelText: 'Удобное белье <span> <br> существует </span>',
+                    labelText: 'Удобное белье <br> <span> существует </span>',
                     labelColor: 'white',
                     buttonText: 'В каталог',
                     buttonColor: 'white',

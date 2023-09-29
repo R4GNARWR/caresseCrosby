@@ -17,12 +17,12 @@
             >
             <swiper-slide class="swiper-slide" v-for="(item, index) in 4" :key="index">
                 <v-row>
-                    <v-col lg="5">
+                    <v-col lg="5" cols="12">
                         <div class="main-article__img">
                             <img src="/img/article1.jpg" alt="">
                         </div>
                     </v-col>
-                    <v-col lg="6">
+                    <v-col lg="6" cols="12">
                         <div class="main-article__content">
                             <div class="main-article__content-label">
                                 Caresse Crosby —  это женщина, которая изобрела и запатентовала первый бюстгальтер {{ index }}
@@ -110,4 +110,35 @@ export default {
         z-index: 10;
     }
 }
+@media (max-width: 600px) {
+    .main-article
+    {
+        &__img
+        {
+            height: 327px;
+            margin-bottom: 24px;
+        }
+        &__content
+        {
+            &-label
+            {
+                margin-bottom: 24px;
+                font-size: 24px;
+            }
+            &-text
+            {
+                font-size: 17px;
+            }
+        }
+        &__swiper-nav
+        {
+            margin-top: 32px; 
+            justify-content: center;
+            position: static;
+            column-gap: 14px;
+        }
+    }
+
+}
+
 </style>

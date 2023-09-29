@@ -6,15 +6,15 @@
                     Категории
                 </div>
             </div>
-            <div class="main-caegories">
-                <div class="main-caegories__item" v-for="(item, index) in items" :key="index">
-                    <div class="main-caegories__item-logo">
+            <div class="main-categories">
+                <div class="main-categories__item" v-for="(item, index) in items" :key="index">
+                    <div class="main-categories__item-logo">
                         <img :src="'/svg/categories'+Number(index+1)+'.svg'" alt="">
                     </div>
-                    <div class="main-caegories__item-name">
+                    <div class="main-categories__item-name">
                         {{item}} 
                     </div>
-                    <div class="main-caegories__item-link">
+                    <div class="main-categories__item-link">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <g clip-path="url(#clip0_207_716)">
                                 <rect x="2.75781" y="19.8267" width="23.2823" height="2" transform="rotate(-45 2.75781 19.8267)" fill="#27231E"/>
@@ -43,7 +43,7 @@ export default {
 }
 </script>
 <style lang="scss">
-    .main-caegories
+    .main-categories
     {
         margin-top: 3.2rem;
         display: grid;
@@ -98,11 +98,11 @@ export default {
             &:hover
             {
                 border: 1px solid #867259;
-                .main-caegories__item-name
+                .main-categories__item-name
                 {
                     color: #867259;
                 }
-                .main-caegories__item-link
+                .main-categories__item-link
                 {
                     svg g rect
                     {
@@ -111,6 +111,38 @@ export default {
                 }
             }
         }
-
+    }
+    @media (max-width: 600px) {
+        .main-categories
+        {
+            margin-top: 40px;
+            grid-template-columns: 1fr;
+            &__item
+            {
+                flex-direction: row;
+                align-items: center;
+                column-gap: 16px;
+                &-logo
+                {
+                    width: 32px;
+                    height: 32px;
+                }
+                &-name
+                {
+                    width: 60%;
+                    line-height: 1.2em;
+                    font-size: 18px;
+                    margin-top: initial;
+                }
+                &-link
+                {
+                    height: 24px;
+                    width: 24px;
+                    right: 24px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            }
+        }
     }
 </style>

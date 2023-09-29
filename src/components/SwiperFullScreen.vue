@@ -78,7 +78,7 @@ export default {
             font-size: 5.6rem;
             font-style: normal;
             font-weight: 400;
-            line-height: 7.6rem;
+            line-height: 136%;
             letter-spacing: -0.56px;
             &.white
             {
@@ -121,6 +121,39 @@ export default {
                 width: 3rem;
                 height: 2px;
                 background: $primary;
+            }
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .swiperFullScreen
+    {
+        height: 680px;
+        .swiper-slide
+        {
+            width: 100%;
+            height: 100%;
+        }
+    }
+    .swiper-fullscreen
+    {
+        &__content
+        {
+            flex-shrink: 1;
+            position: static;
+            padding: 92px 23px 67px 23px;
+            width: 100%;
+            height: 100%;
+            max-height: -webkit-fill-available;
+            .label
+            {
+                font-size: 48px;
+            }
+            .btn
+            {
+                margin-top: auto;
+                max-width: -webkit-fill-available;
             }
         }
     }

@@ -36,7 +36,7 @@ export default {
     height: 20rem;
     display: flex;
     align-items: center;
-    column-gap: 10rem;
+    
     &__offset
     {
         width: 15%;
@@ -54,7 +54,7 @@ export default {
     }
     &__content
     {
-        width: 50%;
+        width: 60rem;
         flex: 0 0 auto;
         margin-left: auto;
         &-label
@@ -81,6 +81,12 @@ export default {
     .btn
     {
         flex-shrink: 0;
+    }
+}
+@media (max-width: 1200px) {
+    #mainBanner
+    {
+        display: none;
     }
 }
 </style>
