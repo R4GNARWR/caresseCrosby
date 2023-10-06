@@ -1,12 +1,14 @@
 <template lang="">
-    <v-container class="pa-0">
-        <div class="swiperFullScreen">
-            <swiper-container class="swiper" v-if="slidesArray" loop="true"
-            :pagination="{
-                clickable: true,
-                el: '.swiper-fullscreen__pagination'
-            }"
-            >
+    <section class="swiperFullScreen-section">
+        <v-container class="pa-0">
+            <div class="swiperFullScreen">
+                <swiper-container class="swiper" v-if="slidesArray"
+                :loop="true"
+                :pagination="{
+                    clickable: true,
+                    el: '.swiper-fullscreen__pagination'
+                }"
+                >
                 <swiper-slide class="swiper-slide" v-for="slide in slidesArray" >
                     <div class="swiper-fullscreen__content">
                         <div :class="'label ' + slide.labelColor" v-html="slide.labelText"></div>
@@ -16,20 +18,22 @@
                 </swiper-slide>
                 
             </swiper-container>
-            <div class="swiper-fullscreen__pagination"></div>
+            <SwiperPagination class="swiper-fullscreen__pagination" />
         </div>
     </v-container>
-    
+</section>
 
 </template>
 <script>
 
 import { register } from 'swiper/element/bundle';
 import MainBtn from './UI/MainBtn.vue';
+import SwiperPagination from './UI/SwiperPagination.vue';
 
 export default {
     components: {
-        MainBtn
+        MainBtn,
+        SwiperPagination
     },
     props: {
         slidesArray: Array,
@@ -102,31 +106,14 @@ export default {
         object-fit: cover;
         z-index: -1;
     }
-    &__pagination
-    {
-        position: absolute;
-        right: 5rem;
-        bottom: 6rem;
-        display: flex;
-        column-gap: .8rem;
-        z-index: 1;
-        .swiper-pagination-bullet
-        {
-            width: 1rem;
-            height: 2px;
-            background: #D9D9D9;
-            transition: .3s;
-            &-active
-            {
-                width: 3rem;
-                height: 2px;
-                background: $primary;
-            }
-        }
-    }
+
 }
 
 @media (max-width: 600px) {
+    .swiperFullScreen-section .v-container
+    {
+        max-width: 100%;
+    }
     .swiperFullScreen
     {
         height: 680px;
@@ -157,5 +144,6 @@ export default {
             }
         }
     }
+    
 }
 </style>

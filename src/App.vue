@@ -1,7 +1,7 @@
 
 
 <template>
-  <main :style="{ paddingTop: mainOffsetTop + 'px' }" >
+  <main :style="{ paddingTop: mainOffsetTop + 'px' }" ref="wrapper">
     <TheHeader @update-offset-top="updateOffsetTop"></TheHeader>
     <router-view />
     <TheFooter></TheFooter>
@@ -12,6 +12,7 @@
 
 import TheHeader from './components/TheHeader.vue'
 import TheFooter from './components/TheFooter.vue'
+import { Fancybox } from "@fancyapps/ui";
 
 export default {
   components: {
@@ -23,16 +24,33 @@ export default {
       mainOffsetTop: 0,
     };
   },
+  setup(){
+  },
   methods: {
     updateOffsetTop(height) {
       this.mainOffsetTop = height;
     },
   },
-  
+  mounted() {
+    Fancybox.bind(this.$refs.wrapper, '[data-fancybox]', {
+      ...(this.options || {}),
+    });
+  },
+  updated() {
+    Fancybox.unbind(this.$refs.wrapper);
+    Fancybox.close();
+    
+    Fancybox.bind(this.$refs.wrapper, '[data-fancybox]', {
+      ...(this.options || {}),
+    });
+  },
+  unmounted() {
+    Fancybox.destroy();
+  },
 }
 
 </script>
 
 <style lang="scss"> 
-  
+
 </style>

@@ -12,14 +12,14 @@
                     </div>
                     <div class="main-about__left-img">
                         <img src="/img/about1.jpg" alt="">
-                        <img class="d-md-block d-none" src="/img/about2.jpg" alt="">
+                        <img class="d-md-none d-block" src="/img/about2.jpg" alt="">
                     </div>
                 </div>
             </v-col>
             <v-col sm="7" cols="12">
                 <div class="main-about__right">
                     <div class="main-about__right-img">
-                        <img class="d-md-none d-block" src="/img/about2.jpg" alt="">
+                        <img class="d-md-block d-none" src="/img/about2.jpg" alt="">
                     </div>
                     <div class="main-about__right-label">
                         Caresse Crosby — это магазин удобного белья. Тщательно, кропотливо и вдумчиво мы подбираем товары.

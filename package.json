@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fancyapps/ui": "^5.0.24",
     "@mdi/font": "^7.2.96",
     "axios": "^1.5.1",
     "pinia": "^2.1.6",

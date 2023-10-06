@@ -1,4 +1,4 @@
-<template >
+<template>
     <div class="product-card">
         <div class="product-card__img">
             <img src="/img/product.png" alt="">
@@ -19,6 +19,7 @@
                 </div>
             </div>
         </div>
+        <router-link class="link" :to="{ name: 'Product', params: { id: productData.id }}"></router-link>
     </div>
 </template>
 <script>

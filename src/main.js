@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import router from './router'
+import router from './router/router'
 import App from './App.vue'
 
 // Vuetify
@@ -10,6 +10,10 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import {aliases, mdi } from 'vuetify/iconsets/mdi'
+
+// Fancybox
+
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
 // Styles
 

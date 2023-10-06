@@ -3,9 +3,9 @@
         <v-container>
             <div class="header-top">
                 <v-row>
-                    <v-col lg="5" sm="auto">
+                    <v-col md="5" >
                         <div class="header-search">
-                            <div class="header-search__icon d-md-block d-none">
+                            <div class="header-search__icon d-lg-none d-block">
                                 <img src="/svg/lines.svg" alt="">
                             </div>
                             <div class="header-search__icon">
@@ -14,17 +14,17 @@
                             <span>Поиск</span> 
                         </div>
                     </v-col>
-                    <v-col lg="2">
+                    <v-col md="2" >
                         <div class="header-logo">
                             <img src="/svg/logo-header.svg" alt="">
                         </div>
                     </v-col>
-                    <v-col lg="5">
+                    <v-col md="5" >
                         <div class="header-links">
                             <a class="header-links__item" href="#">
                                 <img  src="/svg/heart.svg" alt="">
                             </a>
-                            <a class="header-links__item d-md-none" href="#">
+                            <a class="header-links__item d-md-block d-none" href="#">
                                 <img  src="/svg/account.svg" alt="">
                             </a>
                             <a class="header-links__item" href="#">
@@ -72,6 +72,8 @@
     
 </template>
 <script>
+import { useSettingsStore } from '../store/settingsStore';
+
 export default {
     data() {
         return {
@@ -80,13 +82,15 @@ export default {
     },
     methods: {
         changeSize(){
+            console.log('changed');
             const headerHeight = this.$refs.headerElement.clientHeight;
+            useSettingsStore().setHeaderPadding(headerHeight);
             this.$emit('update-offset-top', headerHeight);
         }
     },
     mounted() {
-        this.changeSize
-        window.addEventListener('resize',  this.changeSize);
+        this.changeSize();
+        window.addEventListener('resize', this.changeSize);
     },
     beforeDestroy() {
         // удаляем обработчик события при уничтожении компонента
@@ -103,7 +107,8 @@ header
     left: 0;
     width: 100%;
     z-index: 1000;
-    background-color: #FFF;
+    background-color: #FFFEFD;
+    box-shadow: 0px 6px 20px 0px rgba(63, 36, 5, 0.04);
 }
 .header-top
 {

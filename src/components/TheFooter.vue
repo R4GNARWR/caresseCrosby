@@ -10,7 +10,7 @@
                         <div class="footer-left__text">
                             Подпишитесь на рассылку, чтобы всегда быть в курсе наших новостей
                         </div>
-                        <div class="footer-left__info">
+                        <div class="footer-left__info d-lg-flex d-none">
                             <div class="footer-left__info-conf">
                                 <a href="">ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</a>
                             </div>
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col md="2" cols="12" offset-md="1">
+                <v-col sm="4" md="2" cols="12" offset-md="1">
                     <div class="footer-links">
                         <div class="footer-links__label">КАТАЛОГ</div>
                         <ul class="footer-links__list">
@@ -37,7 +37,7 @@
                         </ul>
                     </div>
                 </v-col>
-                <v-col md="2" cols="12" >
+                <v-col sm="4" md="2" cols="12" >
                     <div class="footer-links">
                         <div class="footer-links__label">О МАГАЗИНЕ</div>
                         <ul class="footer-links__list">
@@ -47,7 +47,7 @@
                         </ul>
                     </div>
                 </v-col>
-                <v-col md="2" cols="12" >
+                <v-col  sm="4" md="2" cols="12" >
                     <div class="footer-links">
                         <div class="footer-links__label">ПОЛЬЗОВАТЕЛЯМ</div>
                         <ul class="footer-links__list">
@@ -55,8 +55,34 @@
                             <li><a href="">Помощь</a></li>
                             <li><a href="">Контакты</a></li>
                         </ul>
+                        <div class="footer-additional-info">
+                            <div class="footer-socials">
+                                <a href=""><img src="/svg/whatsapp.svg" alt=""></a>
+                                <a href=""><img src="/svg/vk.svg" alt=""></a>
+                                <a href=""><img src="/svg/telegram.svg" alt=""></a>
+                            </div>
+
+                            <div class="footer-ip">
+                                ИП Король Елена Сергеевна <br> ИНН: 744408493724 <br> ОГРН: 321028000158115
+                            </div>
+                        </div>
+
                     </div>
                 </v-col>
+                <v-col class="d-lg-none d-block" cols="12">
+                    <div class="footer-left__info">
+                            <div class="footer-left__info-conf">
+                                <a href="">ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</a>
+                            </div>
+                            <div class="footer-left__info-offer">
+                                <a href="">ОФЕРТА</a>
+                            </div>
+                            <div class="footer-left__info-copy">
+                                <a href="">© 2023</a>
+                            </div>
+                        </div>
+                </v-col>
+
             </v-row>
         </v-container>
     </footer>
@@ -155,6 +181,37 @@ footer
             }
         }
     }
+    &-socials
+    {
+        margin-top: 5.3rem;
+        display: flex;
+        column-gap: 1.2rem;
+        a img
+        {
+            width: 3.2rem;
+            height: 3.2rem;
+            object-fit: contain;
+        }
+    }
+    &-ip
+    {
+        margin-top: 2rem;
+        color: rgba(255, 255, 255, .2);
+        font-size: 1.4rem;
+        line-height: 160%;
+        letter-spacing: -0.14px;
+    }
+}
+.footer-additional-info
+{
+    display: flex;
+    flex-direction: column;
+}
+@media (max-width: 960px) {
+    .footer-left__text
+    {
+        margin-bottom: 0;
+    }
 }
 @media (max-width: 600px) {
     footer
@@ -171,14 +228,17 @@ footer
             }
             &__text
             {
-                margin-bottom: 32px;
+                margin-bottom: 8px;
                 padding-bottom: 18px;
                 font-size: 14px;
                 line-height: 20px; /* 142.857% */
             }
             &__info
             {
-                display: none;
+                color: rgba(255, 255, 255, .4);
+                font-size: 12px;
+                line-height: 16px;
+                letter-spacing: -.5px;
             }
         }
         &-links
@@ -190,6 +250,31 @@ footer
             &__list
             {
                 display: none;
+            }
+        }
+    }
+    .footer-additional-info
+    {
+        margin-top: 32px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        .footer-ip
+        {
+            margin-top: 0;
+            order: 0;
+            font-size: 12px;
+        }
+        .footer-socials
+        {
+            margin-top: 0;
+            align-items: center;
+            order: 1;
+            a img 
+            {
+                width: 32px;
+                height: 32px;
             }
         }
     }

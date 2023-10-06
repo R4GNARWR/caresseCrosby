@@ -105,6 +105,15 @@ export default {
     .swiper-cards
     {
         margin-top: 40px;
+        padding-bottom: 24px;
+        &__more
+        {
+            margin-top: 24px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 16px;
+            color: $primary05;
+        }
     }
     .swiper-navigation.swiper-cards__navigation
     {
