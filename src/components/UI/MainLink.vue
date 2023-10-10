@@ -1,5 +1,5 @@
 <template lang="">
-    <router-link class="btn" :to="destitation ?? '#'" :class="className" :type="type" :disabled="disabled">
+    <router-link class="btn" :to="destination ?? '#'" :class="className" :type="type" :disabled="disabled">
         <slot></slot>
     </router-link>
 </template>
@@ -13,7 +13,7 @@ export default {
     },
     props: {
         className: String,
-        destitation: String,
+        destination: String,
 
     },
     methods: {

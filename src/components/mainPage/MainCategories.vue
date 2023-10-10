@@ -7,7 +7,7 @@
                 </div>
             </div>
             <div class="main-categories">
-                <div class="main-categories__item" v-for="(item, index) in items" :key="index">
+                <router-link class="main-categories__item" v-for="(item, index) in items" :key="index" to="/catalog">
                     <div class="main-categories__item-logo">
                         <img :src="'/svg/categories'+Number(index+1)+'.svg'" alt="">
                     </div>
@@ -28,7 +28,7 @@
                             </defs>
                         </svg>
                     </div>
-                </div>
+                </router-link>
             </div>
         </v-container>
     </section>
@@ -59,6 +59,7 @@ export default {
             border: 1px solid #E5E1DA;
             cursor: pointer;
             transition: .3s;
+            text-decoration: none;
             &-logo
             {
                 width: 4.5rem;

@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <section class="swiperFullScreen-section">
         <v-container class="pa-0">
             <div class="swiperFullScreen">
@@ -12,7 +12,7 @@
                 <swiper-slide class="swiper-slide" v-for="slide in slidesArray" >
                     <div class="swiper-fullscreen__content">
                         <div :class="'label ' + slide.labelColor" v-html="slide.labelText"></div>
-                        <MainBtn :class="'w-ft btn-' + slide.buttonColor">{{slide.buttonText}}</MainBtn>
+                        <MainLink :destination="'/catalog'" :class="'w-ft btn-' + slide.buttonColor">{{slide.buttonText}}</MainLink>
                     </div>
                     <img class="swiper-fullscreen__image" :src="slide.backgroundImageSrc" alt="">
                 </swiper-slide>
@@ -29,12 +29,14 @@
 import { register } from 'swiper/element/bundle';
 import MainBtn from './UI/MainBtn.vue';
 import SwiperPagination from './UI/SwiperPagination.vue';
+import MainLink from './UI/MainLink.vue';
 
 export default {
     components: {
-        MainBtn,
-        SwiperPagination
-    },
+    MainBtn,
+    SwiperPagination,
+    MainLink
+},
     props: {
         slidesArray: Array,
     },

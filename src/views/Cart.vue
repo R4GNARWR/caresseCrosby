@@ -68,7 +68,7 @@
                             
                         </div>
                         <div class="cart-summary__input">
-                            <Input placeholder-text="Промокод"></Input>
+                            <Input placeholder="Промокод"></Input>
                         </div>
                         <div class="cart-summary__total">
                             Итого
@@ -77,7 +77,7 @@
                         <div class="cart-summary__total-additional">
                             Бесплатная доставка от 10 000 ₽
                         </div>
-                        <MainBtn class="btn-primary w-100">Перейти к оформлению</MainBtn>
+                        <MainLink :destination="'/order'" class="btn-primary w-100">Перейти к оформлению</MainLink>
                     </div>
                 </v-col>
             </v-row>
@@ -88,12 +88,13 @@
 <script>
 import MainBtn from '../components/UI/MainBtn.vue';
 import Input from '../components/UI/Input.vue';
+import MainLink from '../components/UI/MainLink.vue';
 
 export default {
     data() {
         return {};
     },
-    components: { MainBtn, Input }
+    components: { MainBtn, Input, MainLink }
 };
 </script>
 

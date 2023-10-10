@@ -34,6 +34,8 @@ export default {
   mounted() {
     Fancybox.bind(this.$refs.wrapper, '[data-fancybox]', {
       ...(this.options || {}),
+      closeButton: false,
+      mainClass: 'modal-base__wrap',
     });
   },
   updated() {
@@ -42,6 +44,8 @@ export default {
     
     Fancybox.bind(this.$refs.wrapper, '[data-fancybox]', {
       ...(this.options || {}),
+      closeButton: false,
+      mainClass: 'modal-base__wrap',
     });
   },
   unmounted() {

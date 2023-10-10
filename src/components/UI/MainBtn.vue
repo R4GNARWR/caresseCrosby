@@ -37,9 +37,9 @@ export default {
     cursor: pointer;
     &-primary
     {
-        color: #FFF;
-        background: $primary;
-        border: 1px solid $primary;
+        color: #FFF !important;
+        background: $primary !important;
+        border: 1px solid $primary !important;
         outline: 0;
         &:focus-visible,
         &:hover,
@@ -49,9 +49,9 @@ export default {
         &.active,
         &.show
         {
-            border: 1px solid $primary;
+            border: 1px solid $primary !important;
             background-color: #FFFFFF !important;
-            color: $primary;
+            color: $primary !important;
         }
     }
     &-white

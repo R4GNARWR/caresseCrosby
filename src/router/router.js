@@ -10,6 +10,13 @@ import Articles from '../views/Articles.vue'
 import ArticlesDetail from '../views/ArticleDetail.vue'
 import PhotoAlbum from '../views/PhotoAlbum.vue'
 import About from '../views/About.vue'
+import ProfileData from '../views/ProfileData.vue'
+import ProfileOrders from '../views/ProfileOrders.vue'
+import Contacts from '../views/Contacts.vue'
+import TextPage from '../views/TextPage.vue'
+import GiftCard from '../views/giftCard.vue'
+import SizeTable from '../views/SizeTable.vue'
+import NotFound from '../views/404.vue'
 
 export default createRouter({
   history: createWebHistory(),
@@ -60,5 +67,36 @@ export default createRouter({
       path: '/about',
       component: About,
     },
+    {
+      path: '/profileData',
+      component: ProfileData,
+    },
+    {
+      path: '/profileOrders',
+      component: ProfileOrders,
+    },
+    {
+      path: '/contacts',
+      component: Contacts
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      component: NotFound
+    },
+    {
+      path: '/TextPage',
+      component: TextPage
+    },
+    {
+      path: '/sizeTable',
+      component: SizeTable
+    },
+    {
+      path: '/giftCard',
+      component: GiftCard
+    },
   ],
+  scrollBehavior() {
+    window.scrollTo(0,0);
+  }
 })

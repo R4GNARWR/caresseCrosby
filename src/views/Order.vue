@@ -28,11 +28,11 @@
                             Данные для доставки
                         </div>
                         <div class="order-delivery__form">
-                            <Input class="inline" placeholder-text="Адрес доставки*"></Input>
-                            <Input class="" placeholder-text="Имя*"></Input>
-                            <Input class="" placeholder-text="Фамилия*"></Input>
-                            <Input class="" placeholder-text="Телефон*"></Input>
-                            <Input class="" placeholder-text="E-mail*"></Input>
+                            <Input class="inline" placeholder="Адрес доставки*"></Input>
+                            <Input class="" placeholder="Имя*"></Input>
+                            <Input class="" placeholder="Фамилия*"></Input>
+                            <Input class="" placeholder="Телефон*"></Input>
+                            <Input class="" placeholder="E-mail*"></Input>
                         </div>
                     </div>
                 </v-col>
@@ -54,7 +54,7 @@
                             </div>
                         </div>
                         <div class="cart-summary__input">
-                            <Input placeholder-text="Промокод"></Input>
+                            <Input placeholder="Промокод"></Input>
                         </div>
                         <div class="cart-summary__total">
                             Итого
@@ -63,7 +63,7 @@
                         <div class="cart-summary__total-additional">
                             Бесплатная доставка от 10 000 ₽
                         </div>
-                        <MainBtn class="btn-primary w-100">Перейти к оформлению</MainBtn>
+                        <MainBtn class="btn-primary w-100">Оформить заказ</MainBtn>
                         <div class="cart-summary__offer">
                             Нажимая на кнопку «Оформить заказ», <br>
                             вы принимаете условия <a href="">Публичной оферты</a>

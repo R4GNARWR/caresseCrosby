@@ -12,7 +12,6 @@
                     <div class="swiper-button swiper-button-next swiper-cards__navigation-next">
                         <img src="/svg/swiper-next.svg" alt="">
                     </div>
-                    
                 </div>
             </div>
             
@@ -48,7 +47,7 @@
                 </swiper-slide>
                 
             </swiper-container>
-            <a class="swiper-cards__more" href="">Смотреть все</a>
+            <router-link class="swiper-cards__more" to="/catalog">Смотреть все</router-link>
         </div>
         
     </v-container>

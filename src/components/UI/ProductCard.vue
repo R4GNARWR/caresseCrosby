@@ -33,6 +33,7 @@ export default {
 <style lang="scss">
 .product-card
 {
+    position: relative;
     &__img
     {
         margin-bottom: 1.2rem;

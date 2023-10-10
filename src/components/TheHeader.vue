@@ -3,33 +3,31 @@
         <v-container>
             <div class="header-top">
                 <v-row>
-                    <v-col md="5" >
-                        <div class="header-search">
-                            <div class="header-search__icon d-lg-none d-block">
+                    <v-col md="5" class="search-col">
+                        <div class="header-search__mobile d-lg-none d-flex">
+                            <div class="header-search__icon ">
                                 <img src="/svg/lines.svg" alt="">
                             </div>
-                            <div class="header-search__icon">
-                                <img src="/svg/search.svg" alt="">
-                            </div>
-                            <span>Поиск</span> 
+                            <Search></Search>
                         </div>
+                        <Search class="d-lg-flex d-none"></Search>
                     </v-col>
                     <v-col md="2" >
-                        <div class="header-logo">
+                        <router-link class="header-logo" to="/"> 
                             <img src="/svg/logo-header.svg" alt="">
-                        </div>
+                        </router-link>
                     </v-col>
                     <v-col md="5" >
                         <div class="header-links">
-                            <a class="header-links__item" href="#">
+                            <router-link class="header-links__item" to="">
                                 <img  src="/svg/heart.svg" alt="">
-                            </a>
-                            <a class="header-links__item d-md-block d-none" href="#">
+                            </router-link>
+                            <router-link class="header-links__item d-md-block d-none" to="/profileData">
                                 <img  src="/svg/account.svg" alt="">
-                            </a>
-                            <a class="header-links__item" href="#">
+                            </router-link>
+                            <router-link class="header-links__item" to="/cart">
                                 <img src="/svg/cart.svg" alt="">
-                            </a>
+                            </router-link>
                         </div>
                     </v-col>
                 </v-row>
@@ -40,25 +38,25 @@
                     <v-col lg="12">
                         <nav class="header-catalog__list">
                             <div class="header-catalog__list-item">
-                                <a href="">Нижнее белье</a>
+                                <router-link to="/catalog">Нижнее белье</router-link>
                             </div>
                             <div class="header-catalog__list-item">
-                                <a href="">Купальники</a>
+                                <router-link to="/catalog">Купальники</router-link>
                             </div>
                             <div class="header-catalog__list-item">
-                                <a href="">Одежда</a>
+                                <router-link to="/catalog">Одежда</router-link>
                             </div>
                             <div class="header-catalog__list-item">
-                                <a href="">Аксессуары</a>
+                                <router-link to="/catalog">Аксессуары</router-link>
                             </div>
                             <div class="header-catalog__list-item">
-                                <a href="">Средства ухода</a>
+                                <router-link to="/catalog">Средства ухода</router-link>
                             </div>
                             <div class="header-catalog__list-item">
-                                <a href="">Подарочные сертификаты</a>
+                                <router-link to="/giftCard">Подарочные сертификаты</router-link>
                             </div>
                             <div class="header-catalog__list-item">
-                                <a href="">Подобрать размер</a>
+                                <router-link to="/sizeTable">Подобрать размер</router-link>
                             </div>
                         </nav>
                     </v-col>
@@ -73,15 +71,17 @@
 </template>
 <script>
 import { useSettingsStore } from '../store/settingsStore';
+import Search from './UI/Search.vue';
 
 export default {
+    components: { Search },
     data() {
         return {
-            
-        }
+            showMenu: false,
+        };
     },
     methods: {
-        changeSize(){
+        changeSize() {
             console.log('changed');
             const headerHeight = this.$refs.headerElement.clientHeight;
             useSettingsStore().setHeaderPadding(headerHeight);
@@ -95,7 +95,8 @@ export default {
     beforeDestroy() {
         // удаляем обработчик события при уничтожении компонента
         window.removeEventListener('resize', this.changeSize);
-    }
+    },
+    
 }
 </script>
 <style lang="scss">
@@ -112,6 +113,7 @@ header
 }
 .header-top
 {
+    position: relative;
     border-bottom:1px solid #E5E1DA;
     padding: 1.1rem 0;
 }
@@ -137,8 +139,9 @@ header
 }
 .header-logo
 {
+    display: block;
     width: 14rem;
-    height: 4rem;
+    height: 5.6rem;
     margin-inline: auto;
     img
     {
@@ -147,33 +150,15 @@ header
         object-fit: contain;
     }
 }
-.header-search
+.search-col
+{
+    position: relative;
+}
+.header-search__mobile
 {
     height: 100%;
-    display: flex;
     align-items: center;
-    column-gap: 1.2rem;
-    span
-    {
-        color: $primary;
-        font-size: 1.4rem;
-        font-style: normal;
-        font-weight: 500;
-        line-height: 3.2rem;
-        letter-spacing: -0.14px;
-    }
-    &__icon
-    {
-        width: 2.4rem;
-        height: 2.4rem;
-        img
-        {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        
-    }
+    column-gap: 24px;
 }
 .header-catalog
 {
@@ -204,7 +189,7 @@ header
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 960px) {
     .header-catalog
     {
         display: none;
@@ -238,7 +223,18 @@ header
                 height: 24px;
             }
         }
-
+        
+    }
+    
+    .search-col
+    {
+        position: static;
+    }
+}
+@media (max-width: 600px) {
+    .header-top
+    {
+        position: static;
     }
 }
 </style>

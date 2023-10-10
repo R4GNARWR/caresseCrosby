@@ -27,4 +27,9 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.product
+{
+    padding: 2.4rem 0 6rem 0;
+}
+</style>

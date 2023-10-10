@@ -53,14 +53,21 @@
                         <div class="product-detail__info-sizes__item">
                             <div class="label">
                                 Размер пояса
-                                <a href="">Таблица размеров</a>
+                                <router-link to="/tableSize">Таблица размеров</router-link>
                             </div>
                             <div class="buttons">
-                                <button>60</button>
-                                <button>66</button>
-                                <button>70</button>
-                                <button>75</button>
-                                <button>80</button>
+                                <div class="buttons-item">
+                                    <input type="radio" name="size1">
+                                    <label for="">60</label>
+                                </div>
+                                <div class="buttons-item">
+                                    <input type="radio" name="size1">
+                                    <label for="">65</label>
+                                </div>
+                                <div class="buttons-item">
+                                    <input type="radio" name="size1">
+                                    <label for="">70</label>
+                                </div>
                             </div>
                         </div>
                         <div class="product-detail__info-sizes__item">
@@ -68,14 +75,23 @@
                                 Размер чашки
                             </div>
                             <div class="buttons">
-                                <button>F</button>
-                                <button>G</button>
-                                <button>B</button>
+                                <div class="buttons-item">
+                                    <input type="radio" name="size2">
+                                    <label for="">F</label>
+                                </div>
+                                <div class="buttons-item">
+                                    <input type="radio" name="size2">
+                                    <label for="">G</label>
+                                </div>
+                                <div class="buttons-item">
+                                    <input type="radio" name="size2">
+                                    <label for="">B</label>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="product-detail__info-buttons">
-                        <MainBtn class-name="btn-primary">Добавить в корзину</MainBtn>
+                        <MainBtn class-name="btn-primary" @click.prevent="openFancybox()">Добавить в корзину</MainBtn>
                         <MainBtn class-name="btn-primary heart btn-icon">
                             <v-icon icon="mdi-heart-outline" color="#FFF">
                                 
@@ -118,7 +134,7 @@
             </v-col>
         </v-row>
     </section>
-    
+    <ModalToCart id="modalToCart"></ModalToCart>
     <SwiperCards class="product-detail__section" name="Вам понравится" v-if="products" :slidesArray="products"></SwiperCards>
     <SwiperCards class="product-detail__section" name="С этим товаром покупают" v-if="products" :slidesArray="products"></SwiperCards>
 </v-container>
@@ -129,13 +145,15 @@ import {useProductsStore} from "../../store/productsStore"
 import SwiperCards from '../SwiperCards.vue';
 import MainBtn from '../UI/MainBtn.vue';
 import SwiperPagination from "../UI/SwiperPagination.vue";
+import ModalToCart from "../modals/ModalToCart.vue";
+import { Fancybox } from '@fancyapps/ui';
 
 export default {
     data() {
         return {};
     },
     props: {},
-    components: { MainBtn, SwiperCards, SwiperPagination },
+    components: { MainBtn, SwiperCards, SwiperPagination, ModalToCart },
     computed: {
         products(){return useProductsStore().products.products},
         
@@ -147,7 +165,24 @@ export default {
             productsStore.fetchPopularProducts();
             productsStore.fetchAllProducts();
         }
-        
+    },
+    methods: {
+        openFancybox()
+        {
+            Fancybox.close();
+            Fancybox.show(
+            [
+                {
+                    src: '#modalToCart',
+                    type: 'inline',
+                },
+                ],
+                {
+                    closeButton: false,
+                    mainClass: 'modal-base__wrap',
+                }
+            );
+        }
     }
 }
 </script>
@@ -291,19 +326,40 @@ export default {
             flex-wrap: wrap;
             column-gap: .8rem;
             row-gap: .8rem;
-            button
+            &-item
             {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 4rem;
-                height: 4rem;
-                color: $primary;
-                font-size: 1.6rem;
-                font-weight: 600;
-                line-height: 1em;
-                letter-spacing: -0.128px;
-                border: 1px solid#D3D2D1;
+                position: relative;
+                input
+                {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    opacity: 0;
+                    cursor: pointer;
+                }
+                label
+                {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 4rem;
+                    height: 4rem;
+                    color: $primary;
+                    font-size: 1.6rem;
+                    font-weight: 600;
+                    line-height: 1em;
+                    letter-spacing: -0.128px;
+                    border: 1px solid#D3D2D1;
+                    transition: .2s;
+                }
+                input:checked ~ label
+                {
+                    color: #FFF;
+                    background-color: $primary;
+                    border: $primary;
+                }
             }
         }
     }
@@ -312,6 +368,10 @@ export default {
 {
     display: flex;
     column-gap: .8rem;
+    .btn:nth-child(1)
+    {
+        flex-grow: 1;
+    }
     .btn.heart:hover
     {
         i
@@ -442,11 +502,15 @@ export default {
             {
                 column-gap: 8px;
                 row-gap: 8px;
-                button
+                
+                &-item
                 {
-                    width: 40px;
-                    height: 40px;
-                    font-size: 14px;
+                    label
+                    {
+                        width: 40px;
+                        height: 40px;
+                        font-size: 14px;
+                    }
                 }
             }
         }

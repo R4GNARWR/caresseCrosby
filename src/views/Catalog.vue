@@ -85,6 +85,7 @@ export default {
 .catalog__head
 {
     margin-bottom: 4rem;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -108,6 +109,7 @@ export default {
         font-size: 1.6rem;
         line-height: 1.5em;
         letter-spacing: -0.128px;
+        white-space: nowrap;
     }
     &-select
     {
@@ -141,7 +143,7 @@ export default {
     &-bottom
     {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-end;
         width: 100%;
     }
     &__filter-btn
@@ -185,6 +187,10 @@ export default {
         &-count
         {
             font-size: 14px;
+        }
+        &-bottom
+        {
+            justify-content: space-between;
         }
     }
 }
