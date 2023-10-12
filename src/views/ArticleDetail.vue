@@ -7,8 +7,8 @@
             <div class="row">
                 <v-col md="8" offset-md="2">
                     <div class="articles-detail__content">
-                        <div class="btn-back">
-                            <img src="/svg/arrow.svg" alt="">
+                        <div class="btn-back" @click="this.$router.go(-1)">
+                            <img src="/svg/arrow.svg" alt="" >
                             Назад
                         </div>
                         <div class="articles-main__content-label">
@@ -67,6 +67,7 @@ export default {
     {
         .btn-back
         {
+            cursor: pointer;
             margin-bottom: 4rem;
         }
         &-label
@@ -103,6 +104,12 @@ export default {
             .btn-back
             {
                 margin-bottom: 24px;
+                font-size: 14px;
+                img
+                {
+                    width: 16px;
+                    height: 16px;
+                }
             }
             &-label
             {

@@ -1,6 +1,7 @@
 <template>
     <section class="catalog">
         <v-container>
+            <Breadcrumbs></Breadcrumbs>
             <v-row>
                 <v-col cols="12">
                     <div class="catalog__head">
@@ -9,19 +10,12 @@
                             <div class="catalog__head-count">6299 товара</div>
                         </div>
                         <div class="catalog__head-bottom">
-                            <div class="catalog__head__filter-btn d-md-none d-block">
+                            <div class="catalog__head__filter-btn d-md-none d-flex" @click="changeFilterVisibility()">
                                 <img src="svg/filter.svg" alt="">
                                 Фильтры
                             </div>
                             <div class="catalog__head-select">
-                                <v-select
-                                v-model="select"
-                                :items="items"
-                                item-title="state"
-                                label="Select"
-                                return-object
-                                single-line
-                                ></v-select>
+                                <Dropdown :listItems = "sortTypes" @items-action="sortCatalog">{{ activeSort }}</Dropdown>
                             </div>
                         </div>
                     </div>
@@ -29,7 +23,7 @@
             </v-row>
             <v-row>
                 <v-col md="3" cols="12">
-                    <CatalogFilter></CatalogFilter>
+                    <CatalogFilter :filterStatus="showFilters" @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
                 </v-col>
                 <v-col md="9" cols="12">
                     <CatalogList :productArray="products"></CatalogList>
@@ -45,22 +39,40 @@ import {useSettingsStore} from "../store/settingsStore"
 import {useProductsStore} from "../store/productsStore"
 import CatalogFilter from "../components/catalog/CatalogFilter.vue";
 import CatalogList from "../components/catalog/CatalogList.vue";
-
+import Breadcrumbs from '../components/UI/Breadcrumbs.vue'
+import Dropdown from "../components/UI/Dropdown.vue";
 export default {
     components: {
+        Breadcrumbs,
         CatalogFilter,
-        CatalogList
+        CatalogList,
+        Dropdown
+    },
+    methods: {
+        sortCatalog(sortValue)
+        {
+            if (sortValue) {
+                this.activeSort = sortValue
+            }
+
+        },
+        changeFilterVisibility()
+        {
+            this.showFilters = !this.showFilters;
+        },
+
     },
     data() {
         return {
-            select: { state: 'Florida'},
-            items: [
-            { state: 'Florida'},
-            { state: 'Georgia'},
-            { state: 'Nebraska'},
-            { state: 'California'},
-            { state: 'New York'},
-            ],
+            sortTypes: [
+            {
+                name: 'По цене',
+            },
+            {
+                name: 'По популярности',
+            }],
+            showFilters: false,
+            activeSort: 'По популярности',
         }
     },
     computed: {
@@ -81,6 +93,10 @@ export default {
 {
     padding-top: 2.4rem;
     padding-bottom: 15rem;
+    .breadcrumbs
+    {
+        margin-bottom: 40px;
+    }
 }
 .catalog__head
 {
@@ -113,31 +129,14 @@ export default {
     }
     &-select
     {
-        .v-field__input
+        .dropdown__body
         {
-            padding: 4px 0;
-        }
-        .v-field--variant-filled .v-field__overlay
-        {
-            background-color: transparent;
-        }
-        .v-field__input
-        {
-            min-height: auto;
-            height: auto;
-        }
-        .v-input__details
-        {
-            display: none;
-        }
-        .v-field__outline
-        {
-            &::before,
-            &::after
+            right: 0;
+            left: initial;
+            li
             {
-                border: 0 !important;
+                text-align: right;
             }
-            border: 0 !important;
         }
     }
     &-bottom

@@ -1,9 +1,21 @@
 <template>
-    <div class="catalog__filter-wrap" :style="{ paddingTop: catalogOffsetTop + 'px' }">
-        <div class="catalog__filter">
+    <div class="catalog__filter-wrap"
+    :style="{ paddingTop: catalogOffsetTop + 'px' }"
+    :class="{'active': filterStatus}"
+    >
+    <div class="catalog__filter">
+        <div class="catalog__filter-head">
+            Фильтры
+            <div class="catalog__filter-close" @click="$emit('updateFilterStatus')">
+                <img src="/svg/close.svg" alt="">
+            </div>
+        </div>
+        <div class="catalog__filter-filters">
             <FilterItem v-for="filter in filters" :filterObject="filter"></FilterItem>
         </div>
+        
     </div>
+</div>
 
 </template>
 <script>
@@ -29,8 +41,11 @@ export default {
             }
         }
     },
+    props: {
+        filterStatus: Boolean,
+    },
     mounted() {
-        this.setCatalogPadding
+        this.setCatalogPadding()
         window.addEventListener('resize', this.setCatalogPadding);
     },
     beforeDestroy() {
@@ -114,8 +129,46 @@ export default {
     display: flex;
     flex-direction: column;
     row-gap: 4.8rem;
+    &-close
+    {
+        display: none;
+        width: 20px;
+        height: 20px;
+        img
+        {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+    &-head
+    {
+        display: none;
+    }
 }
 @media (max-width: 960px) {
+    .catalog__filter
+    {
+        padding-top: 30px;
+        &-close
+        {
+            display: block;
+        }
+        &-head
+        {
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: $primary;
+            font-size: 24px;
+            font-weight: 500;
+            line-height: 1.33em;
+            letter-spacing: -0.24px;
+
+        }
+    }
     .catalog__filter-wrap
     {
         padding-top: 70px;
@@ -140,7 +193,11 @@ export default {
         padding: 32px 20px;
         height: 100%;
         background-color: #FFF;
-        overflow-y: scroll;
+        &-filters
+        {
+            height: 100%;
+            overflow-y: scroll;
+        }
     }
 }
 </style>

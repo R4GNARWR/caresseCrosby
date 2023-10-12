@@ -354,6 +354,13 @@ export default {
                     border: 1px solid#D3D2D1;
                     transition: .2s;
                 }
+                &:hover
+                {
+                    label
+                    {
+                        background-color: #CBBDAE;
+                    }
+                }
                 input:checked ~ label
                 {
                     color: #FFF;

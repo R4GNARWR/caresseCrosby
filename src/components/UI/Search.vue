@@ -1,6 +1,6 @@
 <template>
     <div class="header-search">
-        <div class="header-search__icon static" style="cursor: pointer" :class="{'hide': searchVisible}" @click="searchVisible = !searchVisible">
+        <div class="header-search__icon static" style="cursor: pointer" @click="searchVisible = !searchVisible">
             <img src="/svg/search.svg" alt="">
             Поиск
         </div>
@@ -43,21 +43,16 @@ export default {
     
     &__icon
     {
-        &.hide
-        {
-            display: none;
-        }
         img
         {
             position: absolute;
             left: 1.6rem;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 1.4rem;
             width: 2.4rem;
             height: 2.4rem;
             z-index: 2;
         }
-        padding-left: 4.2rem;
+        padding-left: 5.2rem;
         color: $primary;
         font-size: 1.4rem;
         font-style: normal;
@@ -74,14 +69,15 @@ export default {
     left: 0;
     top: 1.2rem;
     width: 100%;
-    height: calc(100% - 2.4rem);
+    height: auto;
+    z-index: 2;
     &.show
     {
         display: block;
     }
     input
     {
-        padding: .4rem 1.6rem .4rem 5.2rem;
+        padding: 1.6rem 1.6rem 1.6rem 5.2rem;
         width: 100%;
         height: 100%;
         border-bottom: 1px solid #C0BFBD;
@@ -106,8 +102,7 @@ export default {
 {
     position: absolute;
     right: 1.6rem;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 1.8rem;
     width: 1.6rem;
     height: 1.6rem;
     cursor: pointer;
@@ -154,8 +149,7 @@ export default {
         .header-search__icon
         {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 6px;
             left: 12px;
         }
         input
@@ -191,6 +185,7 @@ export default {
     .header-search__close
     {
         right: 20px;
+        top: 10px;
         width: 16px;
         height: 16px;
     }
@@ -221,14 +216,16 @@ export default {
         height: auto;
         padding-top: 32px;
         background-color: #FFF;
+        z-index: 900;
     }
     .search-wrap .header-search__icon
     {
-        display: none;
+        top: 40px;
+        left: 16px;
     }
     .header-search__close
     {
-        top: 48px;
+        top: 40px;
     }
     .search-wrap input
     {

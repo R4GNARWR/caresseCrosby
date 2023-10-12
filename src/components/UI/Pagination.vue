@@ -37,6 +37,7 @@ export default {
         font-size: 1.6rem;
         font-weight: 500;
         transition: .2s;
+        border: 1px solid #FFF;
         &.active
         {
             background:#DAD1C6;
@@ -44,8 +45,7 @@ export default {
         }
         &:hover
         {
-            background:#DAD1C6;
-            color: $primary;
+            border: 1px solid #DAD1C6;
         }
         a
         {

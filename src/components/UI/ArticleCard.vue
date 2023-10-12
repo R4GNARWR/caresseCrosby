@@ -8,7 +8,7 @@
                 Caresse Crosby: рождение легенды.
             </div>
         </div>
-        <a href="#" class="link"></a>
+        <router-link to="/articles/1" class="link"></router-link>
     </div>
 </template>
 <script>

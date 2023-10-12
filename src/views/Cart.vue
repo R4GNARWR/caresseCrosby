@@ -321,6 +321,21 @@ section.cart
 }
 
 @media (max-width: 600px) {
+    .cart-head
+    {
+        margin-bottom: 32px;
+        flex-direction: column;
+        align-items: flex-start;
+        row-gap: 8px;
+        &__label
+        {
+            font-size: 32px;
+        }
+        &__count
+        {
+            font-size: 14px;
+        }
+    }
     .cart-item
     {
         &__wrap

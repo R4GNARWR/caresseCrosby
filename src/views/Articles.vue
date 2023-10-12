@@ -17,7 +17,7 @@
                             <div class="articles-main__content-text">
                                 Большая грудь - это, прежде всего, ответственный подход к своему здоровью, и даже эмоциональному состоянию. Девушке с большой грудью рекомендуется уделять особое
                             </div>
-                            <a href="#" class="articles-main__content-more">Читать статью</a>
+                            <router-link to="articles/1" class="articles-main__content-more">Читать статью</router-link>
                         </div>
                     </v-col>
                 </v-row>

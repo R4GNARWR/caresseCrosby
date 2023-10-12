@@ -5,6 +5,7 @@
                 <div class="section-label">
                     Статьи
                 </div>
+                <router-link to="/articles" class="main-article__head-link">Все статьи</router-link>
             </div>
             <swiper-container
             class="swiper-articles"
@@ -44,6 +45,7 @@
                 <img src="/svg/swiper-next.svg" alt="">
             </div>
         </div>
+        <router-link class="swiper-cards__more d-lg-none d-flex" to="/articles">Все статьи</router-link>
     </v-container>  
 </section>
 </template>
@@ -57,8 +59,24 @@ export default {
 {
     margin-top: 7.4rem;
 }
+.main-article__head-link
+{
+    color: #867259;
+    font-size: 1.8rem;
+    line-height: 1.33em;
+    letter-spacing: -0.18px;
+    text-decoration: none;
+}
 .main-article
 {
+    .swiper-cards__more
+    {
+        justify-content: center;
+    }
+    .section-head
+    {
+        align-items: center;
+    }
     .v-container
     {
         position: relative;
