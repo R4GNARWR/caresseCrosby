@@ -1,13 +1,6 @@
 <template>
     <section class="product">
-        <v-container>
-            <v-row>
-                <v-col cols="12">
-                    <Breadcrumbs />
-                </v-col>
-            </v-row>
-            
-        </v-container>
+
         <DetailProduct />
     </section>
 </template>

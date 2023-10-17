@@ -1,31 +1,35 @@
 <template>
     <section class="articles">
         <v-container>
-            <Breadcrumbs></Breadcrumbs>
+            <div class="breadcrumbs text-page__breadcrumbs">
+                <router-link class="breadcrumbs-item" to="/">Главная</router-link>
+                <div class="breadcrumbs-divider">/</div>
+                <router-link class="breadcrumbs-item" :to="this.$route.path">Статьи</router-link>
+            </div>
             <div class="articles-main">
                 <v-row>
                     <v-col md="6" cols="12">
                         <div class="articles-main__img">
-                            <img src="/img/article.jpg" alt="">
+                            <img :src="'https://static.ccrosby.ru/blogs/' + blogs[0].img" alt="">
                         </div>
                     </v-col>
                     <v-col md="6" cols="12">
-                        <div class="articles-main__content">
+                        <div class="articles-main__content" v-if="blogs && blogs.length>0">
                             <div class="articles-main__content-label">
-                                Большая грудь — большая ответственность
+                               {{ blogs[0].title }}
                             </div>
                             <div class="articles-main__content-text">
-                                Большая грудь - это, прежде всего, ответственный подход к своему здоровью, и даже эмоциональному состоянию. Девушке с большой грудью рекомендуется уделять особое
+                                {{ JSON.parse(blogs[0].json_string)[0].content }}
                             </div>
-                            <router-link to="articles/1" class="articles-main__content-more">Читать статью</router-link>
+                            <router-link to="articles/0" class="articles-main__content-more">Читать статью</router-link>
                         </div>
                     </v-col>
                 </v-row>
             </div>
             <div class="articles-list">
                 <v-row>
-                    <v-col md="4" sm="6" cols="12" v-for="(item, index) in blogs" :key="index">
-                        <ArticleCard :cardData="item" :cardId="index"></ArticleCard>
+                    <v-col md="4" sm="6" cols="12" v-for="(item, index) in blogs" :key="index" v-if="blogs">
+                        <ArticleCard :cardData="item" :cardId="index" v-if="item"></ArticleCard>
                     </v-col>
                 </v-row>
                 <MainBtn class-name="btn-white outline mx-auto d-lg-none d-block">Показать еще</MainBtn>
@@ -116,6 +120,10 @@ export default {
             font-size: 2rem;
             line-height: 1.6em;
             letter-spacing: -0.32px;
+            display: -webkit-box;
+            -webkit-line-clamp: 4; // количество строк
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         &-more
         {

@@ -1,7 +1,11 @@
 <template>
     <section class="photo-album">
         <v-container>
-            <Breadcrumbs></Breadcrumbs>
+            <div class="breadcrumbs text-page__breadcrumbs">
+                <router-link class="breadcrumbs-item" to="/">Главная</router-link>
+                <div class="breadcrumbs-divider">/</div>
+                <router-link class="breadcrumbs-item active" :to="this.$route.path">Фотоальбомы</router-link>
+            </div>
             <div class="photo-album__label">
                 Фотоальбомы
             </div>

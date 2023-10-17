@@ -1,7 +1,11 @@
 <template>
     <section class="contacts">
         <v-container>
-            <Breadcrumbs class="contacts-breadcrumbs"></Breadcrumbs>
+            <div class="breadcrumbs contacts-breadcrumbs">
+                <router-link class="breadcrumbs-item" to="/">Главная</router-link>
+                <div class="breadcrumbs-divider">/</div>
+                <router-link class="breadcrumbs-item active" :to="this.$route.path">Контакты</router-link>
+            </div>
             <div class="contacts-label">Контакты</div>
             <div class="contacts-props">
                 <div class="contacts-props__item">

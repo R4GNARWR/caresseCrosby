@@ -11,33 +11,18 @@
 </template>
 <script>
 export default {
-  // props: {
-  //   title: {
-  //     type: String,
-  //     default: null,
-  //   },
-  // },
+  props: {
+  },
   
-  // computed: {
-  //   crumbs() {
-  //     const fullPath = this.$router.fullPath
-  //     const params = fullPath.substring(1).split('/')
-  //     const crumbs = []
+  computed: {
+    crumbs() {
+      const fullPath = this.$route.fullPath
+      const params = fullPath.split('/').filter(segment => segment !== '');
+      const crumbs = []
       
-  //     let path = ''
-      
-  //     params.forEach((param, index) => {
-  //       path = `${path}/${param}`
-  //       const match = this.$router.match(path)
-        
-  //       if (match.name !== null) {
-  //         crumbs.push(match)
-  //       }
-  //     })
-      
-  //     return crumbs
-  //   },
-  // },
+      return params
+    },
+  },
 }
 </script>
 <style lang="scss">

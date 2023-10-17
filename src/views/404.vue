@@ -1,7 +1,11 @@
 <template>
     <section class="error">
         <v-container>
-            <Breadcrumbs></Breadcrumbs>
+            <div class="breadcrumbs text-page__breadcrumbs">
+                <router-link class="breadcrumbs-item" to="/">Главная</router-link>
+                <div class="breadcrumbs-divider">/</div>
+                <router-link class="breadcrumbs-item" :to="this.$route.path">404</router-link>
+            </div>
             <v-row>
                 <v-col md="6" cols="12">
                     <div class="error-img">

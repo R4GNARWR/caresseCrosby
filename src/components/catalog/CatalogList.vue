@@ -1,9 +1,15 @@
 <template>
-    <div class="catalog-list" v-if="productArray">
-        <ProductCard v-for="(item, index) in productArray" :key="index" :product="item"></ProductCard>
+    <div class="catalog-list__wrap">
+        <div class="catalog-list" v-if="productArray && productArray.length > 0">
+            <ProductCard v-for="(item, index) in productArray" :key="index" :product="item"></ProductCard>
+        </div>
+        <div class="empty" v-else>
+            По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.
+        </div>
+        <MainBtn class="btn btn-white w-100 d-md-none d-block outline">Показать ещё</MainBtn>
+        <Pagination class="catalog-pagination" v-if="productArray.length > 20"></Pagination>
     </div>
-    <MainBtn class="btn btn-white w-100 d-md-none d-block outline">Показать ещё</MainBtn>
-    <Pagination class="catalog-pagination"></Pagination>
+    
 </template>
 <script>
 
@@ -20,26 +26,42 @@ export default {
     props: {
         productArray: Array,
     }
-
+    
 }
 </script>
 <style lang="scss">
+.catalog-list
+{
+    width: 100%;
+    display: grid;
+    column-gap: 3.2rem;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 4rem;
+}
+.catalog-list__wrap
+{
+    min-height: 60rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    .empty
+    {
+        font-size: 4.8rem;
+        text-align: center;
+        font-weight: 700;
+        color: $primary;
+    }
+}
+@media (max-width: 600px) {
     .catalog-list
     {
-        display: grid;
-        column-gap: 3.2rem;
-        grid-template-columns: repeat(3, 1fr);
-        row-gap: 4rem;
+        margin-bottom: 32px;
+        grid-template-columns: repeat(2, 1fr);
     }
-    @media (max-width: 600px) {
-        .catalog-list
-        {
-            margin-bottom: 32px;
-            grid-template-columns: repeat(2, 1fr);
-        }
-        .catalog-pagination
-        {
-            margin-top: 32px;
-        }
+    .catalog-pagination
+    {
+        margin-top: 32px;
     }
+}
 </style>

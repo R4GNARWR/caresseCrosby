@@ -1,5 +1,12 @@
 <template>
     <v-container class="product-detail__wrap">
+        <div class="breadcrumbs text-page__breadcrumbs">
+            <router-link class="breadcrumbs-item" to="/">Главная</router-link>
+            <div class="breadcrumbs-divider">/</div>
+            <router-link class="breadcrumbs-item" :to="'/catalog/' + category.id">Каталог</router-link>
+            <div class="breadcrumbs-divider">/</div>
+            <router-link class="breadcrumbs-item" :to="this.$route.path">{{product.name}}</router-link>
+        </div>
         <section class="product-detail">
             <v-row>
                 <v-col md="8" cols="12">

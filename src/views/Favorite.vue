@@ -1,7 +1,11 @@
 <template>
     <section class="favorite">
         <v-container>
-            <Breadcrumbs></Breadcrumbs>
+            <div class="breadcrumbs text-page__breadcrumbs">
+                <router-link class="breadcrumbs-item" to="/">Главная</router-link>
+                <div class="breadcrumbs-divider">/</div>
+                <router-link class="breadcrumbs-item active" :to="this.$route.path">Избранное</router-link>
+            </div>
             <v-row v-if="favorites && favorites.length>0">
                 <v-col md="3" sm="4" cols="6" v-for="product of favorites" :key="product.id" >
                     <ProductCard :product="product"></ProductCard>

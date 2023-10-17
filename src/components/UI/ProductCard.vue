@@ -2,7 +2,7 @@
     <div class="product-card">
         <div class="product-card__img">
             <img :src="product.photo" alt="">
-            <div class="product-card__img-new">NEW</div>
+            <div class="product-card__img-new" v-if="product.labels">{{product.labels}}</div>
             <div class="product-card__img-like">
                 <v-icon icon="mdi-heart-outline" color="#27231E" v-if="!the_heart" @click="addFavor"></v-icon>
                 <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart" @click="delFavor"></v-icon>

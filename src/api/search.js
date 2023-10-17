@@ -160,7 +160,7 @@ export default {
         this.no_result = false;
         this.$store.commit('setSearchSettings', {'brand':this.filter['brand'],'colors':this.filter['colors'],'sizes':this.filter['sizes']})
         
-        this.filter['colors']?Object.values(this.filter['colors'])[0].forEach(color=>{
+        this.filter['colors']? Object.values(this.filter['colors'])[0].forEach(color=>{
             store.state.colors_search.forEach(cs=> {
                 if (cs.value === color) {
                     let f={};
@@ -172,7 +172,7 @@ export default {
                     
                 }
             })
-        }):this.ss(this.filter, page);
+        }): this.ss(this.filter, page);
         
         if (!store.state.loader && (!this.products || this.products.length<1)){this.no_result = "По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска или свяжитесь с нами по телефону: ";}
         else this.no_result=false;

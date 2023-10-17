@@ -11,9 +11,9 @@
             </div>
         </div>
         <div class="catalog__filter-filters">
-            <FilterItem :filterObject="brands_search" :filterName="'Бренды'"></FilterItem>
-            <FilterItem :filterObject="sizes_search" :filterName="'Размеры'"></FilterItem>
-            <FilterItem :filterObject="colors_search" :filterName="'Цвета'"></FilterItem>
+            <FilterItem @update-filters="updateFilters" :filterObject="brands_search" :filterName="'Бренды'"></FilterItem>
+            <FilterItem @update-filters="updateFilters" :filterObject="sizes_search" :filterName="'Размеры'"></FilterItem>
+            <FilterItem @update-filters="updateFilters" :filterObject="colors_search" :filterName="'Цвета'"></FilterItem>
         </div>
         
     </div>
@@ -44,7 +44,10 @@ export default {
                 console.log(this.catalogOffsetTop)
             }
         },
-        ...search
+        ...search,
+        updateFilters(filter) {
+            this.$emit('updateFilter', filter)
+        }
     },
     props: {
         filterStatus: Boolean,
@@ -60,11 +63,12 @@ export default {
     data() {
         return {
             catalogOffsetTop: 0,
+
         }
     },
     created() {
         this.for_created();
-    }
+    },
 }
 </script>
 <style lang="scss">
@@ -117,7 +121,7 @@ export default {
             font-weight: 500;
             line-height: 1.33em;
             letter-spacing: -0.24px;
-
+            
         }
     }
     .catalog__filter-wrap

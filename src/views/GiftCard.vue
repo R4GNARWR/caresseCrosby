@@ -1,7 +1,11 @@
 <template>
     <section class="gift-card">
         <v-container>
-            <Breadcrumbs class="contacts-breadcrumbs"></Breadcrumbs>
+            <div class="breadcrumbs text-page__breadcrumbs">
+                <router-link class="breadcrumbs-item" to="/">Главная</router-link>
+                <div class="breadcrumbs-divider">/</div>
+                <router-link class="breadcrumbs-item active" :to="this.$route.path">Подарочные сертификаты</router-link>
+            </div>
             <div class="gift-card__label">Подарочные online-сертификаты</div>
             <div class="gift-card__banner">
                 <v-row class="h-100">

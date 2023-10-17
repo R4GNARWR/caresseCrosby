@@ -1,7 +1,11 @@
 <template>
     <section class="table-size-section">
         <v-container>
-            <Breadcrumbs></Breadcrumbs>
+            <div class="breadcrumbs">
+                <router-link class="breadcrumbs-item" to="/">Главная</router-link>
+                <div class="breadcrumbs-divider">/</div>
+                <router-link class="breadcrumbs-item" :to="this.$route.path">Таблица размеров</router-link>
+            </div>
             <div class="table-size__label">
                 Узнайте точный размер бюстгалтера
             </div>
