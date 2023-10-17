@@ -1,19 +1,28 @@
 <template>
-    <div class="catalog__filter-item" v-if="filterObject.name === 'Цвета'">   
-        <div class="catalog__filter-item__label">{{ filterObject.name }}</div>
-        <div class="catalog__filter-item__input" for="" v-for="filter in filterObject.values">
-            <input type="checkbox" >
+    <div class="catalog__filter-item" v-if="filterName === 'Цвета'">
+        <div class="catalog__filter-item__label">{{ filterName }}</div>
+        <div class="catalog__filter-item__input" v-for="filter in values" :key="filter.value">
+            <input type="checkbox">
             <label></label>
-            <div class="catalog__filter-item__color" :style="'background-color:'+filter.color+';'"></div>
-            <div class="catalog__filter-item__name">{{ filter.name }}</div>
+            <div class="catalog__filter-item__color" :style="{ backgroundColor: filter.color }"></div>
+            <div class="catalog__filter-item__name">{{ filter.value }}</div>
         </div>
         <button class="catalog__filter-item__button">Посмотреть все</button>
     </div>
-    <div class="catalog__filter-item" v-else>
-        <div class="catalog__filter-item__label">{{ filterObject.name }}</div>
-        <div class="catalog__filter-item__input" for="" v-for="filter in filterObject.values">
-            <input type="checkbox" >
-            {{filter}}
+    <div class="catalog__filter-item" v-if="filterName === 'Бренды'">
+        <div class="catalog__filter-item__label">{{ filterName }}</div>
+        <div class="catalog__filter-item__input" v-for="filter in values" :key="filter.value">
+            <input type="checkbox">
+            {{ filter.value }}
+            <label></label>
+        </div>
+        <button class="catalog__filter-item__button">Посмотреть все</button>
+    </div>
+    <div class="catalog__filter-item" v-if="filterName === 'Размеры'">
+        <div class="catalog__filter-item__label">{{ filterName }}</div>
+        <div class="catalog__filter-item__input" v-for="filter in values" :key="filter.value" v-if="values">
+            <input type="checkbox">
+            {{ filter.value }}
             <label></label>
         </div>
         <button class="catalog__filter-item__button">Посмотреть все</button>
@@ -22,11 +31,37 @@
 
 <script>
 export default {
+    data() {
+        return {
+            showAll: false,
+            values: [],
+        };
+    },
     props: {
-        filterObject: [Array, Object]
-    }
-}
+        filterObject: {
+            type: [Array, Object],
+            required: true,
+        },
+        filterName: {
+            type: String,
+            required: true,
+        },
+    },
+    watch: {
+        filterObject: {
+            immediate: true,
+            handler(newVal) {
+                if (this.filterName === 'Размеры' && newVal) {
+                    this.values = newVal;
+                } else {
+                    this.values = Array.isArray(newVal) ? newVal.slice(0, 6) : newVal;
+                }
+            },
+        },
+    },
+};
 </script>
+
 <style lang="scss">
 .catalog__filter-item
 {

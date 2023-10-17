@@ -3,8 +3,8 @@
         <section class="product-detail">
             <v-row>
                 <v-col md="8" cols="12">
-                    <div class="product-detail__images d-lg-grid d-none">
-                        <img src="/img/product-detail.jpg" v-for="(item, index) in 4" :key="index" alt="">
+                    <div class="product-detail__images d-lg-grid d-none" v-if="full_photos">
+                        <img :src="item" v-for="(item, index) in full_photos.slice(0,4)" :key="index" alt="">
                     </div>
                     <div class="d-lg-none d-block" style="position: relative;">
                         <swiper-container
@@ -14,9 +14,10 @@
                         :pagination="{
                             clickable: true,
                             el: '.swiper-fullscreen__pagination'
-                        }">
-                        <swiper-slide class="swiper-slide" v-for="(item, index) in 4" :key="index">
-                            <img src="/img/product-detail.jpg" alt="">
+                        }"
+                        v-if="full_photos">
+                        <swiper-slide class="swiper-slide" v-for="(item, index) in full_photos" :key="index">
+                            <img :src="item" alt="">
                         </swiper-slide>
                         
                     </swiper-container>
@@ -27,65 +28,38 @@
                 <div class="product-detail__info">
                     <div class="product-detail__info-top">
                         <div class="product-detail__info-label">
-                            Nessa Selena Bra
+                            {{product.name}}
                         </div>
                         <div class="product-detail__info-type">
-                            Бюстгалтер
+                            {{category.name}}
                         </div>
-                        <div class="product-detail__info-price">
-                            6 900 ₽
+                        <div class="product-detail__info-price" v-if="product.lowerPrice">
+                            {{computed_price_string(product.lowerPrice.value)}} ₽
                         </div>
                     </div>
                     <div class="product-detail__info-color">
-                        <div class="product-detail__info-color__name">
-                            Цвет: <span>Бежевый</span>
+                        <div class="product-detail__info-color__name" v-if="colors">
+                            Цвет: <span>{{colors[0].attributeValueText}}</span>
                         </div>
-                        <div class="product-detail__info-images">
+                        <!-- <div class="product-detail__info-images">
                             <a href="" class="active">
                                 <img src="/img/product-detail.jpg" alt="">
                             </a>
                             <a href="">
                                 <img src="/img/product-detail.jpg" alt="">
                             </a>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="product-detail__info-sizes">
                         <div class="product-detail__info-sizes__item">
                             <div class="label">
-                                Размер пояса
+                                Выберите размер
                                 <router-link to="/tableSize">Таблица размеров</router-link>
                             </div>
                             <div class="buttons">
-                                <div class="buttons-item">
-                                    <input type="radio" name="size1">
-                                    <label for="">60</label>
-                                </div>
-                                <div class="buttons-item">
-                                    <input type="radio" name="size1">
-                                    <label for="">65</label>
-                                </div>
-                                <div class="buttons-item">
-                                    <input type="radio" name="size1">
-                                    <label for="">70</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-detail__info-sizes__item">
-                            <div class="label">
-                                Размер чашки
-                            </div>
-                            <div class="buttons">
-                                <div class="buttons-item">
-                                    <input type="radio" name="size2">
-                                    <label for="">F</label>
-                                </div>
-                                <div class="buttons-item">
-                                    <input type="radio" name="size2">
-                                    <label for="">G</label>
-                                </div>
-                                <div class="buttons-item">
-                                    <input type="radio" name="size2">
-                                    <label for="">B</label>
+                                <div class="buttons-item" v-for="size in sizes" :key="size">
+                                    <input type="radio" name="size" :value="size" v-model="product.size">
+                                    <label for="">{{size}}</label>
                                 </div>
                             </div>
                         </div>
@@ -103,24 +77,33 @@
                             <div class="name">
                                 Бренд:
                             </div>
-                            <div class="desc">
-                                Parfait
+                            <div class="desc" v-for="attr of brand.slice(0,1)" :key="attr.attributeValueText" v-if="brand">
+                                {{attr.attributeValueText}}
+                            </div>
+                            <div class="desc" v-else>
+                                Данные отсутствует
                             </div>
                         </div>
-                        <div class="product-detail__info-props__item">
+                        <div class="product-detail__info-props__item" >
                             <div class="name">
                                 Состав:
                             </div>
-                            <div class="desc">
-                                95% модал, 5% спандекс
+                            <div class="desc" v-for="attr of structure" :key="attr.attributeValueText" v-if="structure">
+                                {{attr}},
+                            </div>
+                            <div class="desc" v-else>
+                                Данные отсутствует
                             </div>
                         </div>
                         <div class="product-detail__info-props__item">
                             <div class="name">
                                 Описание:
                             </div>
-                            <div class="desc">
-                                Уютная модальная ткань трусиков, напоминающая хлопок, со средней степенью покрытия спинки и минимальным зазором вверх. Плоский эластичный пояс предотвращает скатывание
+                            <div class="desc" v-if="product.description">
+                                {{product.description}}
+                            </div>
+                            <div class="desc" v-else>
+                                Описание отсутствует
                             </div>
                         </div>
                     </div>
@@ -141,48 +124,166 @@
 </template>
 
 <script>
-import {useProductsStore} from "../../store/productsStore"
+import {mapMutations, mapState} from "vuex";
+import { Fancybox } from '@fancyapps/ui';
+import cart from "../../api/cart";
+import store from "../../store/store";
+
 import SwiperCards from '../SwiperCards.vue';
 import MainBtn from '../UI/MainBtn.vue';
 import SwiperPagination from "../UI/SwiperPagination.vue";
 import ModalToCart from "../modals/ModalToCart.vue";
-import { Fancybox } from '@fancyapps/ui';
+
 
 export default {
     data() {
-        return {};
+        return {
+            product:[],
+            attributes:[],
+            category:"",
+            full_photos:null,
+            similar_products:[]
+        };
     },
     props: {},
     components: { MainBtn, SwiperCards, SwiperPagination, ModalToCart },
-    computed: {
-        products(){return useProductsStore().products.products},
-        
+    computed:{
+        sizes(){
+            if (this.attributes && this.attributes.length>0){
+                let sizes=[]
+                for (let attr of this.attributes) if (attr.attributeId === 2 && attr.attributeValueText) sizes.push(attr.attributeValueText)
+                return sizes.sort(function( a, b ) {return parseInt(a)-parseInt(b)});
+            } else return null;
+        },
+        colors(){
+            if (this.attributes && this.attributes.length>0){
+                let colors=[]
+                for (let attr of this.attributes) if (attr.attributeId === 6) colors.push(attr)
+                return colors
+            } else return null;
+        },
+        brand(){
+            if (this.attributes && this.attributes.length>0){
+                let brand=[]
+                for (let attr of this.attributes) if (attr.attributeId === 1) brand.push(attr)
+                return brand
+            } else return null;
+        },
+        structure(){
+            if (this.attributes && this.attributes.length>0){
+                let structure=[]
+                for (let attr of this.attributes) if (attr.attributeId === 3) structure.push(attr.attributeValueText)
+                return structure
+            } else return null;
+        },
+        videoLink(){
+            if (this.attributes && this.attributes.length>0){
+                let videoLink=null
+                for (let attr of this.attributes) if (attr.attributeId === 9) videoLink = attr.attributeValueText
+                return videoLink
+            } else return '';
+        },
+        cartQuantity() {
+            let vm = this, q = 0;
+            for (let cartPosition of vm.cart) {
+                if (cartPosition.id === parseInt(vm.product.id)) {
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.product.q = cartPosition.q;
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.product.m = cartPosition.m;
+                    q=cartPosition.q
+                    break;
+                }
+            }
+            return q;
+        },
+        in_favor(){
+            if (this.favorites.includes(this.favorites.find(el=>el.id===this.product.id))) return true
+            else return false
+        },
+        ...mapState(['headerPadding','user_info','cart','colors_list','favorites', 'pop_products','cat_products', 'addToOrder'])
     },
-    setup() {
-        if(!useProductsStore().products.products)
-        {
-            const productsStore = useProductsStore();
-            productsStore.fetchPopularProducts();
-            productsStore.fetchAllProducts();
-        }
+    watch: {
+        '$route'(newRoute, oldRoute) {if (oldRoute && newRoute !== oldRoute.params.id) {
+            window.scroll(0,0);
+            this.product=[];
+            this.full_photos=null
+            this.updateProduct();
+        }},
+    },
+    created() {
+        this.updateProduct()
     },
     methods: {
-        openFancybox()
-        {
+        openFancybox(){
             Fancybox.close();
             Fancybox.show(
             [
-                {
-                    src: '#modalToCart',
-                    type: 'inline',
-                },
-                ],
-                {
-                    closeButton: false,
-                    mainClass: 'modal-base__wrap',
-                }
+            {
+                src: '#modalToCart',
+                type: 'inline',
+            },
+            ],
+            {
+                closeButton: false,
+                mainClass: 'modal-base__wrap',
+            }
             );
-        }
+        },
+        updateProduct(){
+            if (this.pop_products[this.$route.params.id]){
+                this.product = this.pop_products[this.$route.params.id];
+                this.attributes = this.pop_products[this.$route.params.id].attributes;
+                this.category = this.pop_products[this.$route.params.id].category;
+                this.category.hide_name = true;
+                this.full_photos = this.pop_products[this.$route.params.id].full_photos;
+                this.similar_products = this.pop_products[this.$route.params.id]['similar_products'];
+            }
+            else{
+                this.attributes=[];
+                this.$API.getProductById(this.$route.params.id).then(value =>{
+                    if (value.data.status == "OK"){
+                        this.product = value.data.response.product?value.data.response.product:null;
+                        this.attributes = value.data.response.attributes?value.data.response.attributes:null;
+                        this.category = value.data.response.category?value.data.response.category:null;
+                        this.category.hide_name = true;
+                            this.pop_products[this.$route.params.id] = this.product;
+                            this.pop_products[this.$route.params.id].attributes = this.attributes;
+                            this.pop_products[this.$route.params.id].category = this.category;
+                        
+                        this.$API.getFullPhotos(this.$route.params.id).then(value => {
+                            if(value.status ===200 && value.data.length>1) {
+                                this.full_photos = value.data;
+                                    this.pop_products[this.$route.params.id].full_photos = this.full_photos;
+                            }
+                            else this.$API.getFullPhoto(this.$route.params.id).then(value => {
+                                if (value.status && value.data){
+                                    this.product.photo = value.data
+                                    this.full_photos = [value.data]
+                                }
+                            })
+                        })
+                    }
+                    else this.$router.push('/')
+                })
+            }
+        },
+        delete_prod(){
+            this.$API.deleteProduct(this.$route.params.id);
+            this.cat_products[this.product.category_id] = null;
+            this.$router.go(-1);
+        },
+        addFavor(){
+            store.commit("set_snack_message", {msg:"Товар добавлен в избранные"});
+            this.$API.addFavorite(this.product.id)
+        },
+        ...cart,
+        ...mapMutations([
+        "add2cart",
+        'cartItemChangeQ',
+        'cartItemSetQ',
+        'removeFromCart',
+        ])
     }
 }
 </script>
@@ -207,7 +308,7 @@ export default {
     img
     {
         width: 100%;
-        height: 100%;
+        height: 51rem;
         object-fit: cover;
     }
     
@@ -341,10 +442,11 @@ export default {
                 }
                 label
                 {
+                    padding: 0 4px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    width: 4rem;
+                    min-width: 4rem;
                     height: 4rem;
                     color: $primary;
                     font-size: 1.6rem;

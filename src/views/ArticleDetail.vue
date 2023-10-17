@@ -1,7 +1,7 @@
 <template>
     <section class="articles-detail">
         <div class="articles-detail__img">
-            <img src="/img/album3.png" alt="">
+            <img :src="blog.img" alt="">
         </div>
         <v-container>
             <div class="row">
@@ -12,18 +12,30 @@
                             Назад
                         </div>
                         <div class="articles-main__content-label">
-                            Большая грудь — большая ответственность
+                            {{ blog.title }}
                         </div>
-                        <div class="articles-main__content-text">
-                            Большая грудь - это, прежде всего, ответственный подход к своему здоровью, и даже эмоциональному состоянию. Девушке с большой грудью рекомендуется уделять особое внимание состоянию груди и обращаться к врачу-маммологу раз в год для профилактики. <br>
-                            <br>
-                            Поддерживать форму груди помогут занятие спортом, укрепление мышц спины и правильное белье, которое перераспределяет нагрузку на спину и плечи. Эмоциональное состояние поддерживать сложнее всего, ведь обладательнице большого бюста, с подросткового возраста приходится выслушивать в свой адрес множество некорректных замечаний и получать не самые этичные вопросы. <br><br>
-                            Так у девушек рождается множество комплексов, неуверенность в себе, в своем теле и собственной красоте. Можете делиться фразами, которые слышали в свой адрес 
-                            в комментариях. <br><br>
-                            После такого информационного насилия, конечно, приходится восстанавливать эмоциональное состояние с психологами и другими специалистами. Большая грудь - это большая ответственность. <br><br>
-                            Всегда нужно следить за собой внешне и внутренне и ни в коем случае не поддаваться на провокации со стороны. Сейчас, когда профессиональное белье становится все более доступным, девушкам легче принять свою красоту и, наконец, полюбить себя. Причем это касается не только подростков, но и девушек и женщин всех возрастов. <br><br>
-                            Правильно подобранное белье дарит уверенность и повышает самооценку. Мы всегда готовы вам помочь не только с правильным подбором бюстгальтера, но и словом. <br>
-                            Вы самые красивые, вы достойны всего самого лучшего!
+                        <div class="articles-main__content-text" v-for="item in JSON.parse(blog.json_string)" v-if="blog.json_string">
+                            <div class="img" v-if="item.type === 'img'" >
+                                <img v-if="item.content.split(',').length===1" :alt="blog.title"
+                                :src="'https://static.ccrosby.ru/blogs/'+item.content">
+                                <swiper-container
+                                    v-else
+                                    class="swiper"
+                                    :slidesPerView="1"
+                                    :loop= "true"
+                                    :spaceBetween= "28"
+                                    :pagination="true"
+                                    
+                                    >
+                                    <swiper-slide class="swiper-slide img" v-for="img in item.content.split(',')">
+                                        <img :alt="blog.title" :src="'https://static.ccrosby.ru/blogs/'+img">
+                                    </swiper-slide>
+                                    
+                                </swiper-container>
+                            </div>
+                            <p v-if="item.type === 'text'">
+                                {{item.content}}
+                            </p>
                         </div>
                         <DetailLinks></DetailLinks>
                     </div>
@@ -35,13 +47,37 @@
 
 <script>
 import DetailLinks from '../components/UI/DetailLinks.vue';
+import { register } from 'swiper/element/bundle';
 
 export default {
     components: {
         DetailLinks
     },
     data() {
-        return {};
+        return {
+            blogs: [],
+            blog: [],
+        };
+    },
+    beforeCreate() {
+        this.$API.getBlogs().then(value => {
+            if (value.data.success) this.blogs = value.data.blogs;
+        })
+    },
+    created() {
+        if (this.$route.params.id) {
+            if (this.blogs && this.blogs.length>0) {
+                this.blog=this.blogs[this.$route.params.id];
+            }
+            else this.$API.getBlogs().then(value => {
+                if (value.data.success) {
+                    this.blogs = value.data.blogs;
+                    this.blog=this.blogs[this.$route.params.id];
+                } 
+                
+            })
+        }
+        register()
     },
 };
 </script>
@@ -81,14 +117,46 @@ export default {
         }
         &-text
         {
+            width: 100%;
             margin-bottom: 6.4rem;
             color: $primary;
             font-size: 4.8rem;
             font-weight: 600;
             line-height: 1.15em;
             letter-spacing: -0.864px;
+            
         }
-    } 
+    }
+    
+}
+.articles-main__content-text
+{
+    p
+    {
+        margin-bottom: 2rem;
+    }
+    .img
+    {
+        margin-bottom: 2rem;
+        height: 46rem;
+        width: 100%;
+        img
+        {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+    .swiper-slide.img
+    {
+        width: 60rem;
+        img
+        {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
 }
 @media (max-width: 960px) {
     .articles-detail

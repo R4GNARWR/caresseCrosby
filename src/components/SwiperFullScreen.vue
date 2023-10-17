@@ -17,7 +17,7 @@
                     <img class="swiper-fullscreen__image" :src="slide.backgroundImageSrc" alt="">
                 </swiper-slide>
                 
-            </swiper-container>
+                </swiper-container>
             <SwiperPagination class="swiper-fullscreen__pagination" />
         </div>
     </v-container>
@@ -27,13 +27,11 @@
 <script>
 
 import { register } from 'swiper/element/bundle';
-import MainBtn from './UI/MainBtn.vue';
 import SwiperPagination from './UI/SwiperPagination.vue';
 import MainLink from './UI/MainLink.vue';
 
 export default {
     components: {
-    MainBtn,
     SwiperPagination,
     MainLink
 },

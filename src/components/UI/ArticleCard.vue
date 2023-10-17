@@ -1,19 +1,22 @@
 <template>
-    <div class="article-card">
+    <div class="article-card" v-if="cardData">
         <div class="article-card__img">
-            <img src="/img/article.jpg" alt="">
+            <img :src="'https://static.ccrosby.ru/blogs/'+ cardData.img" :+alt="cardData.title">
         </div>
         <div class="article-card__body">
             <div class="article-card__body-label">
-                Caresse Crosby: рождение легенды.
+                {{cardData.title}}
             </div>
         </div>
-        <router-link to="/articles/1" class="link"></router-link>
+        <router-link :to="'/articles/' + cardId" class="link"></router-link>
     </div>
 </template>
 <script>
 export default {
-    
+    props: {
+        cardData: [Object, Array],
+        cardId: null,
+    }
 }
 </script>
 <style lang="scss">

@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { useSettingsStore } from '../store/settingsStore';
+import {mapState, mapMutations} from "vuex";
 import Input from '../components/UI/Input.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
 import MainLink from '../components/UI/MainLink.vue';
@@ -46,8 +46,9 @@ export default {
         MainBtn,
         MainLink
     },
-    computed: {
-        paddingTop(){return useSettingsStore().getHeaderPadding},
+    computed:{
+        ...mapState(['headerPadding',]
+        ),
     },
     data() {
         return {};

@@ -15,7 +15,7 @@
                                 Фильтры
                             </div>
                             <div class="catalog__head-select">
-                                <Dropdown :listItems = "sortTypes" @items-action="sortCatalog">{{ activeSort }}</Dropdown>
+                                <Dropdown :listItems = "sortTypes" @items-action="sortCatalog">{{ activeSortString }}</Dropdown>
                             </div>
                         </div>
                     </div>
@@ -35,12 +35,14 @@
     
 </template>
 <script>
-import {useSettingsStore} from "../store/settingsStore"
-import {useProductsStore} from "../store/productsStore"
+import {mapState, mapMutations} from "vuex";
+
+
 import CatalogFilter from "../components/catalog/CatalogFilter.vue";
 import CatalogList from "../components/catalog/CatalogList.vue";
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue'
 import Dropdown from "../components/UI/Dropdown.vue";
+
 export default {
     components: {
         Breadcrumbs,
@@ -49,16 +51,60 @@ export default {
         Dropdown
     },
     methods: {
-        sortCatalog(sortValue)
-        {
+        sortCatalog(sortName, sortValue){
+            console.log('sort inited clicked', sortValue, sortName)
             if (sortValue) {
-                this.activeSort = sortValue
+                this.activeSortString = sortName
             }
-
+            switch (sortValue) {
+                case 'priceAsc': {
+                    this.products.sort((a, b) => {
+                        if (a.price < b.price) return -1;
+                        if (a.price > b.price) return 1;
+                        return 0;
+                    });
+                    break;
+                }
+                case 'priceDesc': {
+                    this.products.sort((a, b) => {
+                        if (a.price < b.price) return 1;
+                        if (a.price > b.price) return -1;
+                        return 0;
+                    });
+                    break;
+                }
+                case 'popularityDesc': {
+                    this.products.sort((a, b) => {
+                        if (a.id < b.id) return 1;
+                        if (a.id > b.id) return -1;
+                        return 0;
+                    });
+                    break;
+                }
+            }
         },
-        changeFilterVisibility()
-        {
+        changeFilterVisibility() {
             this.showFilters = !this.showFilters;
+        },
+        update(){
+            this.name = this.$route.params.name;
+            this.$API.getCatDescription(this.$route.params.id).then(value => {
+                if (value.data.success)this.description= value.data.description;
+            }).catch(error => {console.log(error);});
+            this.i=1;
+            if (this.cat_products[this.$route.params.id]) {
+                this.products = this.cat_products[this.$route.params.id]
+                this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570).then(value => {
+                    this.products = value;
+                    this.accept_product_request = true;
+                })
+            }
+            else
+            this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570).then(value => {
+                this.products = value;
+                this.accept_product_request = true;
+                this.cat_products[this.$route.params.id] = value;
+            })
         },
 
     },
@@ -66,24 +112,39 @@ export default {
         return {
             sortTypes: [
             {
-                name: 'По цене',
+                name: 'По популярности',
+                value: 'popularityDesc'
             },
             {
-                name: 'По популярности',
-            }],
+                name: 'По убыванию цены',
+                value: 'priceDesc'
+            },
+            {
+                name: 'По возрастанию цены',
+                value: 'priceAsc'
+            },
+            ],
             showFilters: false,
-            activeSort: 'По популярности',
+            activeSortString: 'По популярности',
+            name:'',
+            description:"",
+            products:[],
+            i:1,
+            accept_product_request:false,
         }
     },
-    computed: {
-        productsPopular(){return useProductsStore().productsPopular},
-        products(){return useProductsStore().products.products},
-        paddingTop(){return useSettingsStore().headerPadding}, 
+    computed:{
+        ...mapState(['headerPadding', 'categoriesTree', 'cat_products', ]
+        ),
     },
-    setup() {
-        const productsStore = useProductsStore();
-        productsStore.fetchPopularProducts();
-        productsStore.fetchAllProducts();
+    watch: {
+        '$route.params.id': function () {
+            this.update();
+        },
+    },
+    created() {
+        this.update();
+        this.name = this.$route.params.name;
     },
 }
 </script>

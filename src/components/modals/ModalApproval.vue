@@ -1,19 +1,19 @@
 <template>
-    <div class="modal-approval" style="display: none;" ref="modalEl">
+    <div class="modal-approval" style="display: none;" ref="modalEl" >
         <button class="close-modal" @click="closeFancybox()">
             <img src="/svg/close.svg" alt="">
         </button>
-        <div class="modal-approval__label" v-html="label"></div>
-        <div class="modal-approval__text" v-html="subText +' '+ destination"></div>
+        <div class="modal-approval__label" v-html="label ?? ''"></div>
+        <div class="modal-approval__text" v-html="subText ?? '' +' '+ destination ?? ''"></div>
         <div class="modal-approval__input">
-            <div class="modal-approval__input-text">Код для авторизации</div>
-            <Input placeholder="Код для авторизации"></Input>
+            <div class="modal-approval__input-text">{{ inputLabel ?? ''}}</div>
+            <Input :placeholder="inputPlaceholder"></Input>
         </div>
-        <MainBtn class-name="btn-primary w-100">Подтвердить</MainBtn>
+        <MainBtn class-name="btn-primary w-100" @click="modalEvent">{{buttonText ?? ''}}</MainBtn>
     </div>
 </template>
 <script>
-import { useSettingsStore } from '../../store/settingsStore';
+import {mapState, mapMutations} from "vuex";
 import { Fancybox } from '@fancyapps/ui';
 
 import Input from '../UI/Input.vue';
@@ -24,10 +24,14 @@ export default {
     props: {
         label: String,
         subText: String,
+        inputLabel: String,
+        inputPlaceholder: String,
+        buttonText: String,
         destination: String,
     },
-    computed: {
-        paddingTop(){return useSettingsStore().headerPadding}, 
+    computed:{
+        ...mapState(['headerPadding',]
+        ),
     },
     methods: {
         closeFancybox(){
@@ -36,9 +40,11 @@ export default {
         setPaddingModal() {
             if (window.innerWidth < 600) {
                 this.$refs.modalEl.style.maxHeight = window.innerHeight - this.paddingTop + 'px';
-                console.log(this.$refs.modalEl.style.maxHeight)
             }
         },
+        modalEvent() {
+            this.$emit('modal-event')
+        }
         
     },
     mounted() {

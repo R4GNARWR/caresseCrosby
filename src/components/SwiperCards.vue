@@ -54,7 +54,7 @@
 </section>
 </template>
 <script>
-import {useProductsStore} from "../store/productsStore"
+import {mapState} from "vuex";
 import { register } from 'swiper/element/bundle';
 import ProductCard from './UI/ProductCard.vue';
 export default {
@@ -65,8 +65,9 @@ export default {
         slidesArray: Array,
         name: String
     },
-    computed: {
-        colors(){return useProductsStore().colors_list}
+    computed:{
+    ...mapState(['colors_list',]
+    ),
     },
     data() {
         return {

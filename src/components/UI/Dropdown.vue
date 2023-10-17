@@ -7,9 +7,8 @@
         <ul class="dropdown__body" :class="{'show': listShow}" @click.stop>
             <li v-for="(item, index) in listItems" :key="index">
                 <router-link :to="item.link" v-if="item.link">{{item.name}}</router-link>
-                <button v-else @click="clickItem(item.name)">{{item.name}}</button>
+                <button v-else @click="clickItem(item.name, item.value)">{{item.name}}</button>
             </li>
-            
         </ul>
     </div>
 </template>
@@ -19,38 +18,16 @@ export default {
     data() {
         return {
             listShow: false,
-            listItemsPlaceholder: [
-            {
-                name: 'Трусы Antonia',
-                link: '/catalog'
-            },
-            {
-                name: 'Трусы Antonia',
-                link: '/catalog'
-            },
-            {
-                name: 'Трусы Antonia',
-                link: '/catalog'
-            },
-            {
-                name: 'Трусы Antonia',
-                link: '/catalog'
-            },
-            {
-                name: 'Трусы Antonia',
-                link: '/catalog'
-            },
-            ]
         }
     },
     props: {
-        listItems: Array,
+        listItems: [Array, Object],
     },
     methods: {
-        clickItem(sortValue)
+        clickItem(name, value)
         {
             this.listShow = false
-            this.$emit('items-action', sortValue)
+            this.$emit('items-action', name, value)
             
         }
     },

@@ -20,7 +20,7 @@
     </div>
 </template>
 <script>
-import { useSettingsStore } from '../../store/settingsStore';
+import {mapState, mapMutations} from "vuex";
 import { Fancybox } from '@fancyapps/ui';
 
 import Input from '../UI/Input.vue';
@@ -34,8 +34,9 @@ export default {
         subText: String,
         destination: String,
     },
-    computed: {
-        paddingTop(){return useSettingsStore().headerPadding}, 
+    computed:{
+        ...mapState(['headerPadding',]
+        ),
     },
     methods: {
         closeFancybox(){

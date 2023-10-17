@@ -2,6 +2,7 @@ import { createRouter, createWebHistory  } from 'vue-router'
 import Home from '../views/Home.vue'
 import Catalog from '../views/Catalog.vue'
 import Product from '../views/Product.vue'
+import Favorite from '../views/Favorite.vue'
 import Cart from '../views/Cart.vue'
 import Order from '../views/Order.vue'
 import ThankPage from '../views/ThankPage.vue'
@@ -13,7 +14,7 @@ import About from '../views/About.vue'
 import ProfileData from '../views/ProfileData.vue'
 import ProfileOrders from '../views/ProfileOrders.vue'
 import Contacts from '../views/Contacts.vue'
-import TextPage from '../views/TextPage.vue'
+import Delivery from '../views/Delivery.vue'
 import GiftCard from '../views/giftCard.vue'
 import SizeTable from '../views/SizeTable.vue'
 import NotFound from '../views/404.vue'
@@ -26,11 +27,11 @@ export default createRouter({
       component: Home,
     },
     {
-      path: '/catalog',
+      path: '/catalog/:id',
       component: Catalog,
     },
     {
-      path: '/catalog/:id',
+      path: '/product/:id',
       name: 'Product',
       component: Product,
     },
@@ -45,6 +46,10 @@ export default createRouter({
     {
       path: '/thankPage',
       component: ThankPage,
+    },
+    {
+      path: '/Favorite',
+      component: Favorite,
     },
     {
       path: '/brands',
@@ -84,8 +89,8 @@ export default createRouter({
       component: NotFound
     },
     {
-      path: '/TextPage',
-      component: TextPage
+      path: '/delivery',
+      component: Delivery
     },
     {
       path: '/sizeTable',

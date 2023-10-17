@@ -1,6 +1,6 @@
 <template>
     <div class="catalog-list" v-if="productArray">
-        <ProductCard v-for="(item, index) in productArray" :key="index" :productData="item"></ProductCard>
+        <ProductCard v-for="(item, index) in productArray" :key="index" :product="item"></ProductCard>
     </div>
     <MainBtn class="btn btn-white w-100 d-md-none d-block outline">Показать ещё</MainBtn>
     <Pagination class="catalog-pagination"></Pagination>

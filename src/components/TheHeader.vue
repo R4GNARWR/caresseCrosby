@@ -34,15 +34,15 @@
                         г. Уфа, ул. Менделеева 156/1
                     </div>
                     <div class="header-links">
-                        <router-link class="header-links__item" to="">
-                            <div class="count">2</div>
-                            <img  src="/svg/heart.svg" alt="">
+                        <router-link class="header-links__item" to="/favorite">
+                            <div class="count" v-if="favorites.length>0">{{favorites.length}}</div>
+                            <img src="/svg/heart.svg" alt="">
                         </router-link>
-                        <router-link class="header-links__item d-md-block d-none" to="/profileData">
-                            <img  src="/svg/account.svg" alt="">
-                        </router-link>
+                        <button @click="accountClick" class="header-links__item d-md-block d-none">
+                            <img src="/svg/account.svg" alt="">
+                        </button>
                         <router-link class="header-links__item" to="/cart">
-                            <div class="count">2</div>
+                            <div class="count" v-if="cart.length>0">{{cart.length}}</div>
                             <img src="/svg/cart.svg" alt="">
                         </router-link>
                     </div>
@@ -56,21 +56,14 @@
                 <div class="header-catalog__inner">
                     <Search class="d-lg-none d-flex"></Search>
                     <nav class="header-catalog__list">
-                        <div class="header-catalog__list-item">
-                            <Dropdown :list-items="menuLinksUnderwear">Нижнее белье</Dropdown>
+                        <div class="header-catalog__list-item" v-for="(item, index) in left_menu.slice(0,4)" :key="index" v-if="left_menu && windowWidth > 960">
+                            <router-link :to="item.link" v-if="item.link">{{item.name}}</router-link>
                         </div>
-                        <div class="header-catalog__list-item">
-                            <router-link to="/catalog">Купальники</router-link>
+                        <div class="header-catalog__list-item" v-for="(item, index) in left_menu" :key="index" v-if="left_menu && windowWidth < 960">
+                            <button v-if="item.action" @click="item.action">{{item.name}}</button>
+                            <router-link :to="item.link" v-if="item.link">{{item.name}}</router-link>
                         </div>
-                        <div class="header-catalog__list-item">
-                            <router-link to="/catalog">Одежда</router-link>
-                        </div>
-                        <div class="header-catalog__list-item">
-                            <router-link to="/catalog">Аксессуары</router-link>
-                        </div>
-                        <div class="header-catalog__list-item">
-                            <router-link to="/catalog">Средства ухода</router-link>
-                        </div>
+                        
                         <div class="header-catalog__list-item">
                             <router-link to="/giftCard">
                                 <img src="/svg/gift.svg" alt="">
@@ -84,7 +77,7 @@
                             </router-link>
                         </div>
                         <div class="header-catalog__list-item d-lg-flex d-none">
-                            <Dropdown :list-items="linksMore" class="no-arrow"><img src="/svg/more.svg"  alt=""></Dropdown>
+                            <Dropdown :list-items="left_menu.slice(4, left_menu.length)" class="no-arrow"><img src="/svg/more.svg"  alt=""></Dropdown>
                         </div>
                     </nav>
                     <div class="header-catalog__btn">
@@ -112,77 +105,207 @@
                         </div>
                     </div>
                 </div>
-                
             </div>
-            
-            
         </v-container>
+        <ModalAuth id="loginForm"></ModalAuth>
+        <ModalReg id="regForm"></ModalReg>
     </header>
-    
     
 </template>
 <script>
-import { useSettingsStore } from '../store/settingsStore';
+import { Fancybox } from "@fancyapps/ui";
+import {mapState, mapMutations} from "vuex";
+
 import Dropdown from './UI/Dropdown.vue';
 import Search from './UI/Search.vue';
+import ModalAuth from "./modals/ModalAuth.vue";
+import ModalReg from "./modals/ModalReg.vue";
 
 export default {
-    components: { Search, Dropdown },
+    components: { Search, Dropdown, ModalAuth, ModalReg },
     data() {
         return {
+            menuItems: [],
             showMenu: false,
-            menuLinksUnderwear: [
-            {
-                name: 'Категория 1',
-                link: '/catalog'
-            },
-            {
-                name: 'Категория 2',
-                link: '/catalog'
-            },
-            {
-                name: 'Категория 3',
-                link: '/catalog'
-            },
-            {
-                name: 'Категория 4',
-                link: '/catalog'
-            },
-            {
-                name: 'Категория 5',
-                link: '/catalog'
-            },
-            ],
-            linksMore: [
-            {
-                name: 'Ссылка 1',
-                link: '/'
-            },
-            {
-                name: 'Ссылка 2',
-                link: '/'
-            },
-            {
-                name: 'Ссылка 3',
-                link: '/'
-            },
-            ]
+            windowWidth: 0,
         };
     },
     methods: {
+        showLoginForm(){
+            Fancybox.show(
+            [{
+                src: '#loginForm',
+                type: 'inline',
+            }],
+            {
+                closeButton: false,
+                mainClass: 'modal-base__wrap',
+            });
+        },
         changeSize() {
             console.log('changed');
             const headerHeight = this.$refs.headerElement.clientHeight ?? 0;
-            useSettingsStore().setHeaderPadding(headerHeight);
+            this.$store.commit('setHeaderPadding', headerHeight)
             this.$emit('update-offset-top', headerHeight);
-        }
+            this.windowWidth = window.innerWidth
+        },
+        accountClick(){
+            if (!this.loggedIn) {
+                Fancybox.show(
+                [{
+                    src: '#loginForm',
+                    type: 'inline',
+                }],
+                {
+                    closeButton: false,
+                    mainClass: 'modal-base__wrap',
+                });
+            } else {
+                Fancybox.close()
+                this.$route.path !=='/profileData' ? this.$router.push('/profileData') : '';
+            }
+        },
+        ask_sms(){
+            this.$API.ask_sms(this.phone, this.email);
+        },
+        reg_it(){
+            this.$metrika.reachGoal('registration')
+            this.$API.registration(this.name, this.phone, this.email, this.password)
+            .then(value => {
+                if (value.data.success) {
+                    this.the_error="Регистрация прошла успешно"
+                    this.show_menu = false;
+                    this.login();
+                }
+                else {
+                    let msg={}
+                    msg.msg='';
+                    if (value.data.errors){
+                        for (let e in value.data.errors){
+                            msg.msg +=value.data.errors[e]+' ';
+                        }
+                    } else msg.msg ="Неизвестная ошибка"
+                    msg.color = "red";
+                    // this.$store.commit('set_snack_message',msg);
+                }
+            });
+        },
+        logout(){
+            this.$API.logout()
+            .then(value => {
+                if(value.data.success) {
+                    this.clearCart();
+                    this.$store.commit('logout');
+                    this.show_menu = false;
+                    if (this.$route.path !='/') this.$router.push('/');
+                }
+            });
+        },
+        close_left_menu(){
+            if (this.show_left_menu && !this.show_sizes) {this.show_left_menu=false; this.slm=false;}
+        },
+        sendLid(){
+            this.$API.lid(this.name, this.phone, this.email, this.lidDate.toString())
+            .then(value => {
+                if (value.data.success) {
+                    let msg={}
+                    msg.msg="Ждем вас на примерку! Мы свяжемся с вами чтобы уточнить детали."
+                    this.lidForm = false;
+                    // this.$store.commit('set_snack_message',msg);
+                }
+                else {
+                    let msg={}
+                    msg.msg='';
+                    if (value.data.errors){
+                        for (let e in value.data.errors){
+                            msg.msg +=value.data.errors[e]+' ';
+                        }
+                    } else msg.msg ="Неизвестная ошибка"
+                    msg.color = "red";
+                    // this.$store.commit('set_snack_message',msg);
+                }
+            });
+        },
+        ...mapMutations(['clearCart'])
     },
     watch:{
         $route (to, from){
             this.showMenu = false;
         }
     },
+    computed:{
+        ...mapState(['project_params', 'loggedIn', 'user_info', 'cart','favorites','categoriesTree']),
+        left_menu() {
+            let lm_catalog = [];
+            for (let category of this.categoriesTree) {
+                lm_catalog.push({ name: category.name, link: '/catalog/' + category.id });
+            }
+            let lm = []
+            if(window.innerWidth > 960) {
+                lm = !this.loggedIn
+                ? [
+                ...lm_catalog,
+                { name: 'Избранные товары', link: '/Favorites' },
+                { name: 'Контакты', link: '/Contacts' },
+                { name: 'Фотогалерея', link: '/photoAlbum' },
+                { name: 'Статьи', link: '/articles' },
+                { name: 'Доставка', link: '/delivery' },
+                ]
+                : [
+                { name: 'Избранные товары', link: '/favorite' },
+                ...lm_catalog,
+                { name: 'Контакты', link: '/Contacts' },
+                { name: 'Фотогалерея', link: '/photoAlbum' },
+                { name: 'Статьи', link: '/articles' },
+                { name: 'Доставка', link: '/delivery' },
+                ];
+            } else {
+                lm = !this.loggedIn
+                ? [
+                {
+                    name: 'Войти в личный кабинет',
+                    action: this.showLoginForm,
+                },
+                ...lm_catalog,
+                { name: 'Избранные товары', link: '/Favorites' },
+                { name: 'Контакты', link: '/Contacts' },
+                { name: 'Фотогалерея', link: '/photoAlbum' },
+                { name: 'Статьи', link: '/articles' },
+                { name: 'Доставка', link: '/delivery' },
+                ]
+                : [
+                {
+                    name: 'Личный кабинет',
+                    link: '/profileData',
+                },
+                {
+                    name: 'Выйти',
+                    action: this.showLoginForm,
+                },
+                { name: 'Избранные товары', link: '/favorite' },
+                ...lm_catalog,
+                { name: 'Контакты', link: '/Contacts' },
+                { name: 'Фотогалерея', link: '/photoAlbum' },
+                { name: 'Статьи', link: '/articles' },
+                { name: 'Доставка', link: '/delivery' },
+                ];
+            }
+            
+            return lm;
+        },
+    },
+    beforeCreate() {
+        this.$API.tryAuth();
+        this.$API.loadCart();
+    },
+    created() {
+        if (!this.categoriesTree.length) this.$API.getParentsCategories();
+        
+    },
     mounted() {
+        if (!this.categoriesTree.length){
+            this.$API.getParentsCategories();
+        }
         this.changeSize();
         window.addEventListener('resize', this.changeSize);
     },

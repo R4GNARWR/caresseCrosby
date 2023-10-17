@@ -1,16 +1,17 @@
 <template>
     <SwiperFullScreen :slidesArray="mainSlides" ></SwiperFullScreen>
     <MainProps></MainProps>
-    <SwiperCards name="Хиты продаж" v-if="products" :slidesArray="products"></SwiperCards>
+    <SwiperCards name="Хиты продаж" :slidesArray="[]"></SwiperCards>
     <MainCategories></MainCategories>
     <MainBanner></MainBanner>
-    <SwiperCards name="Популярное" v-if="products" :slidesArray="products"></SwiperCards>
+    <SwiperCards name="Популярное" :slidesArray="[]"></SwiperCards>
     <MainAbout></MainAbout>
-    <SwiperCards name="Новое поступление" v-if="products" :slidesArray="products"></SwiperCards>
+    <SwiperCards name="Новое поступление" :slidesArray="[]"></SwiperCards>
     <MainArticles></MainArticles>
 </template>
 <script>
-import {useProductsStore} from "../store/productsStore"
+
+import {mapState, mapMutations} from "vuex";
 import SwiperFullScreen from "../components/SwiperFullScreen.vue";
 import MainProps from "../components/mainPage/MainProps.vue";
 import SwiperCards from "../components/SwiperCards.vue";
@@ -53,14 +54,9 @@ export default {
         }
     },
     computed: {
-        productsPopular(){return useProductsStore().productsPopular},
-        products(){return useProductsStore().products.products},
 
     },
     setup() {
-        const productsStore = useProductsStore();
-        productsStore.fetchPopularProducts();
-        productsStore.fetchAllProducts();
     },
 }
 </script>

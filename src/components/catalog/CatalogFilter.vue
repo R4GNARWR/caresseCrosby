@@ -11,7 +11,9 @@
             </div>
         </div>
         <div class="catalog__filter-filters">
-            <FilterItem v-for="filter in filters" :filterObject="filter"></FilterItem>
+            <FilterItem :filterObject="brands_search" :filterName="'Бренды'"></FilterItem>
+            <FilterItem :filterObject="sizes_search" :filterName="'Размеры'"></FilterItem>
+            <FilterItem :filterObject="colors_search" :filterName="'Цвета'"></FilterItem>
         </div>
         
     </div>
@@ -20,15 +22,17 @@
 </template>
 <script>
 
+import search from '../../api/search'
+import {mapState, mapMutations} from "vuex";
+
 import FilterItem from '../UI/FilterItem.vue';
-import { useSettingsStore } from '../../store/settingsStore';
 
 export default {
     components: {
         FilterItem
     },
-    computed: {
-        paddingTop(){return useSettingsStore().getHeaderPadding},
+    computed:{
+        ...mapState(['headerPadding', 'brands_search','colors_search','sizes_search']),
     },
     methods: {
         setCatalogPadding() {
@@ -39,7 +43,8 @@ export default {
                 this.catalogOffsetTop = 0;
                 console.log(this.catalogOffsetTop)
             }
-        }
+        },
+        ...search
     },
     props: {
         filterStatus: Boolean,
@@ -55,71 +60,11 @@ export default {
     data() {
         return {
             catalogOffsetTop: 0,
-            filters: [
-            {
-                name: 'Бренд',
-                values: [
-                'Name brand',
-                'Satisfyer',
-                'Antonia',
-                'Vibes Mr. Rabbit',
-                'Name brand',
-                'Name brand',
-                'Name brand',
-                'Name brand',
-                'Name brand',
-                ],
-            },
-            {
-                name: 'Размеры',
-                values: [
-                'XS',
-                'XS-S',
-                'S',
-                'M',
-                'M-L',
-                'L',
-                'XL',
-                ],
-            },
-            {
-                name: 'Цвета',
-                values: [
-                {
-                    color: '#000',
-                    name: 'Черный',
-                },
-                {
-                    color: '#8B4513',
-                    name: 'Коричневый',
-                },
-                {
-                    color: '#FFDEAD',
-                    name: 'Бежевый',
-                },
-                {
-                    color: '#008000',
-                    name: 'Зеленый',
-                },
-                {
-                    color: '#808080',
-                    name: 'Серый',
-                },
-                {
-                    color: '#DA70D6',
-                    name: 'Розовый',
-                },
-                {
-                    color: '#000',
-                    name: 'Фиолетовый',
-                },
-                ],
-            },
-            
-            ]
         }
     },
-    
+    created() {
+        this.for_created();
+    }
 }
 </script>
 <style lang="scss">
@@ -141,6 +86,12 @@ export default {
             height: 100%;
             object-fit: contain;
         }
+    }
+    &-filters
+    {
+        display: flex;
+        flex-direction: column;
+        row-gap: 4.8rem;
     }
     &-head
     {

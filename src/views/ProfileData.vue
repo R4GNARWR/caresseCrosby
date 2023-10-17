@@ -60,7 +60,7 @@ import useVuelidate from "@vuelidate/core";
 import { helpers, required, email } from "@vuelidate/validators";
 
 import { Fancybox } from "@fancyapps/ui";
-import ModalApproval from '../components/modals/modalApproval.vue';
+import ModalApproval from '../components/modals/ModalApproval.vue';
 
 export default {
     components: {

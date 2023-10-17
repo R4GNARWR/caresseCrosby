@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import router from './router/router'
+import store from './store/store'
 import App from './App.vue'
 
 // Vuetify
@@ -45,8 +46,12 @@ const vuetify = createVuetify({
   directives,
   })
 
+import API from './api/api'
+API.init();
+app.config.globalProperties.$API = API
+
 app.use(YmapPlugin, mapSettings)
-app.use(pinia)
+app.use(store)
 app.use(vuetify)
 app.use(router)
 app.mount('#app')

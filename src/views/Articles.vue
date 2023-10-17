@@ -24,8 +24,8 @@
             </div>
             <div class="articles-list">
                 <v-row>
-                    <v-col md="4" sm="6" cols="12" v-for="(item, index) in 9" :key="index">
-                        <ArticleCard></ArticleCard>
+                    <v-col md="4" sm="6" cols="12" v-for="(item, index) in blogs" :key="index">
+                        <ArticleCard :cardData="item" :cardId="index"></ArticleCard>
                     </v-col>
                 </v-row>
                 <MainBtn class-name="btn-white outline mx-auto d-lg-none d-block">Показать еще</MainBtn>
@@ -35,17 +35,39 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 import ArticleCard from '../components/UI/ArticleCard.vue';
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
 export default {
     components: {
-    Breadcrumbs,
-    ArticleCard,
-    MainBtn
-},
+        Breadcrumbs,
+        ArticleCard,
+        MainBtn
+    },
     data() {
-        return {};
+        return {
+            actual_blog: null,
+            blogs: [],
+        }
+    },
+    computed:{
+        ...mapState(['user_info',])
+    },
+    beforeCreate() {
+        this.$API.getBlogs().then(value => {
+            if (value.data.success) this.blogs = value.data.blogs;
+        })
+    },
+    created() {
+        if (this.$route.params.blogId) {
+            if (this.blogs && this.blogs.length>0) this.actual_blog=this.blogs[this.$route.params.blogId];
+            else this.$API.getBlogs().then(value => {
+                if (value.data.success) this.blogs = value.data.blogs;
+                this.actual_blog=this.blogs[this.$route.params.blogId];
+            })
+        }
     },
 };
 </script>

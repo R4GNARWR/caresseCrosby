@@ -1,17 +1,18 @@
 <template>
     <div class="product-card">
         <div class="product-card__img">
-            <img src="/img/product.png" alt="">
+            <img :src="product.photo" alt="">
             <div class="product-card__img-new">NEW</div>
             <div class="product-card__img-like">
-                <v-icon icon="mdi-heart-outline" color="#27231E"></v-icon>
+                <v-icon icon="mdi-heart-outline" color="#27231E" v-if="!the_heart" @click="addFavor"></v-icon>
+                <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart" @click="delFavor"></v-icon>
             </div>
         </div>
         <div class="product-card__info">
-            <div class="product-card__info-name">{{productData.name}}</div>
+            <div class="product-card__info-name">{{product.name}}</div>
             <div class="product-card__info-props">
                 <div class="product-card__info-props__price">
-                    {{productData.price}} руб
+                    {{product.price}} руб
                 </div>
                 <div class="product-card__info-props__colors">
                     <div style="background-color: #EFD8C6;"></div>
@@ -19,15 +20,47 @@
                 </div>
             </div>
         </div>
-        <router-link class="link" :to="{ name: 'Product', params: { id: productData.id }}"></router-link>
+        <router-link class="link" :to="{ name: 'Product', params: { id: product.id }}"></router-link>
     </div>
 </template>
 <script>
+import { mapState, mapMutations } from 'vuex';
+import cart from "../../api/cart";
+import productCard from "../../api/productCard";
+
 export default {
     props:{
-        productData: Object,
-    }
-    
+        product: Object,
+    },
+    computed:{
+        ...mapState(['cart', 'favorites','colors_list']),
+        com_color(){
+            if (!this.product.color) return null;
+            else return this.computed_color(this.product.color.trim());
+        },
+        cartQuantity() {
+            let vm = this, q = 0;
+            for (let cartPosition of vm.cart) {
+                if (cartPosition.id === parseInt(vm.product.id)) {
+                    q = cartPosition.q;
+                    break;
+                }
+            }
+            return q;
+        },
+        the_heart(){
+            for (let f of this.favorites)
+            if (f.id === this.product.id) {
+                return true;
+            }
+            return false;
+        },
+    },
+    methods:{
+    ...productCard,
+    ...cart,
+    ...mapMutations(['add2cart']),
+  }
 }
 </script>
 <style lang="scss">
@@ -60,6 +93,7 @@ export default {
             position: absolute;
             right: 1.2rem;
             top: 1.2rem;
+            z-index: 200;
             cursor: pointer;
             i
             {

@@ -25,7 +25,9 @@
 <script>
 import MainBtn from '../UI/MainBtn.vue';
 export default {
-    
+    components: {
+        MainBtn
+    }
 }
 </script>
 <style lang="scss">
