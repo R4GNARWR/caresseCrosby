@@ -1,13 +1,56 @@
 <template>
     <div class="checkbox-wrap">
-        <input type="checkbox">
+        <input :type="type"
+        :name="index+'__radio'"
+        @input="$emit('update:modelValue', value)"
+        ref="inputEl"
+        :checked="isChecked"
+        v-if="index && type && type==='radio'" @click="handleClick">
+        <input v-else type="checkbox" :value="value"
+        ref="inputEl"
+        @input="$emit('update:modelValue', value)">
         <label for=""></label>
-        <slot></slot>
+        {{value}}
     </div>
 </template>
 <script>
 export default {
-    
+    data() {
+        return {
+            isChecked : false,
+        }
+    },
+    emits: ['update:modelValue'],
+    props: {
+        type: String,
+        index: null,
+        value: [String, Number],
+        modelValue: {
+            type: [String, Number],
+            default: null,
+        },
+    },
+    created() {
+        if (this.modelValue && this.value) {
+            if(String(this.modelValue) === String(this.value)) {
+                this.isChecked = true
+            }
+        }
+    },
+    watch: {
+        modelValue(newValue) {
+            if(String(newValue) === String(this.value)) {
+                this.isChecked = true
+            }
+        },
+    },
+    methods: {
+        handleClick() {
+            if(this.$emit('click-event')) {
+                this.$emit('click-event')
+            }
+        }
+    },
 }
 </script>
 <style lang="scss">

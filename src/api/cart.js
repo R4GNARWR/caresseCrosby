@@ -21,6 +21,7 @@ export default {
         )
     },
     changeQ(cartPosition, dir) {
+        
         let vm = this, quantity_inc = ((cartPosition.unit === 'кг') ? .1 : 1) * dir;
         let fin_q = Number(cartPosition.q) + Number(quantity_inc);
         if (Number(cartPosition.q) + Number(quantity_inc) > 0) {
@@ -29,6 +30,7 @@ export default {
         } else vm.deleteFromCart(cartPosition.id);
     },
     setQ(cartPosition, q) {
+
         let vm = this;
         document.getElementById('input'+cartPosition.id).blur();
         q = q.toString().replace(',', '.');
@@ -50,9 +52,10 @@ export default {
     },
 
     addProductToCart() {
+        console.log('event fired 2')
         // this.$metrika.reachGoal('cart')
         let vm = this;
-        vm.to_cart_animation();
+        // vm.to_cart_animation();
         vm.productLocal = vm.product;
         if (vm.productLocal && vm.productLocal.id) {
             vm.$API.put_to_cart(vm.product)

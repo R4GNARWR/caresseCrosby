@@ -154,9 +154,6 @@ export default {
         margin-bottom: 32px;
         padding-top: 32px;
         padding-bottom: 32px;
-        &__img
-        {
-        }
         &__content
         {
             &-label

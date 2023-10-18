@@ -9,15 +9,15 @@
                             <span>3 товара</span>
                         </div>
                         <div class="order-products__wrap">
-                            <a class="order-products__wrap-item" href="#" v-for="(item, index) in 6" :key="index">
-                                <img src="/img/product-detail.jpg" alt="">
-                                <div class="order-products__wrap-item-name">Nessa Selena Bra</div>
+                            <a class="order-products__wrap-item" href="#" v-for="(item, index) in cart" :key="index">
+                                <img :src="item.photo" alt="">
+                                <div class="order-products__wrap-item-name">{{item.name}}</div>
                                 <ul class="order-products__wrap-item-props">
-                                    <li>Размер: 75B</li>
-                                    <li>Цвет: Бежевый</li>
+                                    <li>{{item.size}}</li>
+                                    <li>{{item.colors}}</li>
                                 </ul>
                                 <div class="order-products__wrap-item-price">
-                                    6 900 ₽
+                                    {{Number((item.q * item.price)).toLocaleString()}}{{!(item.q *item.price).toString().split('.')[1] ? '' :(item.q *item.price).toString().split('.')[1].length===1 ?'' :''}} ₽
                                 </div>
                             </a>
                         </div>
@@ -27,12 +27,12 @@
                         <div class="order-delivery__label">
                             Данные для доставки
                         </div>
-                        <div class="order-delivery__form">
-                            <Input class="inline" placeholder="Адрес доставки*"></Input>
-                            <Input class="" placeholder="Имя*"></Input>
-                            <Input class="" placeholder="Фамилия*"></Input>
-                            <Input class="" placeholder="Телефон*"></Input>
-                            <Input class="" placeholder="E-mail*"></Input>
+                        <div class="order-delivery__form" v-if="user_info">
+                            <Input class="inline" placeholder="Адрес доставки*" v-model="city"></Input>
+                            <Input class="" placeholder="Имя*" v-model="name"></Input>
+                            <!-- <Input class="" placeholder="Фамилия*"></Input> -->
+                            <Input class="" placeholder="Телефон*" v-model="phone"></Input>
+                            <Input class="" placeholder="E-mail*" v-model="email"></Input>
                         </div>
                     </div>
                 </v-col>
@@ -41,14 +41,14 @@
                         <div class="cart-summary__label">Сумма заказа</div>
                         <div class="cart-summary__items">
                             <div class="cart-summary__item">
-                                3 товара на сумму
-                                <span>20 700 ₽</span>
+                                {{cart.lenght}} товара на сумму
+                                <span>{{the_sum}} ₽</span>
                             </div>
-                            <div class="cart-summary__item">
+                            <div class="cart-summary__item" v-if="deliveryPrice">
                                 Доставка
                                 <span class="waiting">Рассчитывается</span>
                             </div>
-                            <div class="cart-summary__item">
+                            <div class="cart-summary__item" v-if="promocode">
                                 Промокод: SALE20
                                 <span class="minus">- 3 000 ₽</span>
                             </div>
@@ -58,12 +58,12 @@
                         </div>
                         <div class="cart-summary__total">
                             Итого
-                            <span>20 700 ₽</span>
+                            <span>{{the_sum}} ₽</span>
                         </div>
                         <div class="cart-summary__total-additional">
                             Бесплатная доставка от 10 000 ₽
                         </div>
-                        <MainBtn class="btn-primary w-100">Оформить заказ</MainBtn>
+                        <MainBtn class="btn-primary w-100" @click="make_the_order" v-if="order_is_ready">Оформить заказ</MainBtn>
                         <div class="cart-summary__offer">
                             Нажимая на кнопку «Оформить заказ», <br>
                             вы принимаете условия <a href="">Публичной оферты</a>
@@ -79,14 +79,98 @@
 import Input from '../components/UI/Input.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
 
+import cart from '../api/cart';
+import order from '../api/order';
+import productCard from "../api/productCard";
+import store from '../store/store';
+import {mapMutations, mapState} from "vuex";
+
 export default {
     components: {
         Input,
         MainBtn
     },
-    data() {
-        return {};
+    data(){return{
+        p_e:false, s_e:false, t_e:false, w_e:false,
+        c_p:true, c_s:false, c_t:false, c_w:false,
+        city: '', phone:'', name: '', address: {}, email: '',
+        comment:'',
+        commission: 250, dates_available:[], hours:{},
+        the_error: '',
+    }},
+    computed:{
+        // full_address(){return (this.address.index?this.address.index + ' ':'')+ (this.address.city?this.address.city+ ' ':'')+ (this.address.street?this.address.street + ' ':'')+ (this.address.building?this.address.building:'')},
+        delivery_date(){return new Date()},
+        count(){
+            if (this.cart.length>0){
+                let a='';
+                let b = 0;
+                for (let q in this.cart) b = b+this.cart[q]['q']
+                if (b==1) a='Товар'; if (b>1) a='Товары';
+                // if ((this.cart.length>4 && this.cart.length<21) || b>4) a='товаров';
+                return a;//b+' '+a;
+            } else return 0;
+        },
+        cartSum() {
+            let vm = this, sum = 0;
+            for (let cartPosition of vm.cart) sum += cartPosition.price * cartPosition.q;
+            return Math.ceil(sum);
+        },
+        the_sum(){return this.cartSum+this.commission},
+        order_is_ready()
+        {
+            if(this.cart.length>0
+            && this.delivery_date
+            // && (this.full_address)
+            && this.phone && this.commission
+            && this.email
+            )
+            return true; else return false
+        },
+        ...mapState(['cart','project_params','user_info','loggedIn','favorites' ])
     },
+    methods:{
+        addFavorite(id) {
+            if(!this.the_heart){
+                this.addFavor(id)
+            } else {
+                this.delFavor(id)
+            }
+        },
+        the_heart(item){
+            for (let f of this.favorites)
+            if (f.id === item.id) {
+                return true;
+            }
+            return false;
+        },
+        ...order, ...cart, ...productCard,
+        ...mapMutations(['clearCart', 'cartItemChangeQ', 'cartItemSetQ', 'removeFromCart']),
+    },
+    
+    created() {
+        // if (this.user_info.city) {this.address.city = this.user_info.city; this.geocode_address()}
+        // if (this.user_info.phone) this.phone = this.user_info.phone;
+        // if (this.user_info.apartment) this.address.apartment = this.user_info.apartment;
+        // if (this.user_info.street) {this.address.street = this.user_info.street; this.geocode_address()}
+        // if (this.user_info.email) this.email = this.user_info.email;
+        // if (!this.address && store.state.user_position.length > 0) {
+            //     setTimeout(() => this.address = this.get_point_location(store.state.user_position), 1200);
+            // } else if (!this.address) {
+                //     this.$getLocation().then(value => {
+                    //         setTimeout(() => this.address = this.get_point_location(value), 1200);
+                    //     }).catch(error => {
+                        //         console.log(error);
+                        //         this.errored = true;
+                        //     });
+                        // }
+    },
+    mounted() {
+        this.email = this.user_info.email || ''
+        this.phone = this.user_info.phone || ''
+        this.name = this.user_info.name || ''
+        this.city = this.user_info.city || ''
+    }
 };
 </script>
 

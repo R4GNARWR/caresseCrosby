@@ -38,7 +38,7 @@
                             <div class="count" v-if="favorites.length>0">{{favorites.length}}</div>
                             <img src="/svg/heart.svg" alt="">
                         </router-link>
-                        <button @click="accountClick" class="header-links__item d-md-block d-none">
+                        <button @click="accountClick"  class="header-links__item d-md-block d-none">
                             <img src="/svg/account.svg" alt="">
                         </button>
                         <router-link class="header-links__item" to="/cart">

@@ -4,7 +4,7 @@
             <slot></slot>
             <img class="dropdown__head-arrow" src="/svg/arrow-black.svg" alt="">
         </div>
-        <ul class="dropdown__body" :class="{'show': listShow}" @click.stop>
+        <ul class="dropdown__body show" v-if="listShow" @click.stop v-click-outside="() => {listShow = !listShow}">
             <li v-for="(item, index) in listItems" :key="index">
                 <router-link :to="item.link" v-if="item.link">{{item.name}}</router-link>
                 <button v-else @click="clickItem(item.name, item.value)">{{item.name}}</button>
@@ -14,11 +14,15 @@
 </template>
 <script>
 import { ref, onMounted } from 'vue'
+import vClickOutside from "click-outside-vue3"
 export default {
     data() {
         return {
             listShow: false,
         }
+    },
+    directives: {
+      clickOutside: vClickOutside.directive
     },
     props: {
         listItems: [Array, Object],

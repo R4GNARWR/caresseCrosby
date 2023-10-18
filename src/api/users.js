@@ -21,6 +21,7 @@ export default {
         if (this.user.size_c) this.user.sizes += "c:"+this.user.size_c + " ";
         if (this.user.size_t) this.user.sizes += "t:"+this.user.size_t + " ";
         let to_send = JSON.stringify(this.user);
+        console.log(to_send)
         this.$API.saveUserData(to_send);
     },
     get_sizes() {

@@ -35,6 +35,11 @@ export default {
     transition: .3s;
     border-radius: 0;
     cursor: pointer;
+    &:disabled
+    {
+        opacity: .5;
+        pointer-events: none;
+    }
     &-primary
     {
         color: #FFF !important;

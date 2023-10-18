@@ -16,14 +16,21 @@
                         <div class="table-size__calc">
                             <div class="table-size__calc-item">
                                 <img src="/img/calc1.png" alt="">
-                                <Input :placeholder="'Обхват груди, см'"></Input>
+                                <Input :placeholder="'Обхват груди, см'" v-model="b2" ></Input>
                             </div>
                             <div class="table-size__calc-item">
                                 <img src="/img/calc2.png" alt="" class="d-lg-block d-none">
-                                <Input :placeholder="'Обхват под грудью, см'"></Input>
+                                <Input :placeholder="'Обхват под грудью, см'" v-model="b1"></Input>
                             </div>
                         </div>
-                        <MainBtn class="btn-primary w-100">Рассчитать размер</MainBtn>
+                        <MainBtn class="btn-primary w-100" @click="showSize()">Рассчитать размер</MainBtn>
+                        <div class="table-size__calc-result" v-if="size_b && show">
+                            Ваш размер: {{ size_b }}
+                            <MainBtn @click="to_size_models" class="btn btn-white outline">Показать модели</MainBtn>
+                        </div>
+                        <div class="table-size__calc-result" v-else-if="show">
+                            Невозможно расчитать размер, укажите правильные размеры
+                        </div>
                     </div>
                 </v-col>
                 <v-col md="5" cols="12">
@@ -157,16 +164,39 @@
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
 import Input from '../components/UI/Input.vue';
+import MainLink from '../components/UI/MainLink.vue';
 
 export default {
     components: {
-        Input,
-        Breadcrumbs,
-        MainBtn
-    },
+    Input,
+    Breadcrumbs,
+    MainBtn,
+    MainLink
+},
+    
     data() {
-        return {};
+        return {
+            b1:null,
+            b2:null,
+            show: false
+        };
     },
+    computed:{
+        size_b(){
+            let arr=['A','B','C','D','DD','E','F','FF','G','GG','H','HH','J','JJ','K']
+            if (Math.round((this.b1-8)/5)*5 && arr[Math.round((this.b2-this.b1)/2.54)-1]) return (Math.round((this.b1-8)/5)*5).toString()+arr[Math.round((this.b2-this.b1)/2.54)-1].toString();
+            else return null;
+        }
+    },
+    methods: {
+        showSize() {
+            this.show = true
+        },
+        to_size_models(){
+            this.$router.push('/catalog/24402')
+
+        },
+    }
 };
 </script>
 
@@ -270,6 +300,21 @@ table.table-size
     line-height: 1.5em;
     letter-spacing: -0.128px;
 }
+.table-size__calc-result
+    {
+        display: flex;
+        margin-top: 4rem;
+        text-align: center;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        font-size: 2.4rem;
+        line-height: 1.33em;
+        .btn
+        {
+            width: 45%;
+        }
+    }
 @media (max-width: 960px) {
     .table-size-section
     {
@@ -342,6 +387,5 @@ table.table-size
         margin-bottom: 48px;
         font-size: 14px;
     }
-    
 }
 </style>

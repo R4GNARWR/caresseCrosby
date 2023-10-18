@@ -1,29 +1,72 @@
 <template >
     <div class="inputs-dropdown">
         <div class="inputs-dropdown__head" :class="{'on': listActive}" @click="listActive = !listActive">
-            Категории
+            <span v-if="selectedValue">{{ selectedValue }}</span>
+            <span v-else>{{listName}}</span>
             <img src="/svg/arrowDropdown.svg" alt="">
         </div>
         <transition name="slide">
-            <div class="inputs-dropdown__body" v-show="listActive">
-                <div class="inputs-dropdown__body-label">
-                    Европейский размер
+            <div class="inputs-dropdown__body" v-if="listActive" v-click-outside="() => {listActive = !listActive}">
+                <div class="inputs-dropdown__body-item">
+                    <div class="inputs-dropdown__body-label">{{listName}}</div>
+                    <Checkbox :type="'radio'"
+                    v-model="selectedValue"
+                    :index="1"
+                    :value="item.value"
+                    @click-event="handleClick(item.value)"
+                    v-for="(item, index) in inpustArray"
+                    :key="index">{{ item.value }}</Checkbox>
                 </div>
-                <Checkbox v-for="(item, index) in 5" :key="index">Тест</Checkbox>
+                
             </div>
         </transition>
     </div>
 </template>
 <script>
+
 import Checkbox from './Checkbox.vue';
+import vClickOutside from "click-outside-vue3"
 
 export default {
+    components: { Checkbox },
+    emits: ['update:modelValue'],
+    directives: {
+      clickOutside: vClickOutside.directive
+    },
+    props: {
+        listName: String,
+        inpustArray: [Array, Object],
+        modelValue: {
+            type: [String, Number],
+            default: null,
+        },
+    },
     data() {
         return {
             listActive: false,
+            selectedValue: null
         };
     },
-    components: { Checkbox }
+    created() {
+        if (this.modelValue !== undefined && this.modelValue !== '') {
+            this.selectedValue = this.modelValue;
+        }
+    },
+    watch: {
+        modelValue(newValue) {
+            if (newValue !== undefined && newValue !== '') {
+                this.selectedValue = newValue;
+            }
+        },
+    },
+    methods: {
+        handleClick(value) {
+            this.selectedValue = value
+            this.$emit('update:modelValue', value)
+            this.listActive = false
+        }
+    },
+    
 }
 </script>
 <style lang="scss">
@@ -48,7 +91,7 @@ export default {
             width: 1.6rem;
             height: 2.4rem;
             object-fit: contain;
-            transform: rotate(180deg);
+            transform: rotate(0deg);
             user-select: none;
             -webkit-user-drag: none;
             transition: .2s;
@@ -57,12 +100,13 @@ export default {
         {
             img
             {
-                transform: rotate(0);
+                transform: rotate(180deg);
             }
         }
     }
     &__body
     {
+        max-height: calc(2.9rem * 8);
         position: absolute;
         left: 0;
         top: 100%;
@@ -73,6 +117,14 @@ export default {
         display: flex;
         flex-direction: column;
         row-gap: 1.2rem;
+        z-index: 200;
+        overflow-y: scroll;
+        &-item
+        {
+            display: flex;
+            flex-direction: column;
+            row-gap: 1.2rem;
+        }
         &-label
         {
             color: #A6A5A3;

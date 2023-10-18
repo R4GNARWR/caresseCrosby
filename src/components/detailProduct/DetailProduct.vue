@@ -64,15 +64,20 @@
                                 <router-link to="/tableSize">Таблица размеров</router-link>
                             </div>
                             <div class="buttons">
-                                <div class="buttons-item" v-for="size in sizes" :key="size">
-                                    <input type="radio" name="size" :value="size" v-model="product.size">
-                                    <label for="">{{size}}</label>
+                                <div class="buttons-item" v-for="item in sizes">
+                                    <input type="radio" name="size" v-model="size">
+                                    <label for="">{{item}}</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="product-detail__info-buttons">
-                        <MainBtn class-name="btn-primary" @click.prevent="openFancybox()">Добавить в корзину</MainBtn>
+                        <MainBtn v-if="cartQuantity===0" :disabled="!size" class-name="btn-primary" @click="handleAddToCart()">Добавить в корзину</MainBtn>
+                        <div v-else class="product-detail__info-buttons-counter">
+                            <button class="eq-minus" @click.prevent="changeQ(product, -1);">-</button>
+                            {{cartQuantity}}
+                            <button class="eq-plus" @click.prevent="changeQ(product, +1)">+</button>
+                        </div>
                         <MainBtn class-name="btn-primary heart btn-icon">
                             <v-icon icon="mdi-heart-outline" color="#FFF">
                                 
@@ -149,7 +154,8 @@ export default {
             attributes:[],
             category:"",
             full_photos:null,
-            similar_products:[]
+            similar_products:[],
+            size: null,
         };
     },
     props: {},
@@ -236,6 +242,14 @@ export default {
                 mainClass: 'modal-base__wrap',
             }
             );
+        },
+        changeSize(value) {
+            this.size = value
+        },
+        handleAddToCart() {
+            console.log('event fired')
+            this.openFancybox()
+            this.addProductToCart()
         },
         updateProduct(){
             if (this.pop_products[this.$route.params.id]){
@@ -484,6 +498,17 @@ export default {
 {
     display: flex;
     column-gap: .8rem;
+    &-counter
+    {
+        flex-grow: 1;
+        border: 1px solid #867B6E;
+        padding: 1.4rem 3.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        column-gap: 1.6rem;
+    }
     .btn:nth-child(1)
     {
         flex-grow: 1;

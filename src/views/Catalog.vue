@@ -98,6 +98,9 @@ export default {
                         this.name = element.name
                     }
                 });
+                if(this.name === '') {
+                    this.name = 'Каталог'
+                }
             }
             
         },

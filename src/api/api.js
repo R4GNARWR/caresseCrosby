@@ -1,5 +1,6 @@
 import axios from "axios";
 import store from "../store/store";
+import { error } from "jquery";
 
 export default  {
     Api_ready: false,
@@ -72,7 +73,9 @@ export default  {
         this.getFavorites();
     },
     put_to_cart(product) {return this.axios.post('cart/products', {productId: product.id, market_id: product.lowerPrice.market_id, quantity: product.unit === 'кг' ? .1 : 1, color: product.color, size:product.size}, {});},
-    update_quantity_in_cart(product, quantity) {this.axios.put('cart/products/'+product, {quantity:quantity}, {headers: {'Content-Type': 'application/json',}}).then(response => {
+    update_quantity_in_cart(product, quantity) {
+        
+        this.axios.put('cart/products/'+product, {quantity:quantity}, {headers: {'Content-Type': 'application/json',}}).then(response => {
                 if (!response.data.success || !response.data.product){console.log('ahtung!!',response);}
             });},
     deleteFromCart(pId){return this.axios.delete('cart/products/'+pId);},
@@ -123,7 +126,8 @@ export default  {
             })
     },
     logout() {return this.axios.post('auth/logout')},
-    saveUserData(to_send) {store.commit('loader');
+    saveUserData(to_send) {
+        store.commit('loader');
         this.axios.put("account", to_send, {headers: {'Content-Type': 'application/json'}})
             .then(value => {
                 console.log(value)
@@ -139,7 +143,11 @@ export default  {
                     store.commit('set_snack_message', msg)
                 }
                 store.commit('loader');
-            })
+            }).catch(error => {
+                {
+                    console.log(error)
+                }
+            }) 
     },
     get_payments_history(){return this.axios.get('account/billing/history')},
     get_ordered_products(){return this.axios.get('account/ordered-products')},

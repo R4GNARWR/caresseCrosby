@@ -14,7 +14,7 @@
 </template>
 <script>
 import { useVuelidate } from '@vuelidate/core'
-import { required, helpers } from '@vuelidate/validators'
+import { required, helpers, email } from '@vuelidate/validators'
 
 export default {
     props: {
@@ -60,6 +60,7 @@ export default {
                 return {
                     modelValue: {
                         required: helpers.withMessage("Пожалуйста, введите вашу электронную почту", required),
+                        email: helpers.withMessage("Неправильный формат почты", email),
                     }
                 };
                 case 'date':
@@ -75,7 +76,7 @@ export default {
                     }
                 };
             }
-        } else if(this.required)
+        } else if(this.required && !this.validationType)
         {
             return {
                 modelValue: {
@@ -101,6 +102,7 @@ export default {
     width: 100%;
     &.error
     {
+        padding: inherit;
         .form-control
         {
             border-bottom:1px solid #C11D1D;

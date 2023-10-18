@@ -4,32 +4,64 @@
             <img src="/svg/search.svg" alt="">
             Поиск
         </div>
-        <div class="search-wrap" :class="{'show': searchVisible}">
+        <div class="search-wrap show" v-if="searchVisible" v-click-outside="() => {searchVisible = !searchVisible}">
             <div class="header-search__icon">
                 <img src="/svg/search.svg" alt="">
             </div>
-            <input type="text" placeholder="Поиск">
-            <div class="header-search__close"  @click="searchVisible = !searchVisible">
+            <input type="text" placeholder="Поиск"
+            v-model="searchString"
+            @focus="focus"
+            @keydown="keydown">
+            <div class="header-search__close"   @click="closeSearch">
                 <img src="/svg/close.svg" alt="">
             </div>
             <div class="search-result">
-                <router-link class="search-result__item" to="" v-for="(item, index) in 6" :key="index">
-                    <div class="search-result__item-name">Трусы Antonia</div>
-                    <div class="search-result__item-type">(Трусики)</div>
+                <router-link class="search-result__item" :to="'/product/'+item.id" v-for="(item, index) in variants.slice(0,6)" :key="index" v-if="variants && variants.length > 0" @click="clickItem">
+                    <div class="search-result__item-name">{{item.product}}</div>
+                    <div class="search-result__item-type">({{item.category}})</div>
                 </router-link>
             </div>
         </div>
     </div>
 </template>
 <script>
+import SearchMethods from "../../api/search"
+import {mapState} from "vuex";
+import store from "../../store/store";
+import vClickOutside from "click-outside-vue3"
+
 export default {
+    
     data() {
         return {
             searchVisible: false,
+            products:[],
+            no_result:false,
+            searchString: '',
+            keyPressedTime: 0,
+            searchResultsVisible: false,
+            variants: [],
+            activeSearchVariantIdx: null,
+            one_size_attr: null,
+            filter_selected: '', filter:{}, start_filter:{},
+            i:1, accept_product_request:false,
         }
     },
+    directives: {
+      clickOutside: vClickOutside.directive
+    },
+    created() {this.for_created();},
+    computed: {...mapState(['market_group','brands_search','colors_search','sizes_search','OneSize','colors_list', 'addToOrder', 'search_result', 'search_settings']),},
     methods: {
-        
+        closeSearch() {
+            this.searchString = ''
+            this.searchVisible = false
+        },
+        clickItem()
+        {
+            this.searchVisible = false
+        },
+        ...SearchMethods,
     }
 }
 </script>
@@ -40,17 +72,23 @@ export default {
     display: flex;
     align-items: center;
     column-gap: 1.2rem;
-    
     &__icon
     {
         img
         {
             position: absolute;
             left: 1.6rem;
-            top: 1.4rem;
+            top: 2.2rem;
             width: 2.4rem;
             height: 2.4rem;
             z-index: 2;
+        }
+        &.static
+        {
+            img
+            {
+                top: 1.6rem;
+            }
         }
         padding-left: 5.2rem;
         color: $primary;
@@ -102,7 +140,7 @@ export default {
 {
     position: absolute;
     right: 1.6rem;
-    top: 1.8rem;
+    top: 2.4rem;
     width: 1.6rem;
     height: 1.6rem;
     cursor: pointer;

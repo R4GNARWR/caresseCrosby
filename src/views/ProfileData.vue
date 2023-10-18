@@ -1,7 +1,11 @@
 <template>
     <section class="profile">
         <v-container>
-            <Breadcrumbs></Breadcrumbs>
+            <div class="breadcrumbs text-page__breadcrumbs">
+                <router-link class="breadcrumbs-item" to="/">Главная</router-link>
+                <div class="breadcrumbs-divider">/</div>
+                <router-link class="breadcrumbs-item active" :to="this.$route.path">Профиль</router-link>
+            </div>
             <div class="profile-tabs">
                 <router-link to="/profileData" class="active">
                     Мои данные
@@ -12,24 +16,27 @@
             </div>
             <v-row>
                 <v-col md="7" cols="12">
-                    <form action="" class="profile-data__form">
+                    <form action="" class="profile-data__form" v-if="user">
                         <div class="profile-data__form-line">
-                            <Input placeholder="Адрес доставки*" v-model="adress" :required="true"></Input>
+                            <Input placeholder="Адрес доставки*" validation-type="adress" v-model="user.city" :required="true"></Input>
                         </div>
-                        <Input placeholder="Имя*" validation-type="name" v-model="name" :required="true"></Input>
-                        <Input placeholder="Фамилия*" validation-type="surname" v-model="surname" :required="true"></Input>
-                        <Input placeholder="Отчество" v-model="lastName" ></Input>
-                        <Input placeholder="Дата рождения*" validation-type="date" v-model="dateOfBirth" inputType="date" :required="true"></Input>
+                        <Input placeholder="Имя*"  validation-type="name" v-model="user.name" :required="true"></Input>
+                        <!-- <Input placeholder="Фамилия*" validation-type="surname" v-model="surname" :required="true"></Input>
+                        <Input placeholder="Отчество" v-model="lastName" ></Input> -->
+                        <!-- <Input placeholder="Дата рождения*" validation-type="date" v-model="dateOfBirth" inputType="date" :required="true"></Input> -->
                         <div class="input-confirm">
-                            <Input placeholder="Телефон*" validation-type="phone" v-model="phoneNumber" inputType="tel" :required="true"></Input>
-                            <MainBtn v-show="!phoneConfirmed" class-name="btn-primary" data-fancybox data-src="#phoneAprovalModal">Подтвердить</MainBtn>
+                            <Input placeholder="Телефон*" validation-type="phone" v-model="user.phone" inputType="tel" :required="true"></Input>
+                            <!-- <MainBtn v-show="!phoneConfirmed" class-name="btn-primary" data-fancybox data-src="#phoneAprovalModal">Подтвердить</MainBtn> -->
                         </div>
                         <div class="input-confirm">
-                            <Input placeholder="Email" validation-type="email" v-model="email" :required="true"></Input>
-                            <MainBtn v-show="!emailConfirmed" class-name="btn-primary" data-fancybox data-src="#emailAprovalModal">Подтвердить</MainBtn>
+                            <Input placeholder="Email" name="emailInput" validation-type="email" inputType="email" v-model="user.email" :required="true"></Input>
+                            <!-- <MainBtn v-show="!emailConfirmed" class-name="btn-primary" data-fancybox data-src="#emailAprovalModal">Подтвердить</MainBtn> -->
                         </div>
-                        <div class="profile-data__form-line">
-                            <InputsDropdown></InputsDropdown>
+                        <div class="profile-data__form-line" :key="index" v-if="sizes_search">
+                            <InputsDropdown v-model="user.size_t" :listName="dropdownLabels[0]" :inpustArray="sizes_search[0]"></InputsDropdown>
+                        </div>
+                        <div class="profile-data__form-line"  :key="index" v-if="sizes_search">
+                            <InputsDropdown v-model="user.size_b" :listName="dropdownLabels[1]" :inpustArray="sizes_search[1]" ></InputsDropdown>
                         </div>
                         <MainBtn class-name="btn-primary" type="submit" @click.prevent="handleSubmit">Сохранить</MainBtn>
                     </form>
@@ -54,7 +61,9 @@ import DetailLinks from '../components/UI/DetailLinks.vue';
 import Input from '../components/UI/Input.vue';
 import InputsDropdown from '../components/UI/InputsDropdown.vue';
 
-
+import users from '../api/users'
+import store from '../store/store'
+import {mapState} from "vuex";
 
 import useVuelidate from "@vuelidate/core";
 import { helpers, required, email } from "@vuelidate/validators";
@@ -64,23 +73,21 @@ import ModalApproval from '../components/modals/ModalApproval.vue';
 
 export default {
     components: {
-    Breadcrumbs,
-    MainBtn,
-    DetailLinks,
-    Input,
-    InputsDropdown,
-    ModalApproval
-},
+        Breadcrumbs,
+        MainBtn,
+        DetailLinks,
+        Input,
+        InputsDropdown,
+        ModalApproval
+    },
     data() {
         return {
-            adress: '',
-            name: '',
-            surname: '',
-            lastName: '',
-            dateOfBirth: '',
-            phoneNumber: '',
-            email: 'gaintsevmail@gmail.com',
-            phoneConfirmed: false, emailConfirmed: false
+            phoneConfirmed: false, emailConfirmed: false,
+            user: store.state.user_info,
+            dropdownLabels: [
+                'Размер белья',
+                'Размер одежды'
+            ]
         };
     },
     setup() {
@@ -88,15 +95,16 @@ export default {
             v$: useVuelidate(),
         };
     },
-    validations() {
-        return {
-            emailInput: {
-                required: helpers.withMessage("Поле должно быть заполнено", required),
-                email: helpers.withMessage("Неправильный формат почты", email),
-            },
-        };
+    computed:{
+        full_address: function() {
+            let fa=this.user.street;
+            if (this.user.apartment) fa +=' '+this.user.apartment;
+            return fa;
+        },
+        ...mapState(['favorites', 'sizes_search'])
     },
     methods: {
+        ...users,
         async handleSubmit() {
             var validationResult = await this.v$.$validate();
             
@@ -104,10 +112,7 @@ export default {
                 console.log("Validation failed");
                 return;
             }
-            
-            // Validation Successful, can submit the form now.
-            console.log("Validation successful");
-            // submit();
+            this.save_user_data()
         },
         openEmailFancybox() {
             Fancybox.close();
@@ -125,6 +130,14 @@ export default {
                 type: 'inline',
             }]);
         },
+    },
+    created() {
+        this.get_sizes();
+    },
+    beforeCreate() {
+        if (!store.state.user_info.id) {
+            this.$router.push("/");
+        } 
     },
 };
 </script>
