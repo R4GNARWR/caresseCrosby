@@ -1,5 +1,5 @@
 <template>
-    <div class="product-card">
+    <div class="product-card" v-if="product">
         <div class="product-card__img">
             <img :src="product.photo" alt="">
             <div class="product-card__img-new" v-if="product.labels">{{product.labels}}</div>
@@ -9,14 +9,13 @@
             </div>
         </div>
         <div class="product-card__info">
-            <div class="product-card__info-name">{{product.name}}</div>
+            <div class="product-card__info-name" v-if="product.name">{{product.name}}</div>
             <div class="product-card__info-props">
-                <div class="product-card__info-props__price">
+                <div class="product-card__info-props__price" v-if="product.price">
                     {{product.price}} руб
                 </div>
-                <div class="product-card__info-props__colors">
-                    <div style="background-color: #EFD8C6;"></div>
-                    <div style="background-color: #414141;"></div>
+                <div class="product-card__info-props__colors" v-if="com_color">
+                    <div :style="com_color"></div>
                 </div>
             </div>
         </div>
@@ -30,7 +29,7 @@ import productCard from "../../api/productCard";
 
 export default {
     props:{
-        product: Object,
+        product: [Object, Array],
     },
     computed:{
         ...mapState(['cart', 'favorites','colors_list']),

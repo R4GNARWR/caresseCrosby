@@ -83,7 +83,6 @@ export default {
             width: 100%;
             height: 100%;
             opacity: 0;
-            background-image: url('/svg/check.svg');
             background-position: center;
             
         }
@@ -102,7 +101,8 @@ export default {
     input:checked + label
     {
         border: 2px solid #C0B09D;
-        background-color: #C0B09D;
+        background-position: center;
+        background-image: url('/svg/checkbox.svg');
     }
     input:checked + label::after
     {

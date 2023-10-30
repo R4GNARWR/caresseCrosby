@@ -19,9 +19,9 @@ export default {
                 this.clearCart();
                 if (value.data.new_user) {
                     this.$API.tryAuth();
-                    setTimeout(()=>this.$router.push("/Privat"), 500);
+                    setTimeout(()=>this.$router.push("/profileData"), 500);
                 }
-                else if (this.loggedIn) this.$router.push("/Privat");
+                else if (this.loggedIn) this.$router.push("/profileData");
                 else this.$router.push('/');
                 store.commit('set_snack_message','Ваш заказ успешно оформлен. Мы свяжемся с вами в ближайшее время.','success')
             } else {

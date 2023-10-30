@@ -6,7 +6,7 @@
                 <div class="breadcrumbs-divider">/</div>
                 <router-link class="breadcrumbs-item" :to="this.$route.path">Статьи</router-link>
             </div>
-            <div class="articles-main">
+            <div class="articles-main" v-if="blogs && blogs.length > 0">
                 <v-row>
                     <v-col md="6" cols="12">
                         <div class="articles-main__img">
@@ -14,7 +14,7 @@
                         </div>
                     </v-col>
                     <v-col md="6" cols="12">
-                        <div class="articles-main__content" v-if="blogs && blogs.length>0">
+                        <div class="articles-main__content" >
                             <div class="articles-main__content-label">
                                {{ blogs[0].title }}
                             </div>

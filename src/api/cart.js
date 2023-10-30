@@ -21,16 +21,20 @@ export default {
         )
     },
     changeQ(cartPosition, dir) {
-        
-        let vm = this, quantity_inc = ((cartPosition.unit === 'кг') ? .1 : 1) * dir;
-        let fin_q = Number(cartPosition.q) + Number(quantity_inc);
-        if (Number(cartPosition.q) + Number(quantity_inc) > 0) {
-            vm.cartItemChangeQ({id: cartPosition.id, quantity_inc: quantity_inc});
-            vm.$API.update_quantity_in_cart(cartPosition.id, fin_q)
-        } else vm.deleteFromCart(cartPosition.id);
+        let quantity_inc = ((cartPosition.unit === 'кг') ? .1 : 1) * dir;
+        let fin_q = null;
+        if(cartPosition.q) {
+            fin_q = Number(cartPosition.q) + Number(quantity_inc);
+        } else if(cartPosition.quantity) {
+            fin_q = Number(cartPosition.quantity) + Number(quantity_inc);
+        }
+        console.log(quantity_inc, fin_q)
+        if (fin_q > 0) {
+            this.cartItemChangeQ({id: cartPosition.id, quantity_inc: quantity_inc});
+            this.$API.update_quantity_in_cart(cartPosition.id, fin_q)
+        } else this.deleteFromCart(cartPosition.id);
     },
     setQ(cartPosition, q) {
-
         let vm = this;
         document.getElementById('input'+cartPosition.id).blur();
         q = q.toString().replace(',', '.');
@@ -52,32 +56,30 @@ export default {
     },
 
     addProductToCart() {
-        console.log('event fired 2')
         // this.$metrika.reachGoal('cart')
-        let vm = this;
         // vm.to_cart_animation();
-        vm.productLocal = vm.product;
-        if (vm.productLocal && vm.productLocal.id) {
-            vm.$API.put_to_cart(vm.product)
+        let productLocal = this.product;
+        if (productLocal && productLocal.id) {
+            this.$API.put_to_cart(this.product)
                 .then(response => {
                     if (!response.data.success || !response.data.product){
                         let msg = {};
-                        msg.msg = '('+vm.productLocal.id+'): '+response.data.errors['price'];
+                        msg.msg = '('+productLocal.id+'): '+response.data.errors['price'];
                         msg.color = 'red'
                         // for (let e in response.data.errors) msg.msg+= response.data.errors[e]+ ' ';
                         store.commit('set_snack_message', msg);
                     }
                     else
-                        vm.add2cart({
-                            id: vm.productLocal.id,
-                            marketID: vm.product.lowerPrice.market_id,
-                            quantity: vm.productLocal.unit === 'кг' ? .1 : 1,
-                            price: vm.product.lowerPrice.value,
-                            name: vm.productLocal.name,
-                            photo: vm.productLocal.photo,
-                            unit: vm.productLocal.unit,
-                            size: vm.productLocal.size,
-                            color: vm.productLocal.color,
+                        this.add2cart({
+                            id: productLocal.id,
+                            marketID: productLocal.lowerPrice.market_id,
+                            quantity: productLocal.unit === 'кг' ? .1 : 1,
+                            price: productLocal.lowerPrice.value,
+                            name: productLocal.name,
+                            photo: productLocal.photo,
+                            unit: productLocal.unit,
+                            size: productLocal.size,
+                            color: productLocal.color,
                         });
                 });
         }

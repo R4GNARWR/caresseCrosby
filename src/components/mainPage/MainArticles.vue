@@ -16,26 +16,30 @@
                 prevEl: '.main-article__navigation-prev',
             }"
             >
-            <swiper-slide class="swiper-slide" v-for="(item, index) in 4" :key="index">
+            <swiper-slide class="swiper-slide" v-for="(item, index) in articles" :key="index" v-if="articles">
                 <v-row>
                     <v-col lg="5" cols="12">
                         <div class="main-article__img">
-                            <img src="/img/article1.jpg" alt="">
+                            <img :src="'https://static.ccrosby.ru/blogs/' + item.img" alt="">
                         </div>
                     </v-col>
                     <v-col lg="6" cols="12">
                         <div class="main-article__content">
-                            <div class="main-article__content-label">
-                                Caresse Crosby —  это женщина, которая изобрела и запатентовала первый бюстгальтер {{ index }}
-                            </div>
-                            <div class="main-article__content-text">
-                                «Всегда да» - было девизом изобретательницы, гедонистки и писательницы Каресс Кроссби. <br> <br>Кросби изобрела современный бюстгальтер, основала новаторский печатный станок и всемирную организацию мира, а в 1935 году устроила самую легендарную вечеринку в Нью-Йорке — бал сюрреалистов.
-                            </div>
+                            <router-link class="main-article__content-label" :to="'/articles/' + index">
+                                {{ item.title}}
+                            </router-link>
+                            <router-link class="main-article__content-text" :to="'/articles/' + index">
+                                <div class="wrapper" v-for="(item, index) in JSON.parse(item.json_string)" :key="index">
+                                    <span v-if="item.type === 'text'" >
+                                        {{ item.content }}
+                                    </span>
+                                    <img :src="'https://static.ccrosby.ru/blogs/' + item" alt="" v-for="(item, index) in item.content" :key="index" v-if="item.type === 'img'">
+                                </div>
+                            </router-link>
                         </div>
                     </v-col>
                 </v-row>
             </swiper-slide>
-            
         </swiper-container>
         <div class="main-article__swiper-nav">
             <div class="swiper-button swiper-button-prev main-article__navigation-prev">
@@ -51,7 +55,17 @@
 </template>
 <script>
 export default {
-    
+    data() {
+        return {
+            articles: []
+        }
+    },
+    created() {
+        this.$API.getBlogs().then(value => {
+            if (value.data.success)
+            this.articles = value.data.blogs;
+        })
+    },
 }
 </script>
 <style lang="scss">
@@ -99,6 +113,7 @@ export default {
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
+
         &-label
         {
             margin-bottom: 3.5rem;
@@ -107,15 +122,33 @@ export default {
             font-size: 2.8rem;
             line-height: 1.75em;
             letter-spacing: -0.273px;
+            text-decoration: none;
         }
         &-text
         {
             width: 90%;
+            max-height: calc(8* 3.6rem);
             color: #707070;
             font-family: 'Inter';
             font-size: 2rem;
             line-height: 1.8em;
             letter-spacing: -0.2px;
+            text-decoration: none;
+            .wrapper span
+            {
+                display: none;
+                -webkit-line-clamp: 8;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .wrapper img
+            {
+                display: none;
+            }
+            .wrapper span:nth-child(1)
+            {
+                display: -webkit-box;
+            }
         }
     }
     &__swiper-nav
@@ -156,7 +189,7 @@ export default {
             column-gap: 14px;
         }
     }
-
+    
 }
 
 </style>

@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import router from './router/router'
 import store from './store/store'
 import App from './App.vue'
 
+import API from './api/api'
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
@@ -16,22 +16,11 @@ import {aliases, mdi } from 'vuetify/iconsets/mdi'
 
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
-// yandex map
-
-import YmapPlugin from 'vue-yandex-maps'
-const mapSettings = {
-  apiKey: '453f5758-6290-4de4-bae1-d645fb102e5c', // Индивидуальный ключ API
-  lang: 'ru_RU', // Используемый язык
-  coordorder: 'latlong', // Порядок задания географических координат
-  debug: false, // Режим отладки
-  version: '2.1' // Версия Я.Карт
-}
 
 // Styles
 
 import './assets/scss/_style.scss';
 
-const pinia = createPinia()
 const app = createApp(App)
 
 const vuetify = createVuetify({
@@ -46,11 +35,9 @@ const vuetify = createVuetify({
   directives,
   })
 
-import API from './api/api'
+
 API.init();
 app.config.globalProperties.$API = API
-
-app.use(YmapPlugin, mapSettings)
 app.use(store)
 app.use(vuetify)
 app.use(router)

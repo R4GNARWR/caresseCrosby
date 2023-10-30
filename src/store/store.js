@@ -129,7 +129,7 @@ export default new Vuex.Store({
       }
       if (!hasInCart) {
         state.cart.push({
-          id: params.productID,
+          id: params.id,
           m: params.marketID,
           q: params.quantity,
           name: params.name,
@@ -145,7 +145,7 @@ export default new Vuex.Store({
     cartItemSetQ(state, params) {
       params.quantity = params.quantity || 1;
       for (let cartPosition of state.cart) {
-        if (cartPosition.id === parseInt(params.productID)) {
+        if (cartPosition.id === parseInt(params.id)) {
           cartPosition.q = parseFloat(params.quantity);
           break;
         }
@@ -154,7 +154,7 @@ export default new Vuex.Store({
     cartItemChangeQ(state, params) {
       params.quantity = params.quantity || 1;
       for (let cartPosition of state.cart) {
-        if (cartPosition.id === parseInt(params.productID)) {
+        if (cartPosition.id === parseInt(params.id)) {
           cartPosition.q = parseFloat(cartPosition.q);
           cartPosition.q = (params.quantity_inc + cartPosition.q).toFixed((Number.isInteger(params.quantity_inc) && Number.isInteger(cartPosition.q)) ? 0 : 1);
           break;

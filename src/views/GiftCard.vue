@@ -21,21 +21,21 @@
                                 <li>Использовать сертификат можно в интернет-магазине и шоу-руме.</li>
                             </ul>
                             <div class="gift-card__banner-content__btn">
-                                <MainBtn class-name="btn-primary">Оформить карту</MainBtn>
+                                <a class="btn btn-primary w-ft" href="#sendCard">Оформить карту</a>
                             </div>
                         </div>
                     </v-col>
                 </v-row>
             </div>
-            <v-row>
+            <v-row >
                 <v-col md="5" cols="12" style="align-self: flex-end;">
                     <div class="gift-card__execution-img">
                         <img src="/img/about1.jpg" alt="">
                     </div>
                 </v-col>
                 <v-col md="7" cols="12">
-                    <div class="gift-card__execution-content">
-                        <div class="gift-card__execution-content__label">Отличный подарок близкому человеку, особенно если он далеко.</div>
+                    <form class="gift-card__execution-content">
+                        <div class="gift-card__execution-content__label" id="sendCard">Отличный подарок близкому человеку, особенно если он далеко.</div>
                         <div class="gift-card__execution-content__text">
                             Нечаянная радость может случиться в любой момент.  Для этого совсем не нужен повод. Это легко сделать в один клик.
                         </div>
@@ -43,40 +43,70 @@
                             Оформить сертификат
                         </div>
                         <div class="gift-card__execution-content__form">
-                            <Input :placeholder="'От кого'"></Input>
-                            <Input :placeholder="'Кому'"></Input>
-                            <Input :placeholder="'E-mail*'"></Input>
-                            <Input :placeholder="'Телефон получателя*'"></Input>
-                            <Input :placeholder="'Телефон отправителя*'"></Input>
-                            <Input :placeholder="'Номинал в рублях'"></Input>
-                            <Input :placeholder="'Когда отправить сертификат получателю'" class="inline"></Input>
+                            <Input :placeholder="'От кого'" v-model="lid.from"></Input>
+                            <Input :placeholder="'Кому'" v-model="lid.for"></Input>
+                            <Input :placeholder="'E-mail*'" v-model="lid.emailToSend" :required="true" validation-type="email"></Input>
+                            <Input :placeholder="'Телефон получателя*'" v-model="lid.phoneFrom" :required="true" validation-type="phone"></Input>
+                            <Input :placeholder="'Телефон отправителя*'" v-model="lid.phonefor" :required="true"></Input>
+                            <Input :placeholder="'Номинал в рублях'" v-model="lid.cost" :required="true"></Input>
+                            <Input :placeholder="'Когда отправить сертификат получателю'" class="inline" v-model="lid.when"></Input>
                         </div>
                         <div class="gift-card__execution-content__form-bottom">
                             Если у вас возникнут вопросы, звоните в службу поддержки по телефону: <a href="">+7 (917) 747-15-61</a> <br>
                             Нажимая кнопку «Отправить», я подтверждаю свою дееспособность, даю согласие на обработку моих персональных данных в соответствии с <a href="">политикой конфиденциальности</a> 
                         </div>
-                        <MainBtn class-name="btn-primary">Получить сертификат</MainBtn>
-                    </div>
+                        <MainBtn class-name="btn-primary" type="submit" @click.prevent="handleSubmit">Получить сертификат</MainBtn>
+                    </form>
                 </v-col>
             </v-row>
         </v-container>
     </section>
 </template>
 <script>
+import { useVuelidate } from '@vuelidate/core'
+
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import Input from '../components/UI/Input.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
+import MainLink from '../components/UI/MainLink.vue';
 
 export default {
     components: {
         Breadcrumbs,
         MainBtn,
+        MainLink,
         Input
     },
     data() {
         return {
+            lid: {
+                from: '',
+                for: '',
+                email: '',
+                emailToSend: '',
+                phonefor: '',
+                cost: '',
+                when: '',
+            }
+            
         };
     },
+    setup () {
+        return {
+            v$: useVuelidate()
+        }
+    },
+    methods: {
+        async handleSubmit() {
+            var validationResult = await this.v$.$validate();
+            
+            if (!validationResult) {
+                console.log("Validation failed");
+                return;
+            }
+            this.$API.sentLid(this.lid)
+        }
+    }
 };
 </script>
 

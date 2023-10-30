@@ -1,20 +1,20 @@
 <template>
     <section class="articles-detail">
         <div class="articles-detail__img">
-            <img :src="blog.img" alt="">
+            <img :src="'https://static.ccrosby.ru/blogs/'+ blog.img" alt="">
         </div>
         <v-container>
             <div class="row">
                 <v-col md="8" offset-md="2">
                     <div class="articles-detail__content">
-                        <div class="btn-back" @click="this.$router.go(-1)">
+                        <router-link class="btn-back" to="/articles">
                             <img src="/svg/arrow.svg" alt="" >
                             Назад
-                        </div>
-                        <div class="articles-main__content-label">
+                        </router-link>
+                        <div class="articles-detail__content-label">
                             {{ blog.title }}
                         </div>
-                        <div class="articles-main__content-text" v-for="item in JSON.parse(blog.json_string)" v-if="blog.json_string">
+                        <div class="articles-detail__content-text" v-for="item in JSON.parse(blog.json_string)" v-if="blog.json_string">
                             <div class="img" v-if="item.type === 'img'" >
                                 <img v-if="item.content.split(',').length===1" :alt="blog.title"
                                 :src="'https://static.ccrosby.ru/blogs/'+item.content">
@@ -96,7 +96,7 @@ export default {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: top;
+            object-position: center;
         }
     }
     &__content
@@ -119,11 +119,10 @@ export default {
         {
             width: 100%;
             margin-bottom: 6.4rem;
-            color: $primary;
-            font-size: 4.8rem;
-            font-weight: 600;
-            line-height: 1.15em;
-            letter-spacing: -0.864px;
+            color: #27231F;
+            font-size: 2rem;
+            line-height: 1.8em;
+            letter-spacing: -0.32px;
             
         }
     }

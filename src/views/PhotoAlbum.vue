@@ -10,47 +10,138 @@
                 Фотоальбомы
             </div>
             <v-row class="photo-album__row">
-                <v-col md="4" sm="6" cols="12" v-for="(item, index) in 8" :key="index">
+                <v-col md="4" sm="6" cols="12" v-for="(item, index) in Object.keys(galleries)" :key="index">
                     <div class="photo-album__item">
                         <Fancybox
                         class="photo-album__item-photos"
                         :options="{
                             Carousel: {
-                            infinite: true,
+                                infinite: true,
                             },
                         }">
-                            <img src="/img/album1.png" data-fancybox="gallery" alt="">
-                            <img src="/img/album2.png" data-fancybox="gallery" alt="">
-                            <img src="/img/album3.png" data-fancybox="gallery" alt="">
-                            <img src="/img/album4.png" data-fancybox="gallery" alt="">
-                            <img src="/img/album3.png" class="d-none" data-fancybox="gallery" alt="">
-                            <img src="/img/album4.png" class="d-none" data-fancybox="gallery" alt="">
-                        </Fancybox>
-                        <div class="photo-album__item-label">
-                            Магазин
-                            <span>17 фото</span>
-                        </div>
+                        <img :src="photos" :data-fancybox="'gallery' + index" alt="" v-for="(photos, i) in galleries[item].slice(0,4)" :key="index">
+                        <img :src="photos" class="d-none" :data-fancybox="'gallery' + index" alt="" v-for="(photos, i) in galleries[item].slice(4,item.length)" :key="index">
+                    </Fancybox>
+                    <div class="photo-album__item-label">
+                        {{ item }}
+                        <span>{{ item.length }} фото</span>
                     </div>
-                </v-col>
-                
-            </v-row>
-        </v-container>
-    </section>
+                </div>
+            </v-col>
+            
+        </v-row>
+    </v-container>
+</section>
 </template>
 
 <script>
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
+import {mapState} from "vuex";
+import store from "../store/store";
+
 export default {
     components: {
         Breadcrumbs,
         MainBtn
     },
     data() {
-        return {};
+        return {
+            add:false,
+            name:'',
+            photos:null,
+            galleries_ready:false,
+            galleries: {},
+            new_name:'',
+        }
     },
-
-};
+    methods: {
+        saveNew() {
+            store.commit('loader');
+            if (this.$route.params.albumName && !this.name) this.name = this.$route.params.albumName
+            
+            if (this.photos && this.photos.length > 0) {
+                let fd = new FormData, i = 0;
+                for (let p of this.photos) {
+                    
+                    let file_name = 'gal.' + Date.now()
+                    if (i > 0) file_name += "_" + i;
+                    i++;
+                    fd.append(file_name, p);
+                    
+                    let new_banner = {}
+                    new_banner.file = file_name + p.name.substr(p.name.lastIndexOf('.'))
+                    new_banner.name = this.name
+                    new_banner.about = "gallery"
+                    new_banner.header = this.name
+                    new_banner.button = ''
+                    new_banner.link = ''
+                    this.$API.create_banner(new_banner)
+                }
+                this.$API.uploadPhoto(fd).then(value => {
+                    if (value.data.success) {
+                        store.commit('set_snack_message', {
+                            msg: "Загрузка прошла успешно",
+                            color: 'green'
+                        })
+                        this.get_galleries()
+                    }
+                    else store.commit('set_snack_message', {
+                        msg: "Произошла ошибка при загрузке изображения. Попробуйте использовать другое изображение.",
+                        color: 'red'
+                    })
+                    store.commit('loader');
+                });
+            } else {
+                store.commit('loader');
+                store.commit('set_snack_message', {
+                    msg: "Изображений не найдено. Произошла ошибка при загрузке изображения. Попробуйте использовать другое изображение.",
+                    color: 'red'
+                })
+            }
+            this.photos = null;
+        },
+        get_galleries(){
+            this.galleries_ready = false;
+            this.galleries={}
+            this.$API.getGallery().then(value =>{
+                if(value.data.success && value.data.banners){
+                    for (let b of value.data.banners){
+                        if (this.galleries[b.header]) this.galleries[b.header].push(b.file_name)
+                        else {
+                            this.galleries[b.header] = []; this.galleries[b.header].push(b.file_name)
+                        }
+                    }
+                    this.galleries_ready = true;
+                } else {
+                    store.commit('set_snack_message', {
+                        msg: "Фотоальбомы не найдены.",
+                        color: 'red'
+                    })
+                }
+            })
+        },
+        delGall(gallery){
+            this.$API.delGallery(gallery);
+            setTimeout(()=>this.get_galleries(),500);
+        },
+        changeName(oldName, newName){
+            this.$API.changeGalleryName(oldName, newName.trim()).then(() => {
+                this.$router.push(newName); this.get_galleries();});
+            },
+        delGalleryPhoto(path){
+            this.$API.delGalleryPhoto(path);
+            setTimeout(()=>this.get_galleries(),500);
+        },
+            
+        },
+        computed:{
+            ...mapState(['user_info',]),
+        },
+        created() {
+            this.get_galleries()
+        }
+    };
 </script>
 
 <style lang="scss">

@@ -89,7 +89,7 @@ export default  {
     getFavorites(){return this.axios.get('favorites').then(value => {if (value.status ===200){store.commit('setFavorites', value.data);}})},
 
     searchProductsVariants(query){return this.axios.get('search-products', {params: {query: query }})},
-    searchProducts(query,attr, page){return this.axios.get('products',{params:{attr:attr, query:query, per_page: 50, page:page}}).then(value => {return value;})},
+    searchProducts(query,attr, page, category){return this.axios.get('products',{params: {attr:attr, query:query, per_page: 100, page:page, category_id:category}}).then(value => {return value;})},
 
     makeOrder(to_send){
         return this.axios.post('cart/checkout', to_send, {})
@@ -108,22 +108,6 @@ export default  {
     tryLogin(login, email, password){return this.axios.post('auth/login', {phone: login, email:email, password: password}, {})},
     ask_sms(phone, email) {
         return this.axios.post('auth/forgot', {phone: phone, email:email},{})
-            .then(value => {
-                if (value.data.success) {
-                    let msg = {};
-                    msg.msg = "Пароль отправлен!"
-                    msg.color = "green";
-                    store.commit('set_snack_message', msg);
-                } else {
-                    if (value.data.errors) {
-                        let msg = {}
-                        msg.msg = ''
-                        msg.color = 'red'
-                        for (let e of Object.keys(value.data.errors)) msg.msg += value.data.errors[e] + ' ';
-                        store.commit('set_snack_message', msg)
-                    }
-                }
-            })
     },
     logout() {return this.axios.post('auth/logout')},
     saveUserData(to_send) {
@@ -152,6 +136,7 @@ export default  {
     get_payments_history(){return this.axios.get('account/billing/history')},
     get_ordered_products(){return this.axios.get('account/ordered-products')},
     get_user_orders(){return this.axios.get('account/orders')},
+    get_order_info(id){return this.axios.get('account/orders/' + id + '/products')},
 
 
     getAttributeValues(group_id){
@@ -196,4 +181,7 @@ export default  {
     createBlog(title, mainImg, json){return this.axios.post("blogs",{title:title, mainImg:mainImg, json_string:JSON.stringify(json)})},
     getBlogs(){return this.axios.get("blogs")},
     delThisBlog(title){return this.axios.delete("blogs/"+title)},
+    sentLid(lid) {
+        return this.axios.post("lid", {body:lid,})
+    }
 }

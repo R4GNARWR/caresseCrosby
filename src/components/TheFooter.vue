@@ -7,12 +7,12 @@
                         <div class="footer-left__logo">
                             <img src="/svg/logo.svg" alt="">
                         </div>
-                        <div class="footer-left__text">
+                        <!-- <div class="footer-left__text">
                             Подпишитесь на рассылку, чтобы всегда быть в курсе наших новостей
-                        </div>
+                        </div> -->
                         <div class="footer-left__info d-lg-flex d-none">
                             <div class="footer-left__info-conf">
-                                <a href="">ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</a>
+                                <a target="_blank" href="/pdf/pers_data.pdf">ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</a>
                             </div>
                             <div class="footer-left__info-offer">
                                 <a href="">ОФЕРТА</a>
@@ -57,9 +57,9 @@
                         </ul>
                         <div class="footer-additional-info">
                             <div class="footer-socials">
-                                <a href=""><img src="/svg/whatsapp.svg" alt=""></a>
-                                <a href=""><img src="/svg/vk.svg" alt=""></a>
-                                <a href=""><img src="/svg/telegram.svg" alt=""></a>
+                                <a target="_blank" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:"><img src="/svg/whatsapp.svg" alt=""></a>
+                                <a target="_blank" href="https://vk.com/ccrosby"><img src="/svg/vk.svg" alt=""></a>
+                                <a target="_blank" href="https://t.me/+79177471561"><img src="/svg/telegram.svg" alt=""></a>
                             </div>
 
                             <div class="footer-ip">
@@ -72,7 +72,7 @@
                 <v-col class="d-lg-none d-block" cols="12">
                     <div class="footer-left__info">
                             <div class="footer-left__info-conf">
-                                <a href="">ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</a>
+                                <a target="_blank" href="/pdf/pers_data.pdf">ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</a>
                             </div>
                             <div class="footer-left__info-offer">
                                 <a href="">ОФЕРТА</a>
@@ -102,6 +102,9 @@ footer
 {
     &-left
     {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
         &__logo
         {
             margin-bottom: 5.6rem;
@@ -128,6 +131,7 @@ footer
         }
         &__info
         {
+            margin-top: auto;
             display: flex;
             justify-content: space-between;
             color: #FFF;

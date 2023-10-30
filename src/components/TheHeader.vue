@@ -13,13 +13,13 @@
                     <div class="header-contacts">
                         <div class="header-contacts__phone">
                             <img src="/svg/phone-outline.svg" alt="">
-                            <a href="">+7 (917) 747-15-61</a>
+                            <a href="tel:+7 (917) 747-15-61">+7 (917) 747-15-61</a>
                         </div>
                         <div class="header-contacts__socials">
-                            <a href="">
+                            <a target="_blank" href="https://vk.com/ccrosby">
                                 <img src="/svg/vk-circle.svg" alt="">
                             </a>
-                            <a href="">
+                            <a target="_blank" href="https://t.me/+79177471561">
                                 <img src="/svg/telegram-circle.svg" alt="">
                             </a>
                         </div>
@@ -57,10 +57,17 @@
                     <Search class="d-lg-none d-flex"></Search>
                     <nav class="header-catalog__list">
                         <div class="header-catalog__list-item" v-for="(item, index) in left_menu.slice(0,4)" :key="index" v-if="left_menu && windowWidth > 960">
+                            <Dropdown :list-items="item.children"  v-if="item.children">
+                                {{ item.name }}
+                            </Dropdown>
                             <router-link :to="item.link" v-if="item.link">{{item.name}}</router-link>
                         </div>
                         <div class="header-catalog__list-item" v-for="(item, index) in left_menu" :key="index" v-if="left_menu && windowWidth < 960">
-                            <button v-if="item.action" @click="item.action">{{item.name}}</button>
+                            <Dropdown :list-items="item.children" class="no-arrow" v-if="item.children">
+                                {{ item.name }}
+                                <img src="/svg/arrow.svg" alt="" style="transform: rotate(-90deg);">
+                            </Dropdown>
+                            <button @click="item.action" v-if="item.action">{{item.name}}</button>
                             <router-link :to="item.link" v-if="item.link">{{item.name}}</router-link>
                         </div>
                         
@@ -80,21 +87,21 @@
                             <Dropdown :list-items="left_menu.slice(4, left_menu.length)" class="no-arrow"><img src="/svg/more.svg"  alt=""></Dropdown>
                         </div>
                     </nav>
-                    <div class="header-catalog__btn">
+                    <a class="header-catalog__btn" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:">
                         <img src="/svg/whatsapp.svg" alt="">
                         Написать в Whats App
-                    </div>
+                    </a>
                     <div class="header-catalog__contacts d-lg-none d-flex">
                         <div class="header-contacts">
                             <div class="header-contacts__phone">
                                 <img src="/svg/phone-outline.svg" alt="">
-                                <a href="">+7 (917) 747-15-61</a>
+                                <a href="tel:+7 (917) 747-15-61">+7 (917) 747-15-61</a>
                             </div>
                             <div class="header-contacts__socials">
-                                <a href="">
+                                <a target="_blank" href="https://vk.com/ccrosby">
                                     <img src="/svg/vk-circle.svg" alt="">
                                 </a>
-                                <a href="">
+                                <a target="_blank" href="https://t.me/+79177471561">
                                     <img src="/svg/telegram-circle.svg" alt="">
                                 </a>
                             </div>
@@ -119,10 +126,9 @@ import {mapState, mapMutations} from "vuex";
 import Dropdown from './UI/Dropdown.vue';
 import Search from './UI/Search.vue';
 import ModalAuth from "./modals/ModalAuth.vue";
-import ModalReg from "./modals/ModalReg.vue";
 
 export default {
-    components: { Search, Dropdown, ModalAuth, ModalReg },
+    components: { Search, Dropdown, ModalAuth, },
     data() {
         return {
             menuItems: [],
@@ -237,24 +243,55 @@ export default {
         ...mapState(['project_params', 'loggedIn', 'user_info', 'cart','favorites','categoriesTree']),
         left_menu() {
             let lm_catalog = [];
+            let lm_swimsuit = {
+                name: 'Купальники',
+                children: []
+            };
+            let lm_underwear = {
+                name: 'Нижнее белье',
+                children: []
+            };
             for (let category of this.categoriesTree) {
-                lm_catalog.push({ name: category.name, link: '/catalog/' + category.id });
+                if(category.id !== 24473)
+                {
+                    if(category.name === 'Купальники Раздельные' || category.name === "Купальники Слитные")
+                    {
+                        lm_swimsuit.children.push({ name: category.name, link: '/catalog/' + category.id })
+                    } else if(category.name === 'Трусики'
+                            || category.name === "Бюстгальтеры"
+                            || category.name === "Коррекция"
+                            || category.name === "Белье для кормления"
+                            || category.name === "Спортивный бюстгальтер"
+                            || category.name === "Специализированное белье"
+                            || category.name === "Боди"){
+                                lm_underwear.children.push({ name: category.name, link: '/catalog/' + category.id })
+                    } else {
+                        lm_catalog.push({ name: category.name, link: '/catalog/' + category.id });
+                    }
+                }
+                    
             }
             let lm = []
             if(window.innerWidth > 960) {
                 lm = !this.loggedIn
                 ? [
+                lm_underwear,
+                lm_swimsuit,
                 ...lm_catalog,
-                { name: 'Избранные товары', link: '/Favorites' },
-                { name: 'Контакты', link: '/Contacts' },
+                { name: 'О нас', link: '/about' },
+                { name: 'Контакты', link: '/contacts' },
                 { name: 'Фотогалерея', link: '/photoAlbum' },
                 { name: 'Статьи', link: '/articles' },
                 { name: 'Доставка', link: '/delivery' },
+                { name: 'Избранные товары', link: '/favorite' },
                 ]
                 : [
+                lm_underwear,
+                lm_swimsuit,
                 { name: 'Избранные товары', link: '/favorite' },
                 ...lm_catalog,
-                { name: 'Контакты', link: '/Contacts' },
+                { name: 'О нас', link: '/about' },
+                { name: 'Контакты', link: '/contacts' },
                 { name: 'Фотогалерея', link: '/photoAlbum' },
                 { name: 'Статьи', link: '/articles' },
                 { name: 'Доставка', link: '/delivery' },
@@ -266,9 +303,12 @@ export default {
                     name: 'Войти в личный кабинет',
                     action: this.showLoginForm,
                 },
+                lm_underwear,
+                lm_swimsuit,
                 ...lm_catalog,
-                { name: 'Избранные товары', link: '/Favorites' },
-                { name: 'Контакты', link: '/Contacts' },
+                { name: 'О нас', link: '/About' },
+                { name: 'Избранные товары', link: '/favorite' },
+                { name: 'Контакты', link: '/contacts' },
                 { name: 'Фотогалерея', link: '/photoAlbum' },
                 { name: 'Статьи', link: '/articles' },
                 { name: 'Доставка', link: '/delivery' },
@@ -284,6 +324,7 @@ export default {
                 },
                 { name: 'Избранные товары', link: '/favorite' },
                 ...lm_catalog,
+                { name: 'О нас', link: '/About' },
                 { name: 'Контакты', link: '/Contacts' },
                 { name: 'Фотогалерея', link: '/photoAlbum' },
                 { name: 'Статьи', link: '/articles' },
@@ -625,6 +666,7 @@ header
         }
         &__btn
         {
+            text-decoration: none;
             column-gap: 10px;
             img
             {

@@ -7,7 +7,7 @@
             По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.
         </div>
         <MainBtn class="btn btn-white w-100 d-md-none d-block outline">Показать ещё</MainBtn>
-        <Pagination class="catalog-pagination" v-if="productArray.length > 20"></Pagination>
+        <!-- <Pagination class="catalog-pagination" v-if="productArray.length >= 50"></Pagination> -->
     </div>
     
 </template>
@@ -25,7 +25,11 @@ export default {
     },
     props: {
         productArray: Array,
-    }
+        isLoading: Boolean,
+    },
+    computed: {
+
+    },
     
 }
 </script>

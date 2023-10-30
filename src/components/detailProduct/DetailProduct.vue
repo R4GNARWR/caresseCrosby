@@ -61,27 +61,27 @@
                         <div class="product-detail__info-sizes__item">
                             <div class="label">
                                 Выберите размер
-                                <router-link to="/tableSize">Таблица размеров</router-link>
+                                <router-link to="/sizeTable">Таблица размеров</router-link>
                             </div>
                             <div class="buttons">
                                 <div class="buttons-item" v-for="item in sizes">
-                                    <input type="radio" name="size" v-model="size">
+                                    <input type="radio" name="size" :value="item" v-model="product.size">
                                     <label for="">{{item}}</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="product-detail__info-buttons">
-                        <MainBtn v-if="cartQuantity===0" :disabled="!size" class-name="btn-primary" @click="handleAddToCart()">Добавить в корзину</MainBtn>
+                        <MainBtn v-if="!cartQuantity || cartQuantity===0" :disabled="!product.size" class-name="btn-primary" @click="handleAddToCart()">Добавить в корзину</MainBtn>
                         <div v-else class="product-detail__info-buttons-counter">
                             <button class="eq-minus" @click.prevent="changeQ(product, -1);">-</button>
                             {{cartQuantity}}
                             <button class="eq-plus" @click.prevent="changeQ(product, +1)">+</button>
                         </div>
-                        <MainBtn class-name="btn-primary heart btn-icon">
-                            <v-icon icon="mdi-heart-outline" color="#FFF">
-                                
+                        <MainBtn class-name="btn-primary heart btn-icon" @click="addFavorite(product.id)" :class="{'active': the_heart}">
+                            <v-icon icon="mdi-heart-outline" color="#FFF" v-if="!the_heart">
                             </v-icon>
+                            <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart"></v-icon>
                         </MainBtn>
                     </div>
                     <div class="product-detail__info-props">
@@ -120,10 +120,10 @@
                         </div>
                     </div>
                     <div class="product-detail__info-whatsapp">
-                        <MainBtn class-name="btn-gold outline">
-                            <img  src="/svg/whatsapp-gold.svg" alt="">
+                        <a target="_blank" class="btn btn-gold outline" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:">
+                            <img src="/svg/whatsapp-gold.svg" alt="">
                             Консультация в Whats App
-                        </MainBtn>
+                        </a>
                     </div>
                 </div>
             </v-col>
@@ -139,12 +139,14 @@
 import {mapMutations, mapState} from "vuex";
 import { Fancybox } from '@fancyapps/ui';
 import cart from "../../api/cart";
+import productCard from "../../api/productCard";
 import store from "../../store/store";
 
 import SwiperCards from '../SwiperCards.vue';
 import MainBtn from '../UI/MainBtn.vue';
 import SwiperPagination from "../UI/SwiperPagination.vue";
 import ModalToCart from "../modals/ModalToCart.vue";
+import MainLink from "../UI/MainLink.vue";
 
 
 export default {
@@ -155,11 +157,10 @@ export default {
             category:"",
             full_photos:null,
             similar_products:[],
-            size: null,
         };
     },
     props: {},
-    components: { MainBtn, SwiperCards, SwiperPagination, ModalToCart },
+    components: { MainBtn, SwiperCards, SwiperPagination, ModalToCart, MainLink },
     computed:{
         sizes(){
             if (this.attributes && this.attributes.length>0){
@@ -196,23 +197,30 @@ export default {
                 return videoLink
             } else return '';
         },
+        in_favor(){
+            if (this.favorites.includes(this.favorites.find(el=>el.id===this.product.id))) return true
+            else return false
+        },
         cartQuantity() {
-            let vm = this, q = 0;
-            for (let cartPosition of vm.cart) {
-                if (cartPosition.id === parseInt(vm.product.id)) {
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                    this.product.q = cartPosition.q;
-                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                    this.product.m = cartPosition.m;
-                    q=cartPosition.q
-                    break;
+            let q = 0;
+            let product = this.product
+            for (let cartPosition of this.cart) {
+                if(cartPosition.id && this.product.id) {
+                    if (cartPosition.id === product.id) {
+                        product.quantity = cartPosition.q;
+                        product.m = cartPosition.m;
+                        q = cartPosition.q;
+                    }
                 }
             }
             return q;
         },
-        in_favor(){
-            if (this.favorites.includes(this.favorites.find(el=>el.id===this.product.id))) return true
-            else return false
+        the_heart() {
+            for (let f of this.favorites)
+            if (f.id === this.product.id) {
+                return true;
+            }
+            return false;
         },
         ...mapState(['headerPadding','user_info','cart','colors_list','favorites', 'pop_products','cat_products', 'addToOrder'])
     },
@@ -224,7 +232,7 @@ export default {
             this.updateProduct();
         }},
     },
-    created() {
+    mounted() {
         this.updateProduct()
     },
     methods: {
@@ -243,11 +251,7 @@ export default {
             }
             );
         },
-        changeSize(value) {
-            this.size = value
-        },
         handleAddToCart() {
-            console.log('event fired')
             this.openFancybox()
             this.addProductToCart()
         },
@@ -268,14 +272,14 @@ export default {
                         this.attributes = value.data.response.attributes?value.data.response.attributes:null;
                         this.category = value.data.response.category?value.data.response.category:null;
                         this.category.hide_name = true;
-                            this.pop_products[this.$route.params.id] = this.product;
-                            this.pop_products[this.$route.params.id].attributes = this.attributes;
-                            this.pop_products[this.$route.params.id].category = this.category;
+                        this.pop_products[this.$route.params.id] = this.product;
+                        this.pop_products[this.$route.params.id].attributes = this.attributes;
+                        this.pop_products[this.$route.params.id].category = this.category;
                         
                         this.$API.getFullPhotos(this.$route.params.id).then(value => {
                             if(value.status ===200 && value.data.length>1) {
                                 this.full_photos = value.data;
-                                    this.pop_products[this.$route.params.id].full_photos = this.full_photos;
+                                this.pop_products[this.$route.params.id].full_photos = this.full_photos;
                             }
                             else this.$API.getFullPhoto(this.$route.params.id).then(value => {
                                 if (value.status && value.data){
@@ -294,11 +298,41 @@ export default {
             this.cat_products[this.product.category_id] = null;
             this.$router.go(-1);
         },
-        addFavor(){
-            store.commit("set_snack_message", {msg:"Товар добавлен в избранные"});
-            this.$API.addFavorite(this.product.id)
+        addFavorite(id) {
+            if(!this.the_heart){
+                this.addFavor(id)
+                store.commit("set_snack_message", {msg:"Товар добавлен в избранные"});
+            } else {
+                this.delFavor(id)
+            }
         },
-        ...cart,
+        handleSizeChange(value) {
+            // if(this.cart.length>0) {
+            //     let size = value;
+            //     let hasSize = false;
+            //     for(let item in this.cart) {
+            //         if(item.size === size) {
+            //             console.log(item.size === size);
+            //             hasSize = true;
+            //             break;
+            //         }
+            //     };
+            //     if(!hasSize) {
+            //         this.deleteFromCart(this.product.id)
+            //     }
+
+            // }
+            // if(this.cartHasSize) {
+            //     for(let item in this.cart) {
+            //         if(item.id === this.product.id && item.size === this.product.size) {
+            //             this.product.quantity = item.q
+            //             this.product.quantity.m = item.m;
+
+            //         }
+            //     }
+            // }
+        },
+        ...cart, ...productCard,
         ...mapMutations([
         "add2cart",
         'cartItemChangeQ',
@@ -520,6 +554,13 @@ export default {
             color: $primary !important;
         }
     }
+    .btn.heart.active:hover
+    {
+        i
+        {
+            color: #FF7171 !important;
+        }
+    }
 }
 .product-detail__info-props
 {
@@ -550,7 +591,7 @@ export default {
 }
 .product-detail__info-whatsapp
 {
-    .btn
+    a
     {
         margin-top: 3.2rem;
         width: 100%;
@@ -672,7 +713,7 @@ export default {
     }
     .product-detail__info-whatsapp
     {
-        .btn
+        a
         {
             margin-top: 32px;
         }

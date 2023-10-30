@@ -35,7 +35,8 @@ export default {
     transition: .3s;
     border-radius: 0;
     cursor: pointer;
-    &:disabled
+    &:disabled,
+    &.disabled
     {
         opacity: .5;
         pointer-events: none;
@@ -57,6 +58,18 @@ export default {
             border: 1px solid $primary !important;
             background-color: #FFFFFF !important;
             color: $primary !important;
+        }
+        &.outline
+        {
+            border: 1px solid $primary !important;
+            background-color: #FFFFFF !important;
+            color: $primary !important;
+            &:hover
+            {
+                color: #FFF !important;
+                background: $primary !important;
+                border: 1px solid $primary !important;
+            }
         }
     }
     &-white

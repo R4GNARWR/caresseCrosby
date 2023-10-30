@@ -11,11 +11,11 @@
                     <div class="catalog__head">
                         <div class="catalog__head-left">
                             <div class="catalog__head-label" v-if="name">{{name}}</div>
-                            <div class="catalog__head-count">{{products.length}} товара</div>
+                            <div class="catalog__head-count">{{totalAmount}} товара</div>
                         </div>
                         <div class="catalog__head-bottom">
                             <div class="catalog__head__filter-btn d-md-none d-flex" @click="changeFilterVisibility()">
-                                <img src="svg/filter.svg" alt="">
+                                <img src="/svg/filter.svg" alt="">
                                 Фильтры
                             </div>
                             <div class="catalog__head-select">
@@ -30,7 +30,7 @@
                     <CatalogFilter :filterStatus="showFilters" @updateFilter="updateFilter" @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
                 </v-col>
                 <v-col md="9" cols="12">
-                    <CatalogList :productArray="products"></CatalogList>
+                    <CatalogList :productArray="productsComputed"></CatalogList>
                 </v-col>
             </v-row>
         </v-container>
@@ -39,14 +39,11 @@
     
 </template>
 <script>
-import {mapState, mapMutations} from "vuex";
-
-
+import { mapState } from "vuex";
 import CatalogFilter from "../components/catalog/CatalogFilter.vue";
 import CatalogList from "../components/catalog/CatalogList.vue";
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue'
 import Dropdown from "../components/UI/Dropdown.vue";
-
 import search from './../api/search'
 
 export default {
@@ -56,35 +53,82 @@ export default {
         CatalogList,
         Dropdown
     },
+    data() {
+        return {
+            sortTypes: [
+            {
+                name: 'По популярности',
+                value: 'popularityDesc'
+            },
+            {
+                name: 'По убыванию цены',
+                value: 'priceDesc'
+            },
+            {
+                name: 'По возрастанию цены',
+                value: 'priceAsc'
+            },
+            ],
+            showFilters: false,
+            activeSortString: 'По популярности',
+            name:'',
+            description:"",
+            products:[],
+            productsInitial:[],
+            TotalAmount: 0,
+            i:1,
+            accept_product_request:false,
+            no_result:false,
+            filter_selected: '',
+            filter:{
+                "brand": {
+                    "attributeId":1,
+                    "attributeValueId":'',
+                    "value":""},
+                "sizes": {
+                    "attributeId":2,
+                    "attributeValueId":'',
+                    "value":""
+                },
+                "colors": {
+                    "attributeId":6,
+                    "attributeValueId":'',
+                    "value":""}},
+            start_filter:{},
+            isLoading: false,
+        }
+    },
+    computed:{
+        productsComputed() {
+            if(this.products) {
+                return this.products.filter(element => Number(element.category_id) === Number(this.$route.params.id));
+            } else {
+                return this.productsInitial
+            }
+
+        },
+        ...mapState(['headerPadding', 'categoriesTree', 'cat_products', ]
+        ),
+        totalAmount() {
+            return this.productsComputed.length
+        }
+    },
     methods: {
         sortCatalog(sortName, sortValue){
-            console.log('sort inited clicked', sortValue, sortName)
             if (sortValue) {
                 this.activeSortString = sortName
             }
             switch (sortValue) {
                 case 'priceAsc': {
-                    this.products.sort((a, b) => {
-                        if (a.price < b.price) return -1;
-                        if (a.price > b.price) return 1;
-                        return 0;
-                    });
+                    this.products.sort((a, b) => a.price - b.price);
                     break;
                 }
                 case 'priceDesc': {
-                    this.products.sort((a, b) => {
-                        if (a.price < b.price) return 1;
-                        if (a.price > b.price) return -1;
-                        return 0;
-                    });
+                    this.products.sort((a, b) => b.price - a.price);
                     break;
                 }
                 case 'popularityDesc': {
-                    this.products.sort((a, b) => {
-                        if (a.id < b.id) return 1;
-                        if (a.id > b.id) return -1;
-                        return 0;
-                    });
+                    this.products = [...this.productsInitial];
                     break;
                 }
             }
@@ -92,41 +136,38 @@ export default {
         getName() {
             if(this.categoriesTree)
             {
-                this.categoriesTree.forEach(element => {
-                    if(Number(this.$route.params.id) === Number(element.id)) {
-                        console.log(element.name)
-                        this.name = element.name
-                    }
-                });
-                if(this.name === '') {
-                    this.name = 'Каталог'
-                }
+                const category = this.categoriesTree.find(element => Number(this.$route.params.id) === Number(element.id));
+                this.name = category ? category.name : 'Каталог';
             }
             
         },
         changeFilterVisibility() {
             this.showFilters = !this.showFilters;
         },
-        update(){
-            
-            this.$API.getCatDescription(this.$route.params.id).then(value => {
-                if (value.data.success)this.description= value.data.description;
-            }).catch(error => {console.log(error);});
-            this.i=1;
-            if (this.cat_products[this.$route.params.id]) {
-                this.products = this.cat_products[this.$route.params.id]
-                this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570).then(value => {
-                    this.products = value;
+        async update() {
+            try {
+                const [descriptionResponse, productsResponse] = await Promise.all([
+                this.$API.getCatDescription(this.$route.params.id),
+                this.cat_products[this.$route.params.id] || this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570)
+                ]);
+                
+                if (descriptionResponse.data.success) {
+                    this.description = descriptionResponse.data.description;
+                }
+                this.i = 1;
+                
+                if (productsResponse) {
+                    this.products = productsResponse;
+                    this.productsInitial = productsResponse;
                     this.accept_product_request = true;
-                })
+                    if(!this.cat_products[this.$route.params.id]) {
+                        this.cat_products[this.$route.params.id] = productsResponse;
+                    }
+                }
+                this.getName();
+            } catch (error) {
+                console.log(error);
             }
-            else
-            this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570).then(value => {
-                this.products = value;
-                this.accept_product_request = true;
-                this.cat_products[this.$route.params.id] = value;
-            })
-            this.getName()
         },
         ...search,
         updateFilter(filter) {
@@ -145,57 +186,28 @@ export default {
                 } 
             }
             this.to_search();
-        }
-},
-data() {
-    return {
-        sortTypes: [
-        {
-            name: 'По популярности',
-            value: 'popularityDesc'
         },
-        {
-            name: 'По убыванию цены',
-            value: 'priceDesc'
-        },
-        {
-            name: 'По возрастанию цены',
-            value: 'priceAsc'
-        },
-        ],
-        showFilters: false,
-        activeSortString: 'По популярности',
-        name:'',
-        description:"",
-        products:[],
-        i:1,
-        accept_product_request:false,
-        no_result:false,
-        filter_selected: '',
-        filter:{},
-        start_filter:{},
-    }
-},
-computed:{
-    ...mapState(['headerPadding', 'categoriesTree', 'cat_products', ]
-    ),
-},
-watch: {
-    '$route.params.id': function () {
-        this.update();
     },
-    'categoriesTree': function() {
-        this.getName()
-    }
-},
-created() {
-    this.update();
-    this.for_created();
-    
-},
-mounted() {
-    this.getName
-}
+    watch: {
+        '$route.params.id': function () {
+            this.update();
+        },
+        'categoriesTree': function() {
+            this.getName()
+        }
+    },
+    created() {
+        this.update();
+        this.for_created();
+        
+    },
+    mounted() {
+        this.getName
+        window.addEventListener("scroll", this.onScroll);
+    },
+    beforeUnmount() {
+        window.removeEventListener("scroll", this.onScroll)
+    },
 }
 </script>
 
@@ -229,6 +241,7 @@ mounted() {
         font-weight: 600;
         line-height: 1.2em;
         letter-spacing: -0.4px;
+        white-space: nowrap;
     }
     &-count
     {
@@ -292,6 +305,7 @@ mounted() {
         }
         &-label
         {
+            white-space: initial;
             font-size: 32px;
         }
         &-count

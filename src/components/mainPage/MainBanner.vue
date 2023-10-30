@@ -2,9 +2,13 @@
     <section class="main-section" id="mainBanner">
         <v-container>
             <div class="main-banner">
-                <img src="/img/banner.jpg" class="main-banner__background" alt="">
+                <picture>
+                    <source media="(max-width: 960px)" srcset="/img/banner-mobile.jpg" />
+                    <source media="(min-width: 960px)" srcset="/img/banner.jpg" />
+                    <img src="/img/banner.jpg" class="main-banner__background"/>
+                </picture>
                 <div class="main-banner__offset">
-
+                    
                 </div>
                 <div class="main-banner__content">
                     <div class="main-banner__content-label">
@@ -14,10 +18,10 @@
                         Определим правильный размер, подберем идеальное белье и ответим на все Ваши вопросы!
                     </div>
                 </div>
-                <MainBtn class="btn btn-primary main-banner__btn">
-                    <img src="/svg/whatapp.svg" alt="">
+                <a target="_blank" class="btn btn-primary main-banner__btn" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:">
+                    <img src="/svg/whatsapp.svg" alt="">
                     Написать в What’s App
-                </MainBtn>
+                </a>
             </div>
         </v-container>
     </section>
@@ -78,17 +82,62 @@ export default {
             line-height: 1.77em; /* 177.778% */
             letter-spacing: -0.18px;
         }
-
+        
     }
     .btn
     {
         flex-shrink: 0;
     }
 }
-@media (max-width: 1200px) {
-    #mainBanner
+@media (max-width: 960px) {
+    .main-banner
     {
-        display: none;
+        padding: 48px 20px;
+        height: 530px;
+        flex-direction: column;
+        &__offset
+        {
+            display: none;
+        }
+        &__background
+        {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        &__content
+        {
+            width: 100%;
+            margin-left: 0;
+            &-label
+            {
+                margin-bottom: 16px;
+                font-size: 32px;
+            }
+            &-text
+            {
+                margin-bottom: 24px;
+                width: 100%;
+                font-size: 16px;
+            }
+            
+        }
+        .btn
+        {
+            width: 100%;
+            flex-shrink: 0;
+        }
+    }
+    
+}
+@media (max-width: 960px) {
+    .main-banner
+    {
+        padding: 32px 20px;
     }
 }
 </style>

@@ -140,6 +140,19 @@ export default {
             flex-shrink: 0;
             content: '';
             border: 2px solid #827F7D;
+            &::before{
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-image: url('/svg/checkbox.svg');
+                background-position: center;
+                opacity: 0;
+                z-index: 1;
+                transition: .1s;
+            }
             transform: translateY(-50%);
             transition: .1s;
         }
@@ -153,10 +166,15 @@ export default {
             opacity: 0;
             z-index: 1;
             cursor: pointer;
+
         }
         & > input:checked ~ label
         {
-            background-color: #827F7D;
+            border: 2px solid #C0B09D;
+            &::before
+            {
+                opacity: 1;
+            }
         }
         
     }

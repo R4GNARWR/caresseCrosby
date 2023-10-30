@@ -38,7 +38,11 @@
                         <div class="profile-data__form-line"  :key="index" v-if="sizes_search">
                             <InputsDropdown v-model="user.size_b" :listName="dropdownLabels[1]" :inpustArray="sizes_search[1]" ></InputsDropdown>
                         </div>
-                        <MainBtn class-name="btn-primary" type="submit" @click.prevent="handleSubmit">Сохранить</MainBtn>
+                        <div class="profile-data__buttons">
+                            <MainBtn class-name="btn-primary" type="submit" @click.prevent="handleSubmit">Сохранить</MainBtn>
+                            <MainBtn class-name="btn-primary outline" @click.prevent="logout">Выйти</MainBtn>
+                        </div>
+
                     </form>
                 </v-col>
             </v-row>
@@ -113,6 +117,17 @@ export default {
                 return;
             }
             this.save_user_data()
+        },
+        logout(){
+            this.$API.logout()
+            .then(value => {
+                if(value.data.success) {
+                    this.clearCart();
+                    this.$store.commit('logout');
+                    this.show_menu = false;
+                    if (this.$route.path !='/') this.$router.push('/');
+                }
+            });
         },
         openEmailFancybox() {
             Fancybox.close();
@@ -189,6 +204,11 @@ export default {
     {
         grid-column: 2 span;
     }
+}
+.profile-data__buttons
+{
+    display: flex;
+    column-gap: 2.5rem;
 }
 @media (max-width:600px) {
     .profile

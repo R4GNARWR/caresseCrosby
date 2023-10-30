@@ -2,7 +2,7 @@
     <section class="main-section">
         <v-container class="pa-0">
             <div class="section-head ">
-                <div class="section-label">
+                <div class="section-label" v-if="name">
                     {{name}}
                 </div>
                 <div class="swiper-navigation swiper-cards__navigation">
@@ -40,14 +40,14 @@
                 }" 
                 
                 >
-                <swiper-slide class="swiper-slide " v-for="product in slidesArray">
-                    <ProductCard
-                    :product-data="product"
+                <swiper-slide class="swiper-slide " v-for="product in slidesArray" v-if="slidesArray">
+                    <ProductCard v-if="product"
+                    :product="product"
                     ></ProductCard>
                 </swiper-slide>
                 
             </swiper-container>
-            <router-link class="swiper-cards__more" to="/catalog">Смотреть все</router-link>
+            <router-link class="swiper-cards__more" :to="'/catalog/'+ catId" v-if="catId">Смотреть все</router-link>
         </div>
         
     </v-container>
@@ -62,8 +62,9 @@ export default {
         ProductCard
     },
     props: {
-        slidesArray: Array,
-        name: String
+        slidesArray: [Array, Object],
+        name: String,
+        catId: null,
     },
     computed:{
     ...mapState(['colors_list',]

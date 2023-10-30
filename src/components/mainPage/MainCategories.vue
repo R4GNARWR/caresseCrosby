@@ -7,12 +7,12 @@
                 </div>
             </div>
             <div class="main-categories">
-                <router-link class="main-categories__item" v-for="(item, index) in items" :key="index" to="/catalog">
+                <router-link class="main-categories__item" v-for="(item, index) in categories" :key="index" :to="'/catalog/'+item.id">
                     <div class="main-categories__item-logo">
                         <img :src="'/svg/categories'+Number(index+1)+'.svg'" alt="">
                     </div>
                     <div class="main-categories__item-name">
-                        {{item}} 
+                        {{item.name}} 
                     </div>
                     <div class="main-categories__item-link">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -37,7 +37,32 @@
 export default {
     data() {
         return {
-            items: ["Нижнее белье", "Средства ухода", "Купальники", "Одежда", "Подарочные сертификаты", "Аксессуары"]
+            categories: [
+                {
+                    id: 24402,
+                    name: "Нижнее белье",
+                },
+                {
+                    id: 25035,
+                    name: "Средства ухода",
+                },
+                {
+                    id: 25031,
+                    name: "Купальники",
+                },
+                {
+                    id: 24420,
+                    name: "Одежда",
+                },
+                {
+                    id: 24473,
+                    name: "Подарочные сертификаты",
+                },
+                {
+                    id: 24449,
+                    name: "Аксессуары"
+                },
+            ]
         }
     },
 }

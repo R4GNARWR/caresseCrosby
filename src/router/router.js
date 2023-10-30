@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory  } from 'vue-router'
 import Home from '../views/Home.vue'
 import Catalog from '../views/Catalog.vue'
+import CatalogAll from '../views/CatalogAll.vue'
 import Product from '../views/Product.vue'
 import Favorite from '../views/Favorite.vue'
 import Cart from '../views/Cart.vue'
@@ -29,6 +30,10 @@ export default createRouter({
     {
       path: '/catalog/:id',
       component: Catalog,
+    },
+    {
+      path: '/catalog/',
+      component: CatalogAll,
     },
     {
       path: '/product/:id',

@@ -1,5 +1,5 @@
 <template>
-  <div class="snack" :class="type">{{message}}</div>
+  <div class="snack" :class="type">{{message.msg}}</div>
 </template>
 
 <script>

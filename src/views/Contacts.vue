@@ -30,43 +30,58 @@
             </div>
         </v-container>
         <div class="contacts-map">
-            <YandexMap
-            :coordinates="mapLatLng"
+            <yandex-map :settings="settings"
+            :coords="coords"
             :controls="[]"
-            :zoom="16">
-            <YandexMarker
-            :coordinates="mapLatLng"
-            marker-id="123123"
-            :properties="{
-                iconLayout: squareLayout,
-            }"
-            />
-        </YandexMap>
+            :zoom="16">>
+                <ymap-marker 
+                    marker-id="123" 
+                    :coords="coords"
+                    :icon="markerIcon"
+                />
+            </yandex-map>
+
     </div>
 </section>
 </template>
+
 <script>
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
-import { loadYmap } from 'vue-yandex-maps'
+import { yandexMap, ymapMarker } from 'vue-yandex-maps';
 
 export default {
     components: {
         Breadcrumbs,
         MainBtn,
+        yandexMap,
+        ymapMarker
     },
     data() {
         return {
-            mapLatLng: [54.722170,56.022624],
-            squareLayout: null,
+            settings: {
+                apiKey: '453f5758-6290-4de4-bae1-d645fb102e5c',
+                lang: 'ru_RU',
+                coordorder: 'latlong',
+                enterprise: false,
+                debug: false,
+                version: '2.1'
+            },
+            coords: [54.722170,56.022624],
+            markerIcon: {
+                layout: 'default#imageWithContent',
+                imageHref: '',
+                imageSize: [56, 62],
+                imageOffset: [0, 0],
+                content: 'г. Уфа, ул. Менделеева 156/1',
+                contentOffset: [-28, -31],  
+                contentLayout: '<div class="placemark"><img src="/svg/map-placemark.svg"><div class="placemark-content">$[properties.iconContent]</div></div>'
+            }
         };
     },
-    async mounted() {
-    await loadYmap();
-    this.squareLayout = ymaps.templateLayoutFactory.createClass('<div class="placemark_layout_container"><div class="square_layout">$</div></div>')
-  }
 };
 </script>
+
 
 <style lang="scss">
 .contacts
@@ -104,7 +119,7 @@ export default {
         }
         &-content
         {
-
+            
             display: flex;
             flex-direction: column;
             row-gap: .8rem;
@@ -126,15 +141,52 @@ export default {
         }
     }
 }
+.ymaps-2-1-79-ground-pane {
+    -webkit-filter: grayscale(100%);
+}
+.ymaps-2-1-79-copyrights-pane
+{
+    display: none;
+}
 .contacts-map
 {
     height: 57rem;
     width: 100%;
-    .yandex-container
+    .ymap-container
     {
         width: 100%;
         height: 100%;
         overflow: hidden;
+    }
+
+    
+}
+.placemark
+{
+    width: 56px;
+    height: 62px;
+    position: relative;
+    img
+    {
+        width: 125%;
+        height: 125%;
+        object-fit: contain;
+    }
+    .placemark-content
+    {
+        position: absolute;
+        top: 50%;
+        left: calc(100% + 8px);
+        transform: translateY(-50%);
+        border: 1px solid #E9E9E9;
+        background: #FFFEFD;
+        box-shadow: 0px 6px 16px 0px rgba(120, 123, 156, 0.08);
+        padding: 10px;
+        color: #000;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.16px;
+        white-space: nowrap;
     }
 }
 @media (max-width: 960px)

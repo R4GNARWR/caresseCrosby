@@ -20,7 +20,7 @@
     "swiper": "^10.3.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5",
-    "vue-yandex-maps": "^1.1.0",
+    "vue-yandex-maps": "^0.12.7",
     "vuetify": "^3.3.17",
     "vuex": "^4.0.2"
   },

@@ -4,6 +4,7 @@
   <main :style="{ paddingTop: mainOffsetTop + 'px' }" ref="wrapper">
     <TheHeader @update-offset-top="updateOffsetTop"></TheHeader>
     <router-view />
+    <Widget></Widget>
     <TheFooter></TheFooter>
     <SnackMessage
       v-if="snack_message && snack_message.message"
@@ -20,13 +21,15 @@ import TheHeader from './components/TheHeader.vue'
 import TheFooter from './components/TheFooter.vue'
 import SnackMessage from './components/UI/SnackMessage.vue'
 import { Fancybox } from "@fancyapps/ui";
+import Widget from "./components/UI/Widget.vue";
 
 export default {
   components: {
     TheFooter,
     TheHeader,
-    SnackMessage
-  },
+    SnackMessage,
+    Widget
+},
   methods: {
     updateOffsetTop(height) {
       this.mainOffsetTop = height;

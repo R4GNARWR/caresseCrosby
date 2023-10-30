@@ -5,12 +5,12 @@
         </button>
         <div class="modal-approval__label">Вход в аккаунт</div>
         <div class="modal-approval__text" >Мы отправим код для авторизации</div>
-        <div class="modal-approval__input">
+        <div class="modal-approval__input" v-if="!smsSended">
             <div class="modal-approval__input-text"></div>
             <Input placeholder="Телефон " v-model="phone"></Input>
         </div>
-        <div class="modal-approval__divide modal-approval__text">или</div>
-        <div class="modal-approval__input">
+        <div class="modal-approval__divide modal-approval__text" v-if="!smsSended">или</div>
+        <div class="modal-approval__input" v-if="!smsSended">
             <div class="modal-approval__input-text"></div>
             <Input placeholder="E-mail" v-model="email"></Input>
         </div>
@@ -20,7 +20,7 @@
         </div>
         <MainBtn class-name="btn-primary w-100" @click="login" v-if="smsSended">Войти</MainBtn>
         <MainBtn class-name="btn-primary w-100" @click="sendSms" v-else>Отправить код</MainBtn>
-        <button @click="openReg()">Зареги</button>
+        <!-- <button @click="openReg()">Зареги</button> -->
     </div>
 </template>
 <script>
@@ -56,18 +56,6 @@ export default {
                 this.$refs.modalEl.style.maxHeight = window.innerHeight - this.paddingTop + 'px';
             }
         },
-        openReg(){
-            Fancybox.close()
-            Fancybox.show(
-            [{
-                src: '#regForm',
-                type: 'inline',
-            }],
-            {
-                closeButton: false,
-                mainClass: 'modal-base__wrap',
-            });
-        },
         login(){
             this.$API.tryLogin(this.phone, this.email, this.password)
             .then(value => {
@@ -75,10 +63,12 @@ export default {
                     this.$store.commit("user_token", value.data.token);
                     this.$store.commit("loggedIn", value.data.user);
                     this.$router.push("/profileData");
-                    this.closeFancybox
-                }
-                else
-                if(value.data.errors){
+                    this.phone = '';
+                    this.email = '';
+                    this.password = '';
+                    this.smsSended = false;
+                    Fancybox.close()
+                } else if(value.data.errors) {
                     let msg={}
                     msg.msg=''
                     msg.color = 'red'
@@ -96,8 +86,24 @@ export default {
             });
         },
         sendSms(){
-            this.smsSended = true+
-            this.$API.ask_sms(this.phone, this.email);
+            this.$API.ask_sms(this.phone, this.email).then(value => {
+                this.smsSended = false;
+                if (value.data.success) {
+                    let msg = {};
+                    msg.msg = "Пароль отправлен!"
+                    msg.color = "green";
+                    store.commit('set_snack_message', msg);
+
+                } else {
+                    if (value.data.errors) {
+                        let msg = {}
+                        msg.msg = ''
+                        msg.color = 'red'
+                        for (let e of Object.keys(value.data.errors)) msg.msg += value.data.errors[e] + ' ';
+                        store.commit('set_snack_message', msg)
+                    }
+                }
+            })
         },
         
     },

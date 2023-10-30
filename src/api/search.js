@@ -152,7 +152,10 @@ export default {
     },
     
     to_search(){
-        this.i=1; this.products=[]; this.filter_selected=''; this.search();
+        this.i=1;
+        this.products=[];
+        this.filter_selected='';
+        this.search();
     },
     search(page) {
         if (!page) page=1;
@@ -160,47 +163,97 @@ export default {
         this.no_result = false;
         this.$store.commit('setSearchSettings', {'brand':this.filter['brand'],'colors':this.filter['colors'],'sizes':this.filter['sizes']})
         
-        this.filter['colors']? Object.values(this.filter['colors'])[0].forEach(color=>{
-            store.state.colors_search.forEach(cs=> {
+        if (this.filter['colors'] && Object.values(this.filter['colors'])[0] && Array.isArray(Object.values(this.filter['colors'])[0])) {
+            Object.values(this.filter['colors'])[0].forEach(color => {
+              store.state.colors_search.forEach(cs => {
                 if (cs.value === color) {
-                    let f={};
-                    f['brand'] = this.filter['brand'];
-                    f['sizes'] = this.filter['sizes'];
-                    f['colors'] = cs;
-                    
-                    this.ss(f,page);
-                    
+                  let f = {};
+                  f['brand'] = this.filter['brand'];
+                  f['sizes'] = this.filter['sizes'];
+                  f['colors'] = cs;
+                  this.ss(f, page);
                 }
-            })
-        }): this.ss(this.filter, page);
-        
+              });
+            });
+          } else {
+            this.ss(this.filter, page);
+          }
         if (!store.state.loader && (!this.products || this.products.length<1)){this.no_result = "По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска или свяжитесь с нами по телефону: ";}
         else this.no_result=false;
     },
-    ss(f, page){
-        if(!page) page=1;
-        let attr = ''//, ss={};
-        if (f['brand']) {attr+='1-'+f['brand'].attributeValueId+',';}
-        if (f['sizes']) {attr+='2-'+f['sizes'].attributeValueId+',';}
-        if (f['colors']) {attr+='6-'+f['colors'].attributeValueId+',';}
-        attr = attr.substr(0, attr.length-1);
-        this.$API.searchProducts(this.searchString, attr, page).then(value => {
-            if (value.data.success) this.products = this.products.concat(value.data.products);
-            if (value.data.products.length===50) this.accept_product_request = true;
-        })
-        if (f['sizes'] && ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL',  '40', '42', '42-44', '44', '44-46', '46', '46-48', '48', '50', '50-52', '70', '75', '80'].includes(f['sizes']['value'])){
-            let f1={};
-            f1['brand'] = f['brand']; f1['colors']=f['colors'];
-            f1['sizes'] = this.OneSize;
-            this.ss(f1,page);
+    ss(f, page) {
+        if (!page) page = 1;
+        let attr = '';
+        let category = '';
+        if (f['brand']) {
+          attr += '1-' + f['brand'].attributeValueId + ',';
         }
-    },
-    
-    onScroll() {
-        if(this.accept_product_request && window.scrollY + window.innerHeight > document.getElementById('cat_page').clientHeight - 100) {
+        if (f['sizes']) {
+          attr += '2-' + f['sizes'].attributeValueId + ',';
+        }
+        if (f['colors']) {
+          attr += '6-' + f['colors'].attributeValueId + ',';
+        }
+        attr = attr.substr(0, attr.length - 1);
+        console.log(attr);
+        
+        // Check if any of the values are missing
+        if (!f['brand'].attributeValueId && !f['sizes'].attributeValueId & !f['colors'].attributeValueId) {
+          this.products = this.initialProduct;
+          return;
+        }
+        
+        this.$API.searchProducts(this.searchString, attr, page, category).then(value => {
+          if (value.data.success) this.products = this.products.concat(value.data.products);
+          if (value.data.products.length === 50) this.accept_product_request = true;
+        });
+        
+        if (
+          f['sizes'] &&
+          [
+            'XS',
+            'S',
+            'M',
+            'L',
+            'XL',
+            '2XL',
+            '3XL',
+            '4XL',
+            '5XL',
+            '40',
+            '42',
+            '42-44',
+            '44',
+            '44-46',
+            '46',
+            '46-48',
+            '48',
+            '50',
+            '50-52',
+            '70',
+            '75',
+            '80'
+          ].includes(f['sizes']['value'])
+        ) {
+          let f1 = {};
+          f1['brand'] = f['brand'];
+          f1['colors'] = f['colors'];
+          f1['sizes'] = this.OneSize;
+          this.ss(f1, page);
+        }
+
+      },
+    async onScroll() {
+        if(this.accept_product_request && window.scrollY + window.innerHeight > document.querySelector('.catalog-list__wrap').clientHeight - 100) {
             this.accept_product_request = false;
             this.i++;
             this.search(this.i);
+            const response = await this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570, this.i)
+
+            if(response) {
+                this.productsInitial = [...this.productsInitial, ...response]
+            }
+
         }
     },
 }

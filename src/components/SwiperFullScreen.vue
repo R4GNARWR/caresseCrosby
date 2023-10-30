@@ -10,9 +10,15 @@
                 }"
                 >
                 <swiper-slide class="swiper-slide" v-for="slide in slidesArray" >
+
                     <div class="swiper-fullscreen__content">
-                        <div :class="'label ' + slide.labelColor" v-html="slide.labelText"></div>
-                        <MainLink :destination="'/catalog'" :class="'w-ft btn-' + slide.buttonColor">{{slide.buttonText}}</MainLink>
+                        <div :class="'current-year ' + slide.yearColor" >
+                            {{ year }}
+                        </div>
+                        <div class="swiper-fullscreen__content-bottom">
+                            <div :class="'label ' + slide.labelColor" v-html="slide.labelText"></div>
+                            <MainLink :destination="slide.buttonDestination" :class="'w-ft btn-' + slide.buttonColor">{{slide.buttonText}}</MainLink>
+                        </div>
                     </div>
                     <img class="swiper-fullscreen__image" :src="slide.backgroundImageSrc" alt="">
                 </swiper-slide>
@@ -43,11 +49,17 @@ export default {
             
         }
     },
+    computed: {
+        year() {
+            return new Date().getFullYear();
+        }
+    },
     beforeCreate() {
         register()
     },
 }
 </script>
+
 <style lang="scss">
 .swiperFullScreen
 {
@@ -67,17 +79,46 @@ export default {
             justify-content: flex-start;
         }
     }
+
+}
+.current-year
+{
+    color: #A7976F;
+    font-size: 1.6rem;
+    line-height: 1.5em;
+    letter-spacing: -0.16px;
+    &.gold
+    {
+        color: #A7976F;
+    }
+    &.white
+    {
+        color: #FFF;
+    }
+    &.black
+    {
+        color: $primary;
+    }
 }
 .swiper-fullscreen
 {
+    
     &__content
     {
         display: flex;
         flex-direction: column;
-        row-gap: 5rem;
         padding: 0 0 6rem 4rem;
+        height: calc(100% - 12rem);
+        &-bottom
+        {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            row-gap: 5rem;
+        }
         .label
         {
+
             color: #FFF;
             font-size: 5.6rem;
             font-style: normal;
@@ -117,30 +158,44 @@ export default {
     .swiperFullScreen
     {
         height: 680px;
-        .swiper-slide
+        .swiper .swiper-slide
         {
             width: 100%;
             height: 100%;
+            justify-content: flex-start;
+            align-items: flex-start;
         }
+    }
+    .current-year
+    {
+        margin-bottom: 24px;
+        font-size: 14px;
     }
     .swiper-fullscreen
     {
         &__content
         {
-            flex-shrink: 1;
-            position: static;
-            padding: 92px 23px 67px 23px;
-            width: 100%;
-            height: 100%;
-            max-height: -webkit-fill-available;
+            &-bottom
+            {
+                margin-top: 0;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+            align-self: stretch;
+            display: flex;
+            max-height: 100%;
+            padding: 92px 23px 65px 23px;
+            height: calc(100% - 92px - 65px);
             .label
             {
                 font-size: 48px;
             }
             .btn
             {
+                width: auto;
+                align-self: stretch;
                 margin-top: auto;
-                max-width: -webkit-fill-available;
             }
         }
     }

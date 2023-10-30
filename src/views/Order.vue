@@ -28,11 +28,11 @@
                             Данные для доставки
                         </div>
                         <div class="order-delivery__form" v-if="user_info">
-                            <Input class="inline" placeholder="Адрес доставки*" v-model="city"></Input>
-                            <Input class="" placeholder="Имя*" v-model="name"></Input>
+                            <Input class="inline" placeholder="Адрес доставки*" v-model="city" required="true"></Input>
+                            <Input class="" placeholder="Имя*" v-model="name" required="true"></Input>
                             <!-- <Input class="" placeholder="Фамилия*"></Input> -->
-                            <Input class="" placeholder="Телефон*" v-model="phone"></Input>
-                            <Input class="" placeholder="E-mail*" v-model="email"></Input>
+                            <Input class="" placeholder="Телефон*" validationType="phone" v-model="phone" required="true"></Input>
+                            <Input class="" placeholder="E-mail*" validationType="email" v-model="email" required="true"></Input>
                         </div>
                     </div>
                 </v-col>
@@ -41,7 +41,7 @@
                         <div class="cart-summary__label">Сумма заказа</div>
                         <div class="cart-summary__items">
                             <div class="cart-summary__item">
-                                {{cart.lenght}} товара на сумму
+                                {{cartQuantity + ' ' + productsComputedText}} на сумму
                                 <span>{{the_sum}} ₽</span>
                             </div>
                             <div class="cart-summary__item" v-if="deliveryPrice">
@@ -63,7 +63,7 @@
                         <div class="cart-summary__total-additional">
                             Бесплатная доставка от 10 000 ₽
                         </div>
-                        <MainBtn class="btn-primary w-100" @click="make_the_order" v-if="order_is_ready">Оформить заказ</MainBtn>
+                        <MainBtn class="btn-primary w-100" @click="handleOrder()" :disabled="!order_is_ready">Оформить заказ</MainBtn>
                         <div class="cart-summary__offer">
                             Нажимая на кнопку «Оформить заказ», <br>
                             вы принимаете условия <a href="">Публичной оферты</a>
@@ -85,6 +85,8 @@ import productCard from "../api/productCard";
 import store from '../store/store';
 import {mapMutations, mapState} from "vuex";
 
+import useVuelidate from "@vuelidate/core";
+
 export default {
     components: {
         Input,
@@ -95,22 +97,18 @@ export default {
         c_p:true, c_s:false, c_t:false, c_w:false,
         city: '', phone:'', name: '', address: {}, email: '',
         comment:'',
-        commission: 250, dates_available:[], hours:{},
+        commission: 0, dates_available:[], hours:{},
         the_error: '',
     }},
+    setup() {
+        return {
+            v$: useVuelidate(),
+        };
+    },
     computed:{
         // full_address(){return (this.address.index?this.address.index + ' ':'')+ (this.address.city?this.address.city+ ' ':'')+ (this.address.street?this.address.street + ' ':'')+ (this.address.building?this.address.building:'')},
+        full_address(){return (this.city)},
         delivery_date(){return new Date()},
-        count(){
-            if (this.cart.length>0){
-                let a='';
-                let b = 0;
-                for (let q in this.cart) b = b+this.cart[q]['q']
-                if (b==1) a='Товар'; if (b>1) a='Товары';
-                // if ((this.cart.length>4 && this.cart.length<21) || b>4) a='товаров';
-                return a;//b+' '+a;
-            } else return 0;
-        },
         cartSum() {
             let vm = this, sum = 0;
             for (let cartPosition of vm.cart) sum += cartPosition.price * cartPosition.q;
@@ -121,11 +119,42 @@ export default {
         {
             if(this.cart.length>0
             && this.delivery_date
-            // && (this.full_address)
-            && this.phone && this.commission
-            && this.email
-            )
-            return true; else return false
+            && this.full_address)
+                return true
+            else
+                return false
+        },
+        cartQuantity() {
+            let q = 0;
+            if(this.cart && this.cart.length>0)
+            {
+                this.cart.forEach(element => {
+                    q += Number(element.q)
+                });
+            }
+            return q;
+        },
+        productsComputedText(){
+            if(this.cart && this.cart.length > 0) {
+                let quantity = this.cartQuantity
+                if(quantity === 1) {
+                    return 'товар'
+                } else if(quantity > 1 && quantity < 5 && quantity < 10) {
+                    return 'товара'
+                } else if(quantity >= 5 && quantity < 10) {
+                    return 'товаров'
+                } else if(quantity >= 10 && quantity <= 20 ) {
+                    return 'товаров'
+                } else if(quantity % 10 > 1 && quantity % 10 < 5 && quantity > 20) {
+                    return 'товара'
+                } else if(quantity % 10 >= 5 || quantity % 10===0 && quantity > 20) {
+                    return 'товаров'
+                } else if(quantity % 10===1) {
+                    return 'товар'
+                }
+            } else {
+                return 'товаров'
+            }
         },
         ...mapState(['cart','project_params','user_info','loggedIn','favorites' ])
     },
@@ -143,6 +172,15 @@ export default {
                 return true;
             }
             return false;
+        },
+        async handleOrder() {
+            var validationResult = await this.v$.$validate();
+            
+            if (!validationResult) {
+                console.log("Validation failed");
+                return;
+            }
+            this.make_the_order()
         },
         ...order, ...cart, ...productCard,
         ...mapMutations(['clearCart', 'cartItemChangeQ', 'cartItemSetQ', 'removeFromCart']),
