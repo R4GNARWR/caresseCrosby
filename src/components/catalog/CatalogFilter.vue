@@ -23,7 +23,7 @@
 <script>
 
 import search from '../../api/search'
-import {mapState, mapMutations} from "vuex";
+import {mapState} from "vuex";
 
 import FilterItem from '../UI/FilterItem.vue';
 
@@ -33,6 +33,11 @@ export default {
     },
     computed:{
         ...mapState(['headerPadding', 'brands_search','colors_search','sizes_search']),
+    },
+    data() {
+        return {
+            catalogOffsetTop: 0,
+        }
     },
     methods: {
         setCatalogPadding() {
@@ -60,15 +65,10 @@ export default {
         // удаляем обработчик события при уничтожении компонента
         window.removeEventListener('resize', this.setCatalogPadding);
     },
-    data() {
-        return {
-            catalogOffsetTop: 0,
-
-        }
-    },
     created() {
         this.for_created();
     },
+
 }
 </script>
 <style lang="scss">

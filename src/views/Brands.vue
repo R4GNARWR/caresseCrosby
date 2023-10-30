@@ -6,13 +6,15 @@
                 Бренды
             </div>
             <div class="brands-wrap">
-                <div class="brand-card" v-for="(item, index) in 30" :key="index">
-                    <img src="/img/brand.png" alt="">
-                    <div class="brand-card__hover">
-                        <div class="brand-card__hover-label">Chantelle</div>
-                        <div class="brand-card__hover-text">Бренд нижнего белья, французской компании  по производству нижнего белья, основанной  в 1876 году Франсуа Огюстом Гамишоном.</div>
+                <div class="brand-card" v-for="(item, index) in brands_search" :key="index">
+                    <div class="brand-card__text">
+                        {{item.value}}
                     </div>
-                    <a href="" class="link"></a>
+                    <!-- <div class="brand-card__hover">
+                        <div class="brand-card__hover-label">{{item.value}}</div>
+                        <div class="brand-card__hover-text">Бренд нижнего белья, французской компании  по производству нижнего белья, основанной  в 1876 году Франсуа Огюстом Гамишоном.</div>
+                    </div> -->
+                    <router-link :to="'/catalog/brands/'+item.attributeValueId" class="link"></router-link>
                 </div>
             </div>
         </v-container>
@@ -20,6 +22,8 @@
 </template>
 
 <script>
+import {mapState, mapMutations} from "vuex";
+
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
 export default {
@@ -29,6 +33,9 @@ export default {
     },
     data() {
         return {};
+    },
+    computed:{
+        ...mapState(['brands_search',]),
     },
 };
 </script>
@@ -70,8 +77,18 @@ export default {
             object-fit: contain;
             transition: .4s;
         }
+        &__text
+        {
+            font-size: 5.2rem;
+            line-height: 1.33em;
+        }
         &__hover
         {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
             padding: 3.5rem 1.4rem;
             opacity: 0;
             transition: .4s;
@@ -104,6 +121,10 @@ export default {
             .brand-card__hover
             {
                 opacity: 1;
+            }
+            .brand-card__text
+            {
+                color: #FFFEFD;
             }
             img
             {

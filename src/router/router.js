@@ -28,7 +28,7 @@ export default createRouter({
       component: Home,
     },
     {
-      path: '/catalog/:id',
+      path: '/catalog/:id?/:brands?/:sizes?',
       component: Catalog,
     },
     {

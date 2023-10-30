@@ -415,6 +415,8 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
 import Input from '../components/UI/Input.vue';
@@ -440,14 +442,21 @@ export default {
             let arr=['A','B','C','D','DD','E','F','FF','G','GG','H','HH','J','JJ','K']
             if (Math.round((this.b1-8)/5)*5 && arr[Math.round((this.b2-this.b1)/2.54)-1]) return (Math.round((this.b1-8)/5)*5).toString()+arr[Math.round((this.b2-this.b1)/2.54)-1].toString();
             else return null;
-        }
+        },
+        ...mapState(['sizes_search'])
     },
     methods: {
         showSize() {
             this.show = true
         },
         to_size_models(){
-            this.$router.push('/catalog/24402')
+            const size = this.sizes_search[0].find(element => element.value === this.size_b)
+            if(size) {
+                this.$router.push('/catalog/24402/sizes/' + size.attributeValueId)
+            } else {
+                this.$router.push('/catalog/24402/')
+            }
+
 
         },
     }

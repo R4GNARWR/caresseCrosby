@@ -9,35 +9,39 @@
                 <div class="catalog__filter-item__name">{{ filter.value }}</div>
             </div>
         </div>
-        <button class="catalog__filter-item__button" @click="showFilters()">Посмотреть все</button>
+        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll">Посмотреть все</button>
+        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll">Скрыть</button>
     </div>
     <div class="catalog__filter-item" v-if="filterName === 'Бренды'">
         <div class="catalog__filter-item__label">{{ filterName }}</div>
         <div class="catalog__filter-items" :class="{'all': showAll}">
             <div class="catalog__filter-item__input" v-for="filter in values" :key="filter.value" >
-                <input type="radio" name="brand" @click="clickFilter(filter, $event)">
+                <input type="radio" name="brand" @click="clickFilter(filter, $event)" :checked="Number(filter.attributeValueId) === Number($route.params.brands)">
                 {{ filter.value }}
                 <label></label>
             </div>
         </div>
         
-        <button class="catalog__filter-item__button" @click="showFilters()">Посмотреть все</button>
+        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll">Посмотреть все</button>
+        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll">Скрыть</button>
     </div>
     <div class="catalog__filter-item" v-if="filterName === 'Размеры'">
         <div class="catalog__filter-item__label">{{ filterName }}</div>
         <div class="catalog__filter-items half" :class="{'all': showAll}" v-for="filter in values" :key="filter.value" v-if="values"> 
             <div class="catalog__filter-item__input" v-for="(item, index) in filter" :key="index" >
-                <input type="radio" name="size" @click="clickFilter(item, $event)">
+                <input type="radio" name="size" @click="clickFilter(item, $event)" :checked="Number(item.attributeValueId) === Number($route.params.sizes)">
                 {{ item.value }}
                 <label></label>
             </div>
         </div>
         
-        <button class="catalog__filter-item__button" @click="showFilters()">Посмотреть все</button>
+        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll">Посмотреть все</button>
+        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll">Скрыть</button>
     </div>
 </template>
 
 <script>
+import {mapState} from "vuex";
 export default {
     data() {
         return {
@@ -61,7 +65,7 @@ export default {
         filterObject: {
             immediate: true,
             handler(newVal) {
-                if (this.filterName === 'Размеры' && newVal) {
+                if (this.filterName === 'Бренды' && newVal) {
                     this.values = newVal;
                 } else {
                     this.values = Array.isArray(newVal) ? newVal : newVal;
@@ -70,28 +74,26 @@ export default {
         },
     },
     methods: {
-        showFilters() {
+        toggleFilters() {
             this.showAll = !this.showAll;
         },
         clickFilter(filter, e) {
-            if(filter) {
-                if(this.currentFilter === filter){
+            if (filter) {
+                if (this.currentFilter === filter.value) {
                     e.target.checked = '';
                     this.currentFilter = null;
                     this.$emit('update-filters', {
                         attributeId: filter.attributeId,
                         attributeValueId: '',
-                        value: filter.value
+                        value: filter.value,
                     });
                 } else {
-                    this.currentFilter = filter;
+                    this.currentFilter = filter.value;
                     this.$emit('update-filters', filter);
                 }
-
-
             }
         },
-    }
+    },
 };
 </script>
 
@@ -109,6 +111,10 @@ export default {
     }
     &.all
     {
+        // height: calc(3.2rem * 9);
+        // overflow-y: scroll;
+        // scrollbar-color: #3f3f3f transparen;
+        // scrollbar-width: thin;
         height: auto;
     }
 }
@@ -166,7 +172,7 @@ export default {
             opacity: 0;
             z-index: 1;
             cursor: pointer;
-
+            
         }
         & > input:checked ~ label
         {

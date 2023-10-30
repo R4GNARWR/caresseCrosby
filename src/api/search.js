@@ -134,9 +134,9 @@ export default {
             this.$API.getAttributeValues(6).then(value => {if (value.data.success && value.data.attributeValues) store.commit('setColors',value.data.attributeValues);})
         }
         if (store.state.search_result.length) this.products = store.state.search_result
-        if (store.state.search_settings['brand']) this.filter['brand'] = store.state.search_settings['brand']
-        if (store.state.search_settings['colors']) this.filter['colors'] = store.state.search_settings['colors']
-        if (store.state.search_settings['sizes']) this.filter['sizes'] = store.state.search_settings['sizes']
+        if (store.state.search_settings['brand'] && this.filter) this.filter['brand'] = store.state.search_settings['brand']
+        if (store.state.search_settings['colors'] && this.filter) this.filter['colors'] = store.state.search_settings['colors']
+        if (store.state.search_settings['sizes'] && this.filter) this.filter['sizes'] = store.state.search_settings['sizes']
         if (this.$route.params.size) {
             this.products=[]
             for (let s in this.sizes_search[0]) {
@@ -204,7 +204,11 @@ export default {
         }
         
         this.$API.searchProducts(this.searchString, attr, page, category).then(value => {
-          if (value.data.success) this.products = this.products.concat(value.data.products);
+          if (value.data.success) {
+            this.products = this.products.concat(value.data.products);
+            if(this.initialProduct)
+            this.initialProduct = this.initialProduct.concat(value.data.products);
+          } 
           if (value.data.products.length === 50) this.accept_product_request = true;
         });
         
