@@ -24,6 +24,8 @@ export default {
 {
     margin-top: 6.4rem;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     column-gap: 4.9rem;
     padding: 4rem 5.6rem;
     background-color: #F9F7F5;
@@ -56,7 +58,10 @@ export default {
     }
 }
 @media (max-width: 960px) {
-    
+    .detail__links
+    {
+
+    }
 }
 @media (max-width: 600px) {
     .detail__links
@@ -70,18 +75,21 @@ export default {
         span
         {
             font-size: 28px;
+            margin-bottom: 12px;
         }
         &-socials
         {
             display: flex;
+            justify-content: space-between;
+            width: 100%;
             column-gap: 6px;
             a
             {
                 padding: 24px;
                 img
                 {
-                    width: 24px;
-                    height: 24px;
+                    width: 26px;
+                    height: 26px;
                     object-fit: contain;
                 }
             }

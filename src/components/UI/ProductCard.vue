@@ -6,7 +6,10 @@
             <div class="product-card__img-like">
                 <v-icon icon="mdi-heart-outline" color="#27231E" v-if="!the_heart" @click="addFavor(product.id)"></v-icon>
                 <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart" @click="delFavor(product.id)"></v-icon>
+                <div class="tooltip" v-if="!the_heart">Добавить в избранное</div>
+                <div class="tooltip" v-if="the_heart">Убрать из изранного</div>
             </div>
+            
         </div>
         <div class="product-card__info">
             <div class="product-card__info-name" v-if="product.name">{{product.name}}</div>
@@ -56,10 +59,10 @@ export default {
         },
     },
     methods:{
-    ...productCard,
-    ...cart,
-    ...mapMutations(['add2cart']),
-  }
+        ...productCard,
+        ...cart,
+        ...mapMutations(['add2cart']),
+    }
 }
 </script>
 <style lang="scss">
@@ -71,6 +74,7 @@ export default {
         margin-bottom: 1.2rem;
         position: relative;
         height: 44rem;
+        max-width: 100%;
         img
         {
             width: 100%;
@@ -92,7 +96,14 @@ export default {
             position: absolute;
             right: 1.2rem;
             top: 1.2rem;
-            z-index: 200;
+            z-index: 150;
+            &:hover
+            {
+                .tooltip
+                {
+                    opacity: 1;
+                }
+            }
             cursor: pointer;
             i
             {
@@ -135,21 +146,20 @@ export default {
         }
     }
 }
-@media (max-width: 600px) {
+@media (max-width: 960px)
+{
     .product-card
     {
+        &-new
+        {
+            left: 10px;
+            top: 10px;
+            padding: 2px 8px;
+            font-size: 12px;
+            background-color: #BFB09D;
+        }
         &__img
         {
-            margin-bottom: 12px;
-            height: 208px;
-            &-new
-            {
-                left: 10px;
-                top: 10px;
-                padding: 2px 8px;
-                font-size: 12px;
-                background-color: #BFB09D;
-            }
             &-like
             {
                 position: absolute;
@@ -162,8 +172,9 @@ export default {
                 }
             }
         }
+
         &__info
-        {    
+        {
             &-name
             {
                 margin-bottom: 4px;
@@ -171,7 +182,7 @@ export default {
                 letter-spacing: -0.056px;
                 display: -webkit-box;
                 height: 42px;
-                -webkit-line-clamp: 2; // количество строк
+                -webkit-line-clamp: 3; // количество строк
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
@@ -185,6 +196,7 @@ export default {
                 }
                 &__colors
                 {
+                    
                     column-gap: 4px;
                     div
                     {
@@ -194,6 +206,18 @@ export default {
                     }
                 }
             }
+        }
+    }
+}
+@media (max-width: 600px) {
+    .product-card
+    {
+        max-width: 100%;
+        &__img
+        {
+            margin-bottom: 12px;
+            height: 208px;
+            
         }
     }
 }

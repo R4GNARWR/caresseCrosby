@@ -10,7 +10,7 @@
                         <!-- <div class="footer-left__text">
                             Подпишитесь на рассылку, чтобы всегда быть в курсе наших новостей
                         </div> -->
-                        <div class="footer-left__info d-lg-flex d-none">
+                        <div class="footer-left__info d-xl-flex d-none">
                             <div class="footer-left__info-conf">
                                 <a target="_blank" href="/pdf/pers_data.pdf">ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</a>
                             </div>
@@ -18,14 +18,14 @@
                                 <a href="">ОФЕРТА</a>
                             </div>
                             <div class="footer-left__info-copy">
-                                <a href="">© 2023</a>
+                                <a href="">© ИП Король {{currentYear}}</a>
                             </div>
                         </div>
                     </div>
                 </v-col>
                 <v-col sm="4" md="2" cols="12" offset-md="1">
                     <div class="footer-links">
-                        <div class="footer-links__label">КАТАЛОГ</div>
+                        <router-link to="/catalog" class="footer-links__label">КАТАЛОГ</router-link>
                         <ul class="footer-links__list">
                             <li><a href="">Новинки</a></li>
                             <li><a href="">Популярное</a></li>
@@ -39,23 +39,23 @@
                 </v-col>
                 <v-col sm="4" md="2" cols="12" >
                     <div class="footer-links">
-                        <div class="footer-links__label">О МАГАЗИНЕ</div>
+                        <router-link to="/about" class="footer-links__label">О МАГАЗИНЕ</router-link>
                         <ul class="footer-links__list">
-                            <li><a href="">О нас</a></li>
-                            <li><a href="">Фотогалерея</a></li>
-                            <li><a href="">Статьи</a></li>
+                            <li><router-link to="/about">О нас</router-link></li>
+                            <li><router-link to="/photoAlbum">Фотогалерея</router-link></li>
+                            <li><router-link to="/articles">Статьи</router-link></li>
                         </ul>
                     </div>
                 </v-col>
-                <v-col  sm="4" md="2" cols="12" >
+                <v-col sm="4" md="2" cols="12" >
                     <div class="footer-links">
-                        <div class="footer-links__label">ПОЛЬЗОВАТЕЛЯМ</div>
+                        <router-link to="/delivery" class="footer-links__label">ПОЛЬЗОВАТЕЛЯМ</router-link>
                         <ul class="footer-links__list">
-                            <li><a href="">Доставка и оплата</a></li>
+                            <li><router-link to="/delivery">Доставка и оплата</router-link></li>
                             <li><a href="">Помощь</a></li>
-                            <li><a href="">Контакты</a></li>
+                            <li><router-link to="/contacts">Контакты</router-link></li>
                         </ul>
-                        <div class="footer-additional-info">
+                        <div class="footer-additional-info d-lg-flex d-none">
                             <div class="footer-socials">
                                 <a target="_blank" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:"><img src="/svg/whatsapp.svg" alt=""></a>
                                 <a target="_blank" href="https://vk.com/ccrosby"><img src="/svg/vk.svg" alt=""></a>
@@ -66,10 +66,23 @@
                                 ИП Король Елена Сергеевна <br> ИНН: 744408493724 <br> ОГРН: 321028000158115
                             </div>
                         </div>
-
                     </div>
                 </v-col>
-                <v-col class="d-lg-none d-block" cols="12">
+                <v-col>
+                    <div class="footer-additional-info d-lg-none d-flex">
+                        <div class="footer-socials">
+                            <a target="_blank" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:"><img src="/svg/whatsapp.svg" alt=""></a>
+                            <a target="_blank" href="https://vk.com/ccrosby"><img src="/svg/vk.svg" alt=""></a>
+                            <a target="_blank" href="https://t.me/+79177471561"><img src="/svg/telegram.svg" alt=""></a>
+                        </div>
+
+                        <div class="footer-ip">
+                            ИП Король Елена Сергеевна <br> ИНН: 744408493724 <br> ОГРН: 321028000158115
+                        </div>
+                    </div>
+                </v-col>
+
+                <v-col class="d-xl-none d-block" cols="12">
                     <div class="footer-left__info">
                             <div class="footer-left__info-conf">
                                 <a target="_blank" href="/pdf/pers_data.pdf">ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</a>
@@ -78,7 +91,7 @@
                                 <a href="">ОФЕРТА</a>
                             </div>
                             <div class="footer-left__info-copy">
-                                <a href="">© 2023</a>
+                                <a href="">© ИП Король {{currentYear}}</a>
                             </div>
                         </div>
                 </v-col>
@@ -89,7 +102,11 @@
 </template>
 <script>
 export default {
-    
+    computed: {
+        currentYear() {
+            return new Date().getFullYear()
+        }
+    }
 }
 </script>
 <style lang="scss">
@@ -151,6 +168,7 @@ footer
     {
         &__label
         {
+            display: block;
             margin-bottom: 2.4rem;
             color: #FFF;
             font-family: 'Inter';
@@ -158,6 +176,7 @@ footer
             line-height: 110%;
             letter-spacing: -0.18px; 
             text-transform: uppercase;
+            text-decoration: none;
         }
         &__list
         {
@@ -216,8 +235,6 @@ footer
     {
         margin-bottom: 0;
     }
-}
-@media (max-width: 600px) {
     footer
     {
         padding: 48px 0;
@@ -240,9 +257,14 @@ footer
             &__info
             {
                 color: rgba(255, 255, 255, .4);
-                font-size: 12px;
+                font-size: 11px;
                 line-height: 16px;
                 letter-spacing: -.5px;
+                column-gap: 16px;
+                &-copy
+                {
+                    text-align: right;
+                }
             }
         }
         &-links
@@ -259,6 +281,7 @@ footer
     }
     .footer-additional-info
     {
+        width: 100%;
         margin-top: 32px;
         display: flex;
         flex-direction: row;

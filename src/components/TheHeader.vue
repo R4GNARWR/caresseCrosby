@@ -48,7 +48,6 @@
                     </div>
                 </div>
             </div>
-            
             <div class="header-catalog" :class="{'show': showMenu}">
                 <div class="close-menu d-lg-none d-block" @click="showMenu =!showMenu">
                     <img src="/svg/close.svg" alt="">
@@ -68,7 +67,7 @@
                                 <img src="/svg/arrow.svg" alt="" style="transform: rotate(-90deg);">
                             </Dropdown>
                             <button @click="item.action" v-if="item.action">{{item.name}}</button>
-                            <router-link :to="item.link" v-if="item.link">{{item.name}}</router-link>
+                            <router-link :to="item.link"  v-if="item.link">{{item.name}}</router-link>
                         </div>
                         
                         <div class="header-catalog__list-item">
@@ -87,7 +86,7 @@
                             <Dropdown :list-items="left_menu.slice(4, left_menu.length)" class="no-arrow"><img src="/svg/more.svg"  alt=""></Dropdown>
                         </div>
                     </nav>
-                    <a class="header-catalog__btn" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:">
+                    <a class="header-catalog__btn" target="_blank" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:">
                         <img src="/svg/whatsapp.svg" alt="">
                         Написать в Whats App
                     </a>
@@ -114,8 +113,6 @@
                 </div>
             </div>
         </v-container>
-        <ModalAuth id="loginForm"></ModalAuth>
-        <ModalReg id="regForm"></ModalReg>
     </header>
     
 </template>
@@ -125,10 +122,10 @@ import {mapState, mapMutations} from "vuex";
 
 import Dropdown from './UI/Dropdown.vue';
 import Search from './UI/Search.vue';
-import ModalAuth from "./modals/ModalAuth.vue";
+
 
 export default {
-    components: { Search, Dropdown, ModalAuth, },
+    components: { Search, Dropdown,},
     data() {
         return {
             menuItems: [],
@@ -136,6 +133,9 @@ export default {
             windowWidth: 0,
         };
     },
+    emits: [
+        'update-offset-top'
+    ],
     methods: {
         showLoginForm(){
             Fancybox.show(
@@ -149,8 +149,10 @@ export default {
             });
         },
         changeSize() {
-            console.log('changed');
-            const headerHeight = this.$refs.headerElement.clientHeight ?? 0;
+            let headerHeight = 0;
+            if(this.$refs.headerElement) {
+                headerHeight = this.$refs.headerElement.clientHeight
+            }
             this.$store.commit('setHeaderPadding', headerHeight)
             this.$emit('update-offset-top', headerHeight);
             this.windowWidth = window.innerWidth
@@ -272,7 +274,7 @@ export default {
                     
             }
             let lm = []
-            if(window.innerWidth > 960) {
+            if(this.windowWidth > 960) {
                 lm = !this.loggedIn
                 ? [
                 lm_underwear,
@@ -324,6 +326,8 @@ export default {
                     name: 'Выйти',
                     action: this.showLoginForm,
                 },
+                lm_underwear,
+                lm_swimsuit,
                 { name: 'Избранные товары', link: '/favorite' },
                 ...lm_catalog,
                 { name: 'О нас', link: '/About' },
@@ -562,6 +566,10 @@ header
                     height: 2rem;
                     object-fit: contain;
                 }
+                &.router-link-active
+                {
+                    font-weight: bold;
+                }
                 &:hover
                 {
                     color: lighten($primary, $amount: 30%);
@@ -647,6 +655,7 @@ header
                 font-size: 16px;
                 a 
                 {
+                    
                     column-gap: 8px;
                     img
                     {

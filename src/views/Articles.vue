@@ -4,7 +4,7 @@
             <div class="breadcrumbs text-page__breadcrumbs">
                 <router-link class="breadcrumbs-item" to="/">Главная</router-link>
                 <div class="breadcrumbs-divider">/</div>
-                <router-link class="breadcrumbs-item" :to="this.$route.path">Статьи</router-link>
+                <a class="breadcrumbs-item active" >Статьи</a>
             </div>
             <div class="articles-main" v-if="blogs && blogs.length > 0">
                 <v-row>
@@ -28,11 +28,11 @@
             </div>
             <div class="articles-list">
                 <v-row>
-                    <v-col md="4" sm="6" cols="12" v-for="(item, index) in blogs" :key="index" v-if="blogs">
+                    <v-col md="4" sm="6" cols="12" v-for="(item, index) in blogs.slice(1, blogs.length)" :key="index" v-if="blogs">
                         <ArticleCard :cardData="item" :cardId="index" v-if="item"></ArticleCard>
                     </v-col>
                 </v-row>
-                <MainBtn class-name="btn-white outline mx-auto d-lg-none d-block">Показать еще</MainBtn>
+                <!-- <MainBtn class-name="btn-white outline mx-auto d-lg-none d-block">Показать еще</MainBtn> -->
             </div>
         </v-container>
     </section>

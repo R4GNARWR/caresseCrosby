@@ -1,11 +1,20 @@
 <template>
     <div class="form-control__wrap" :class="{'error': v$.$errors.length > 0}">
+        <label class="form-control__label">{{ placeholder }}</label>
         <input class="form-control"
         :type="inputType ?? 'text'"
         :name="name"
-        :placeholder="placeholder"
         :value="modelValue"
         :required="required ? 'true' : null"
+        v-if="inputType !== 'tel'"
+        @input="$emit('update:modelValue', $event.target.value)">
+        <input class="form-control"
+        :type="inputType ?? 'text'"
+        :name="name"
+        :value="modelValue"
+        :required="required ? 'true' : null"
+        v-maska data-maska="+7 (###) ###-##-##"
+        v-if="inputType === 'tel'"
         @input="$emit('update:modelValue', $event.target.value)">
         <div class="form-control__errors" v-for="error of v$.$errors" :key="error.$uid">
             <div class="form-control__errors-item">{{ error.$message }}</div>
@@ -14,7 +23,8 @@
 </template>
 <script>
 import { useVuelidate } from '@vuelidate/core'
-import { required, helpers, email } from '@vuelidate/validators'
+import { vMaska } from "maska"
+import { required, helpers, email, minLength} from '@vuelidate/validators'
 
 export default {
     props: {
@@ -25,6 +35,7 @@ export default {
         placeholder: String,
         required: Boolean,
     },
+    directives: { maska: vMaska },
     data() {
         return {
             
@@ -41,6 +52,7 @@ export default {
                 case 'name':
                 return {
                     modelValue: {
+                        minLength: helpers.withMessage("Пожалуйста, введите полное имя", minLength(2)),
                         required: helpers.withMessage("Пожалуйста, введите ваше имя", required),
                     }
                 };
@@ -53,6 +65,7 @@ export default {
                 case 'phone':
                 return {
                     modelValue: {
+                        minLength: helpers.withMessage("Пожалуйста введи телефон полностью", minLength(18)),
                         required: helpers.withMessage("Пожалуйста, введите ваш телефон", required),
                     }
                 };
@@ -109,6 +122,14 @@ export default {
         }
     }
 }
+.form-control__label
+{
+    margin-bottom: .5em;
+    color:#A6A5A3;
+    font-size: 1.6rem;
+    line-height: 1.5em;
+    letter-spacing: -0.128px;
+}
 .form-control
 {
     padding: .4rem 0 1.8rem 0;
@@ -116,18 +137,10 @@ export default {
     background-color: transparent;
     border-bottom:1px solid #A6A5A3;
     outline: 0;
-    &,
-    &::placeholder
-    {
-        color:#A6A5A3;
-        font-size: 1.6rem;
-        line-height: 1.5em;
-        letter-spacing: -0.128px;
-    }
-    &
-    {
-        color:$primary;
-    }
+    color:$primary;
+    font-size: 1.6rem;
+    line-height: 1.5em;
+    letter-spacing: -0.128px;
 }
 .form-control__errors
 {
@@ -144,12 +157,12 @@ export default {
     .form-control
     {
         padding: 4px 0 16px 0;
-        &,
-        &::placeholder
-        {
-            font-size: 14px;
-        }
+        font-size: 14px;
         
+    }
+    .form-control__label
+    {
+        font-size: 14px;
     }
     .form-control__errors
     {

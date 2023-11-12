@@ -4,7 +4,7 @@
             <div class="breadcrumbs text-page__breadcrumbs">
                 <router-link class="breadcrumbs-item" to="/">Главная</router-link>
                 <div class="breadcrumbs-divider">/</div>
-                <router-link class="breadcrumbs-item" :to="this.$route.path ">Каталог</router-link>
+                <a class="breadcrumbs-item active">Каталог</a>
             </div>
             <v-row>
                 <v-col cols="12">
@@ -14,7 +14,7 @@
                             <div class="catalog__head-count">{{totalAmount}} товара</div>
                         </div>
                         <div class="catalog__head-bottom">
-                            <div class="catalog__head__filter-btn d-md-none d-flex" @click="changeFilterVisibility()">
+                            <div class="catalog__head__filter-btn d-lg-none d-flex" @click="changeFilterVisibility()">
                                 <img src="/svg/filter.svg" alt="">
                                 Фильтры
                             </div>
@@ -30,7 +30,7 @@
                     <CatalogFilter :filterStatus="showFilters" @updateFilter="updateFilter" @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
                 </v-col>
                 <v-col md="9" cols="12">
-                    <CatalogList :productArray="productsComputed"></CatalogList>
+                    <CatalogList :productArray="productsComputed" :searchStatus="status"></CatalogList>
                 </v-col>
             </v-row>
         </v-container>
@@ -69,6 +69,7 @@ export default {
                 value: 'priceAsc'
             },
             ],
+            status: 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.',
             showFilters: false,
             activeSortString: 'По популярности',
             activeSortValue: 'popularityDesc',
@@ -93,50 +94,58 @@ export default {
                 "colors": {
                     "attributeId":6,
                     "attributeValueId":'',
-                    "value":""}},
+                    "value":""}
+                },
             start_filter:{},
             isLoading: false,
         }
     },
     computed:{
         productsComputed() {
-
-            if(this.products && !this.$route.params.brands) {
-            let products = [...this.products]
-            products.filter(element => Number(element.category_id) === Number(this.$route.params.id));
+            if(this.products && this.$route.params.brands) {
+            let products = [...this.products];
+            let productsFiltered = []
+            for (let i = 0; i < products.length; i++) {z
+                    if (Number(products[i].category_id) === Number(this.$route.params.id)) {
+                        productsFiltered.push(products[i]);
+                    }
+                }
             switch (this.activeSortValue) {
                 case 'priceAsc': {
-                    products.sort((a, b) => a.price - b.price);
+                    productsFiltered.sort((a, b) => a.price - b.price);
                     break;
                 }
                 case 'priceDesc': {
-                    products.sort((a, b) => b.price - a.price);
+                    productsFiltered.sort((a, b) => b.price - a.price);
                     break;
                 }
                 case 'popularityDesc': {
-                    products = [...this.productsInitial];
                     break;
                 }
             }
-            return products
-            
-            } else if (this.products && this.$route.params.brands) {
-                let products = [...this.products]
+            return productsFiltered
+            } else if (this.products && !this.$route.params.brands) {
+                let products = [...this.products];
+                let productsFiltered = []
+                for (let i = 0; i < products.length; i++) {
+                    if (Number(products[i].category_id) === Number(this.$route.params.id)) {
+                        productsFiltered.push(products[i]);
+                    }
+                }
                 switch (this.activeSortValue) {
                     case 'priceAsc': {
-                        products.sort((a, b) => a.price - b.price);
+                        productsFiltered.sort((a, b) => a.price - b.price);
                         break;
                     }
                     case 'priceDesc': {
-                        products.sort((a, b) => b.price - a.price);
+                        productsFiltered.sort((a, b) => b.price - a.price);
                         break;
                     }
                     case 'popularityDesc': {
-                        products = [...this.products];
                         break;
                     }
                 }
-                return products
+                return productsFiltered
             } else {
                 return this.productsInitial
             }
@@ -167,18 +176,19 @@ export default {
                 this.activeSortString = sortName
                 this.activeSortValue = sortValue
             }
-
         },
         changeFilterVisibility() {
             this.showFilters = !this.showFilters;
         },
         async update() {
+            this.products = []
+            this.productsInitial = []
+            this.status = 'Поиск...'
             try {
                 const [descriptionResponse, productsResponse] = await Promise.all([
                 this.$API.getCatDescription(this.$route.params.id),
                 this.cat_products[this.$route.params.id] || this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570)
                 ]);
-                
                 if (descriptionResponse.data.success) {
                     this.description = descriptionResponse.data.description;
                 }
@@ -192,7 +202,9 @@ export default {
                         this.cat_products[this.$route.params.id] = productsResponse;
                     }
                 }
+                this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
             } catch (error) {
+                this.status = 'Ошибка поиска. Повторите попытку позднее'
                 console.log(error);
             }
         },
@@ -218,6 +230,9 @@ export default {
     watch: {
         '$route.params.id': function () {
             this.update();
+            this.filter.brand = ''
+            this.filter.sizes = ''
+            this.filter.colors = ''
         },
     },
     created() {

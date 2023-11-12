@@ -49,7 +49,7 @@
                 <img src="/svg/swiper-next.svg" alt="">
             </div>
         </div>
-        <router-link class="swiper-cards__more d-lg-none d-flex" to="/articles">Все статьи</router-link>
+        <router-link class="swiper-cards__more d-md-none d-flex" to="/articles">Все статьи</router-link>
     </v-container>  
 </section>
 </template>
@@ -161,14 +161,13 @@ export default {
         z-index: 10;
     }
 }
-@media (max-width: 600px) {
+@media (max-width: 960px) {
+    .main-article__head-link
+    {
+        font-size: 14px;
+    }
     .main-article
     {
-        &__img
-        {
-            height: 327px;
-            margin-bottom: 24px;
-        }
         &__content
         {
             &-label
@@ -178,7 +177,51 @@ export default {
             }
             &-text
             {
+                max-height: calc(3 *44px);
                 font-size: 17px;
+                line-height: 1.5em;
+            }
+        }
+        &__swiper-nav
+        {
+            column-gap: 10px;
+            .swiper-button
+            {
+                width: 32px;
+                height: 32px;
+            }
+        }
+    }
+    .swiper-articles
+    {
+        padding-bottom: 48px;
+    }
+}
+@media (max-width: 600px) {
+    .main-article__head-link
+    {
+        display: none;
+    }
+    .main-article
+    {
+        &__img
+        {
+            height: 327px;
+            margin-bottom: 24px;
+        }
+        &__content
+        {
+            max-width: calc(100% - 24px);
+            &-label
+            {
+                margin-bottom: 24px;
+                font-size: 24px;
+            }
+            &-text
+            {
+                max-height: calc(6 *44px);
+                font-size: 17px;
+                line-height: 1.5em;
             }
         }
         &__swiper-nav

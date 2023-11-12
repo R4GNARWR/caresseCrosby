@@ -39,7 +39,19 @@ export default {
     {
       text-decoration: none;
       color: inherit;
+      &.active
+      {
+        font-weight: bold;
+      }
     }
-
+  }
+  @media (max-width: 960px) {
+    .breadcrumbs
+    {
+      margin-bottom: 24px;
+      column-gap: 8px;
+      font-size: 16px;
+      letter-spacing: -0.128px;
+    }
   }
 </style>

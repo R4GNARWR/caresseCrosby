@@ -3,10 +3,13 @@
         <div class="catalog-list" v-if="productArray && productArray.length > 0">
             <ProductCard v-for="(item, index) in productArray" :key="index" :product="item"></ProductCard>
         </div>
-        <div class="empty" v-else>
+        <div class="empty" v-else-if="searchStatus">
+            {{searchStatus}}
+        </div>
+        <div class="empty" v-else-if="searchStatus">
             По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.
         </div>
-        <MainBtn class="btn btn-white w-100 d-md-none d-block outline">Показать ещё</MainBtn>
+        <MainBtn class="btn btn-white w-100 d-none outline">Показать ещё</MainBtn>
         <!-- <Pagination class="catalog-pagination" v-if="productArray.length >= 50"></Pagination> -->
     </div>
     
@@ -26,6 +29,7 @@ export default {
     props: {
         productArray: Array,
         isLoading: Boolean,
+        searchStatus: String,
     },
     computed: {
 
@@ -38,9 +42,9 @@ export default {
 {
     width: 100%;
     display: grid;
-    column-gap: 3.2rem;
+    grid-column-gap: 3.2rem;
     grid-template-columns: repeat(3, 1fr);
-    row-gap: 4rem;
+    grid-row-gap: 4rem;
 }
 .catalog-list__wrap
 {

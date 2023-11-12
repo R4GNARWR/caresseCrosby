@@ -28,7 +28,7 @@
                 :breakpoints="{
                     0:
                     {
-                        slidesPerView: 2,
+                        slidesPerView: 1.7,
                         spaceBetween: 16,
                     },
                     600: {
@@ -88,12 +88,12 @@ export default {
     display: flex;
     flex-direction: column;
     margin-top: 3.2rem;
-    padding-bottom: .8rem;
+    padding-bottom: 3.2rem;
     border-bottom: 1px solid rgba(83, 83, 83, .3) !important;
     
     &__more
     {
-        margin-top: 3.2rem;
+        transform: translateY(2.4rem);
         margin-left: auto;
         color: $primary;
         font-size: 1.6rem;
@@ -102,11 +102,23 @@ export default {
         text-decoration: none;
     }
 }
+@media (max-width: 960px)
+{
+    .swiper-cards
+    {
+        padding-bottom: 48px;
+        &__more
+        {
+            transform: translateY(24px);
+            font-size: 16px;
+            margin-bottom: -16px;
+        }
+    }
+}
 @media (max-width: 600px) {
     .swiper-cards
     {
         margin-top: 40px;
-        padding-bottom: 24px;
         &__more
         {
             margin-top: 24px;

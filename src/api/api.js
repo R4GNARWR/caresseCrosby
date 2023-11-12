@@ -182,6 +182,14 @@ export default  {
     getBlogs(){return this.axios.get("blogs")},
     delThisBlog(title){return this.axios.delete("blogs/"+title)},
     sentLid(lid) {
-        return this.axios.post("lid", {body:lid,})
+        return this.axios.post("auth/lid", {
+            forWho:lid.for ?? '',
+            from:lid.from ?? '',
+            emailToSend:lid.emailToSend,
+            phoneFrom:lid.phoneFrom,
+            phonefor:lid.phonefor,
+            cost:lid.cost,
+            whenSend:lid.when,
+        })
     }
 }

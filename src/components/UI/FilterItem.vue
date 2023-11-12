@@ -72,6 +72,15 @@ export default {
                 }
             },
         },
+        '$route.params.id': {
+            handler() {
+                const inputFields = document.querySelectorAll("input[type='radio']");
+                inputFields.forEach((input) => {
+                    input.checked = false;
+                });
+            }
+
+        }
     },
     methods: {
         toggleFilters() {
@@ -210,13 +219,30 @@ export default {
         border-radius: 50%;
     }
 }
-@media (max-width: 991px) {
+@media (max-width: 960px) {
+    .catalog__filter-items
+    {
+        display: flex;
+        flex-direction: column;
+        row-gap: 1.2rem;
+        height: calc(28px * 6);
+        overflow: hidden;
+        &.half
+        {
+            height: calc(28px * 3);
+        }
+        &.all
+        {
+            height: auto;
+        }
+    }
     .catalog__filter-item
     {
         row-gap: 12px;
         &__label
         {
             font-size: 17px;
+            line-height: 1.5em;
             margin-bottom: 16px;
         }
         &__input

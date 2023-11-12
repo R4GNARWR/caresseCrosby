@@ -4,7 +4,7 @@
             <div class="breadcrumbs text-page__breadcrumbs">
                 <router-link class="breadcrumbs-item" to="/">Главная</router-link>
                 <div class="breadcrumbs-divider">/</div>
-                <router-link class="breadcrumbs-item active" :to="this.$route.path">Фотоальбомы</router-link>
+                <a class="breadcrumbs-item active">Фотоальбомы</a>
             </div>
             <div class="photo-album__label">
                 Фотоальбомы
@@ -169,8 +169,8 @@ export default {
         margin-bottom: 1.8rem;
         height: 42rem;
         display: grid;
-        grid-template-columns: repeat(2,1fr);
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(2,50%);
+        grid-template-rows: repeat(2, 50%);
         img
         {
             width: 100%;

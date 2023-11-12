@@ -10,7 +10,7 @@ export default {
 .custom-pagination
 {
     position: absolute;
-    right: 5rem;
+    right: 6.6rem;
     bottom: 6rem;
     display: flex;
     column-gap: .8rem;

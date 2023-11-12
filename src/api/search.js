@@ -156,6 +156,7 @@ export default {
         this.products=[];
         this.filter_selected='';
         this.search();
+        this.status = 'Поиск...'
     },
     search(page) {
         if (!page) page=1;
@@ -195,9 +196,7 @@ export default {
           attr += '6-' + f['colors'].attributeValueId + ',';
         }
         attr = attr.substr(0, attr.length - 1);
-        console.log(attr);
         
-        // Check if any of the values are missing
         if (!f['brand'].attributeValueId && !f['sizes'].attributeValueId & !f['colors'].attributeValueId) {
           this.products = this.initialProduct;
           return;
@@ -205,9 +204,11 @@ export default {
         
         this.$API.searchProducts(this.searchString, attr, page, category).then(value => {
           if (value.data.success) {
-            this.products = this.products.concat(value.data.products);
+            if(this.products)
+            this.products = value.data.products;
             if(this.initialProduct)
-            this.initialProduct = this.initialProduct.concat(value.data.products);
+            this.initialProduct = value.data.products;
+            this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
           } 
           if (value.data.products.length === 50) this.accept_product_request = true;
         });

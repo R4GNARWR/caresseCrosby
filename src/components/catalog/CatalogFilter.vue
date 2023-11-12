@@ -43,10 +43,8 @@ export default {
         setCatalogPadding() {
             if(window.innerWidth < 991) {
                 this.catalogOffsetTop = this.paddingTop;
-                console.log(this.catalogOffsetTop)
             } else {
                 this.catalogOffsetTop = 0;
-                console.log(this.catalogOffsetTop)
             }
         },
         ...search,

@@ -2,7 +2,7 @@
     <section class="main-section" id="main-props">
         <v-container>
             <v-row>
-                <v-col sm="3" cols="12">
+                <v-col md="3" sm="6" cols="12">
                     <div class="main-props__card">
                         <img src="/svg/props1.svg" alt="">
                         <div class="main-props__card-content">
@@ -11,7 +11,7 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col sm="3" cols="12">
+                <v-col md="3" sm="6" cols="12">
                     <div class="main-props__card">
                         <img src="/svg/props2.svg" alt="">
                         <div class="main-props__card-content">
@@ -20,7 +20,7 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col sm="3" cols="12">
+                <v-col md="3" sm="6" cols="12">
                     <div class="main-props__card">
                         <img src="/svg/props3.svg" alt="">
                         <div class="main-props__card-content">
@@ -29,7 +29,7 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col sm="3" cols="12">
+                <v-col md="3" sm="6" cols="12">
                     <div class="main-props__card">
                         <img src="/svg/props4.svg" alt="">
                         <div class="main-props__card-content">
@@ -75,7 +75,7 @@ export default {
         }
     }
 }
-@media (max-width: 600px) {
+@media (max-width: 960px) {
     .main-props__card
     {
         column-gap: 24px;
@@ -96,5 +96,8 @@ export default {
             }
         }
     }
+}
+@media (max-width: 600px) {
+    
 }
 </style>

@@ -1,7 +1,11 @@
 <template>
     <section class="brands">
         <v-container>
-            <Breadcrumbs></Breadcrumbs>
+            <div class="breadcrumbs text-page__breadcrumbs">
+                <router-link class="breadcrumbs-item" to="/">Главная</router-link>
+                <div class="breadcrumbs-divider">/</div>
+                <a class="breadcrumbs-item active">Бренды</a>
+            </div>
             <div class="brands-label">
                 Бренды
             </div>

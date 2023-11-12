@@ -128,7 +128,7 @@ export default {
     }
     
 }
-.articles-main__content-text
+.articles-detail__content-text
 {
     p
     {

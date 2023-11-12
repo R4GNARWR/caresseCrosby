@@ -4,7 +4,7 @@
             <div class="breadcrumbs text-page__breadcrumbs">
                 <router-link class="breadcrumbs-item" to="/">Главная</router-link>
                 <div class="breadcrumbs-divider">/</div>
-                <router-link class="breadcrumbs-item" to="/delivery">Доставка</router-link>
+                <a class="breadcrumbs-item active">Доставка</a>
             </div>
             <v-row>
                 <v-col cols="12">

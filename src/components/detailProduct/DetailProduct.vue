@@ -5,7 +5,7 @@
             <div class="breadcrumbs-divider">/</div>
             <router-link class="breadcrumbs-item" :to="'/catalog/' + category.id">Каталог</router-link>
             <div class="breadcrumbs-divider">/</div>
-            <router-link class="breadcrumbs-item" :to="this.$route.path">{{product.name}}</router-link>
+            <a class="breadcrumbs-item active">{{product.name}}</a>
         </div>
         <section class="product-detail">
             <v-row>
@@ -13,16 +13,16 @@
                     <div class="product-detail__images d-lg-grid d-none" v-if="full_photos">
                         <img :src="item" v-for="(item, index) in full_photos.slice(0,4)" :key="index" alt="">
                     </div>
-                    <div class="d-lg-none d-block" style="position: relative;">
+                    <div class="d-lg-none d-block" style="position: relative;" v-if="full_photos">
                         <swiper-container
                         class="swiper product-detail__swiper"
                         slides-per-view="1"
                         loop= "true"
                         :pagination="{
                             clickable: true,
-                            el: '.swiper-fullscreen__pagination'
+                            el: '.product-swiper__pagination'
                         }"
-                        v-if="full_photos">
+                        >
                         <swiper-slide class="swiper-slide" v-for="(item, index) in full_photos" :key="index">
                             <img :src="item" alt="">
                         </swiper-slide>
@@ -48,20 +48,12 @@
                         <div class="product-detail__info-color__name" v-if="colors">
                             Цвет: <span>{{colors[0].attributeValueText}}</span>
                         </div>
-                        <!-- <div class="product-detail__info-images">
-                            <a href="" class="active">
-                                <img src="/img/product-detail.jpg" alt="">
-                            </a>
-                            <a href="">
-                                <img src="/img/product-detail.jpg" alt="">
-                            </a>
-                        </div> -->
                     </div>
                     <div class="product-detail__info-sizes">
                         <div class="product-detail__info-sizes__item">
                             <div class="label">
                                 Выберите размер
-                                <router-link to="/sizeTable">Таблица размеров</router-link>
+                                <a @click="openSizeModal()">Таблица размеров</a>
                             </div>
                             <div class="buttons">
                                 <div class="buttons-item" v-for="item in sizes">
@@ -82,6 +74,8 @@
                             <v-icon icon="mdi-heart-outline" color="#FFF" v-if="!the_heart">
                             </v-icon>
                             <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart"></v-icon>
+                            <div class="tooltip" v-if="!the_heart">Добавить в избранное</div>
+                            <div class="tooltip" v-if="the_heart">Убрать из изранного</div>
                         </MainBtn>
                     </div>
                     <div class="product-detail__info-props">
@@ -129,6 +123,7 @@
             </v-col>
         </v-row>
     </section>
+    <ModalSizes id="modalSizes"></ModalSizes>
     <ModalToCart id="modalToCart"></ModalToCart>
     <SwiperCards class="product-detail__section" name="Вам понравится" v-if="products" :slidesArray="products"></SwiperCards>
     <SwiperCards class="product-detail__section" name="С этим товаром покупают" v-if="products" :slidesArray="products"></SwiperCards>
@@ -138,6 +133,8 @@
 <script>
 import {mapMutations, mapState} from "vuex";
 import { Fancybox } from '@fancyapps/ui';
+import { register } from 'swiper/element/bundle';
+
 import cart from "../../api/cart";
 import productCard from "../../api/productCard";
 import store from "../../store/store";
@@ -147,6 +144,7 @@ import MainBtn from '../UI/MainBtn.vue';
 import SwiperPagination from "../UI/SwiperPagination.vue";
 import ModalToCart from "../modals/ModalToCart.vue";
 import MainLink from "../UI/MainLink.vue";
+import ModalSizes from "../modals/ModalSizes.vue";
 
 
 export default {
@@ -160,7 +158,7 @@ export default {
         };
     },
     props: {},
-    components: { MainBtn, SwiperCards, SwiperPagination, ModalToCart, MainLink },
+    components: { MainBtn, SwiperCards, SwiperPagination, ModalToCart, MainLink, ModalSizes },
     computed:{
         sizes(){
             if (this.attributes && this.attributes.length>0){
@@ -224,17 +222,6 @@ export default {
         },
         ...mapState(['headerPadding','user_info','cart','colors_list','favorites', 'pop_products','cat_products', 'addToOrder'])
     },
-    watch: {
-        '$route'(newRoute, oldRoute) {if (oldRoute && newRoute !== oldRoute.params.id) {
-            window.scroll(0,0);
-            this.product=[];
-            this.full_photos=null
-            this.updateProduct();
-        }},
-    },
-    mounted() {
-        this.updateProduct()
-    },
     methods: {
         openFancybox(){
             Fancybox.close();
@@ -247,7 +234,21 @@ export default {
             ],
             {
                 closeButton: false,
-                mainClass: 'modal-base__wrap',
+            }
+            );
+        },
+        openSizeModal() {
+            Fancybox.close();
+            Fancybox.show(
+            [
+            {
+                src: '#modalSizes',
+                type: 'inline',
+            },
+            ],
+            {
+                closeButton: false,
+                dragToClose: false,
             }
             );
         },
@@ -339,7 +340,21 @@ export default {
         'cartItemSetQ',
         'removeFromCart',
         ])
-    }
+    },
+    watch: {
+        '$route'(newRoute, oldRoute) {if (oldRoute && newRoute !== oldRoute.params.id) {
+            window.scroll(0,0);
+            this.product=[];
+            this.full_photos=null
+            this.updateProduct();
+        }},
+    },
+    beforeCreate() {
+        register()
+    },
+    mounted() {
+        this.updateProduct()
+    },
 }
 </script>
 <style lang="scss">
@@ -549,6 +564,11 @@ export default {
     }
     .btn.heart:hover
     {
+        position: relative;
+        .tooltip
+        {
+            opacity: 1;
+        }
         i
         {
             color: $primary !important;
@@ -598,28 +618,13 @@ export default {
     }
 }
 @media (max-width: 960px) {
-    .product-detail__swiper
-    {
-        height: 580px;
-    }
-}
-@media (max-width: 600px) {
-    .breadcrumbs
-    {
-        display: none;
-    }
     .product-detail__section
     {
         padding: 16px 0 !important;
     }
-    .product-detail__info
+    .product-detail__swiper
     {
-        max-width: 320px;
-        margin-inline: auto;
-    }
-    .product-detail__wrap
-    {
-        max-width: 100% !important;
+        height: 580px;
     }
     .product-detail__info-label
     {
@@ -689,7 +694,7 @@ export default {
                 {
                     label
                     {
-                        width: 40px;
+                        width: auto;
                         height: 40px;
                         font-size: 14px;
                     }
@@ -717,6 +722,22 @@ export default {
         {
             margin-top: 32px;
         }
+    }
+}
+@media (max-width: 600px) {
+    .breadcrumbs
+    {
+        display: none;
+    }
+
+    .product-detail__info
+    {
+        max-width: 320px;
+        margin-inline: auto;
+    }
+    .product-detail__wrap
+    {
+        max-width: 100% !important;
     }
 }
 </style>

@@ -4,7 +4,7 @@
             <div class="breadcrumbs text-page__breadcrumbs">
                 <router-link class="breadcrumbs-item" to="/">Главная</router-link>
                 <div class="breadcrumbs-divider">/</div>
-                <router-link class="breadcrumbs-item active" :to="this.$route.path">Избранное</router-link>
+                <a class="breadcrumbs-item active">Избранное</a>
             </div>
             <v-row v-if="favorites && favorites.length>0">
                 <v-col md="3" sm="4" cols="6" v-for="product of favorites" :key="product.id" >
@@ -49,7 +49,8 @@ export default {
     padding-bottom: 17rem;
 }
 .favorite-empty
-{min-height: 300px;
+{
+    min-height: 300px;
     height: 100%;
     width: 100%;
     display: flex;

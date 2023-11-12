@@ -31,8 +31,8 @@
                             <Input class="inline" placeholder="Адрес доставки*" v-model="city" required="true"></Input>
                             <Input class="" placeholder="Имя*" v-model="name" required="true"></Input>
                             <!-- <Input class="" placeholder="Фамилия*"></Input> -->
-                            <Input class="" placeholder="Телефон*" validationType="phone" v-model="phone" required="true"></Input>
-                            <Input class="" placeholder="E-mail*" validationType="email" v-model="email" required="true"></Input>
+                            <Input class="" placeholder="Телефон*" validationType="phone" input-type="tel" v-model="phone" required="true"></Input>
+                            <Input class="" placeholder="E-mail*" validationType="email" input-type="email" v-model="email" required="true"></Input>
                         </div>
                     </div>
                 </v-col>

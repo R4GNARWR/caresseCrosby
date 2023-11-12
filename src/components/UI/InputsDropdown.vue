@@ -1,12 +1,12 @@
 <template >
-    <div class="inputs-dropdown">
-        <div class="inputs-dropdown__head" :class="{'on': listActive}" @click="listActive = !listActive">
+    <div class="inputs-dropdown" ref="dropdown">
+        <div class="inputs-dropdown__head" :class="{'on': listActive}" @click="toggleShow">
             <span v-if="selectedValue">{{ selectedValue }}</span>
             <span v-else>{{listName}}</span>
             <img src="/svg/arrowDropdown.svg" alt="">
         </div>
         <transition name="slide">
-            <div class="inputs-dropdown__body" v-if="listActive" v-click-outside="() => {listActive = !listActive}">
+            <div class="inputs-dropdown__body" v-if="listActive">
                 <div class="inputs-dropdown__body-item">
                     <div class="inputs-dropdown__body-label">{{listName}}</div>
                     <Checkbox :type="'radio'"
@@ -25,14 +25,12 @@
 <script>
 
 import Checkbox from './Checkbox.vue';
-import vClickOutside from "click-outside-vue3"
+import { ref, onMounted, watch } from 'vue'
+import { onClickOutside } from '@vueuse/core'
 
 export default {
     components: { Checkbox },
     emits: ['update:modelValue'],
-    directives: {
-      clickOutside: vClickOutside.directive
-    },
     props: {
         listName: String,
         inpustArray: [Array, Object],
@@ -41,30 +39,44 @@ export default {
             default: null,
         },
     },
-    data() {
-        return {
-            listActive: false,
-            selectedValue: null
+    setup(props, {emit}) {
+        const listActive = ref(false);
+        const selectedValue = ref('');
+        const dropdown = ref(null);
+
+        const handleClick = (value) => {
+            selectedValue.value = value;
+            emit('update:modelValue', value);
+            listActive.value = false;
         };
-    },
-    created() {
-        if (this.modelValue !== undefined && this.modelValue !== '') {
-            this.selectedValue = this.modelValue;
-        }
-    },
-    watch: {
-        modelValue(newValue) {
-            if (newValue !== undefined && newValue !== '') {
-                this.selectedValue = newValue;
+
+        const toggleShow = () => {
+            listActive.value = !listActive.value;
+        };
+
+        onMounted(() => {
+            if (props.modelValue !== undefined && props.modelValue !== '') {
+                selectedValue.value = props.modelValue;
             }
-        },
-    },
-    methods: {
-        handleClick(value) {
-            this.selectedValue = value
-            this.$emit('update:modelValue', value)
-            this.listActive = false
-        }
+
+            onClickOutside(dropdown, () => {
+                listActive.value = false;
+            });
+        });
+
+        watch(() => props.modelValue, (newValue) => {
+            if (newValue !== undefined && newValue !== '') {
+                selectedValue.value = newValue;
+            }
+        });
+
+        return {
+            listActive,
+            selectedValue,
+            dropdown,
+            handleClick,
+            toggleShow
+        };
     },
     
 }
@@ -113,7 +125,7 @@ export default {
         width: 100%;
         padding: 2.4rem 1.6rem;
         background: #FFFEFD;
-        box-shadow: 0px 6px 20px 0px rgba(63, 36, 5, 0.04);
+        box-shadow: 0px 6px 6px 6px rgba(63, 36, 5, 0.04);
         display: flex;
         flex-direction: column;
         row-gap: 1.2rem;
@@ -138,7 +150,7 @@ export default {
         border-bottom: 0;
     }
 }
-@media (max-width: 991px) {
+@media (max-width: 960px) {
     .inputs-dropdown
     {
         &__head
@@ -153,6 +165,7 @@ export default {
         }
         &__body
         {
+            max-height: calc(27px * 8);
             padding: 16px;
             row-gap: 12px;
             &-label
@@ -166,7 +179,7 @@ export default {
         }
     }
 }
-@media (max-width: 768px) {
+@media (max-width: 600px) {
     .inputs-dropdown
     {
         &__head

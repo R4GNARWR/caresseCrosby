@@ -20,6 +20,13 @@
         height: 100%;
     }
 }
+@media (max-width: 960px) {
+    .swiper-button
+    {
+        width: 32px;
+        height: 32px;
+    }
+}
 @media (max-width: 600px) {
     .swiper-button
     {
@@ -91,6 +98,8 @@ a.link
     right: 1.6rem;
     top: 1.6rem;
     object-fit: contain;
+    outline: none;
+    border: 0;
 }
 @media (max-width: 600px) {
     .close-modal
@@ -100,5 +109,62 @@ a.link
         object-fit: contain;
         right: 28px;
         top: 56px;
+    }
+}
+.tooltip
+{
+    opacity: 0;
+    padding: 0.5em 1em;
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 8px);
+    transform: translateY(-50%);
+    border-radius: 4px;
+    font-size: 1.2rem;
+    color: #27231E;
+    white-space: nowrap;
+    background-color: #FFFFFF;
+    box-shadow: 0px 0px 4px 4px #f5f4f2;
+    transition: 0.2s;
+    pointer-events: none;
+}
+@media (max-width: 960px) {
+    .tooltip
+    {
+        display: none !important;
+    }
+}
+.f-button
+{
+    background: #FFFFFF;
+    border-radius: 0;
+    color: #67677A;
+    &:hover
+    {
+        background: #FFFFFF !important;
+        color: #67677A !important;
+    }
+}
+.fancybox__toolbar.is-absolute, .is-compact .fancybox__toolbar
+{
+    bottom: 0;
+    top: initial;
+    left: 50%;
+    right: initial;
+    transform: translateX(-50%);
+}
+.fancybox__slide.has-image {
+    .fancybox__content
+    {
+        padding: 50px 0;
+    }
+}
+
+@media (max-width: 960px) {
+    .fancybox__slide.has-image {
+        .fancybox__content
+        {
+            padding: 25px 0;
+        }
     }
 }

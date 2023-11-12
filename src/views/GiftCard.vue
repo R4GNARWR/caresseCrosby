@@ -4,7 +4,7 @@
             <div class="breadcrumbs text-page__breadcrumbs">
                 <router-link class="breadcrumbs-item" to="/">Главная</router-link>
                 <div class="breadcrumbs-divider">/</div>
-                <router-link class="breadcrumbs-item active" :to="this.$route.path">Подарочные сертификаты</router-link>
+                <a class="breadcrumbs-item active">Подарочные сертификаты</a>
             </div>
             <div class="gift-card__label">Подарочные online-сертификаты</div>
             <div class="gift-card__banner">
@@ -18,7 +18,7 @@
                                 <li>Вы сами устанавливаете номинал сертификата.</li>
                                 <li>Плати online прямо сейчас, удобно!</li>
                                 <li>Срок действия сертификата не ограничен.</li>
-                                <li>Использовать сертификат можно в интернет-магазине и шоу-руме.</li>
+                                <li>Использовать сертификат можно в <br> интернет-магазине и шоу-руме.</li>
                             </ul>
                             <div class="gift-card__banner-content__btn">
                                 <a class="btn btn-primary w-ft" href="#sendCard">Оформить карту</a>
@@ -33,9 +33,9 @@
                         <img src="/img/about1.jpg" alt="">
                     </div>
                 </v-col>
-                <v-col md="7" cols="12">
+                <v-col md="7" cols="12" id="sendCard">
                     <form class="gift-card__execution-content">
-                        <div class="gift-card__execution-content__label" id="sendCard">Отличный подарок близкому человеку, особенно если он далеко.</div>
+                        <div class="gift-card__execution-content__label" >Отличный подарок близкому человеку, особенно если он далеко.</div>
                         <div class="gift-card__execution-content__text">
                             Нечаянная радость может случиться в любой момент.  Для этого совсем не нужен повод. Это легко сделать в один клик.
                         </div>
@@ -45,11 +45,11 @@
                         <div class="gift-card__execution-content__form">
                             <Input :placeholder="'От кого'" v-model="lid.from"></Input>
                             <Input :placeholder="'Кому'" v-model="lid.for"></Input>
-                            <Input :placeholder="'E-mail*'" v-model="lid.emailToSend" :required="true" validation-type="email"></Input>
-                            <Input :placeholder="'Телефон получателя*'" v-model="lid.phoneFrom" :required="true" validation-type="phone"></Input>
-                            <Input :placeholder="'Телефон отправителя*'" v-model="lid.phonefor" :required="true"></Input>
+                            <Input :placeholder="'E-mail*'" input-type="email" v-model="lid.emailToSend" :required="true" validation-type="email"></Input>
+                            <Input :placeholder="'Телефон получателя*'" v-model="lid.phoneFrom" :required="true" input-type="tel" validation-type="phone"></Input>
+                            <Input :placeholder="'Телефон отправителя*'" v-model="lid.phonefor" :required="true" input-type="tel" validation-type="phone"></Input>
                             <Input :placeholder="'Номинал в рублях'" v-model="lid.cost" :required="true"></Input>
-                            <Input :placeholder="'Когда отправить сертификат получателю'" class="inline" v-model="lid.when"></Input>
+                            <Input :placeholder="'Когда отправить сертификат получателю'" class="inline" v-model="lid.when" input-type="date"></Input>
                         </div>
                         <div class="gift-card__execution-content__form-bottom">
                             Если у вас возникнут вопросы, звоните в службу поддержки по телефону: <a href="">+7 (917) 747-15-61</a> <br>
@@ -64,6 +64,7 @@
 </template>
 <script>
 import { useVuelidate } from '@vuelidate/core'
+import store from "../store/store";
 
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import Input from '../components/UI/Input.vue';
@@ -82,8 +83,8 @@ export default {
             lid: {
                 from: '',
                 for: '',
-                email: '',
                 emailToSend: '',
+                phoneFrom: '',
                 phonefor: '',
                 cost: '',
                 when: '',
@@ -104,7 +105,29 @@ export default {
                 console.log("Validation failed");
                 return;
             }
-            this.$API.sentLid(this.lid)
+
+            this.$API.sentLid(this.lid).then(value => {
+                console.log(value)
+                if(value.data.success === true) {
+                    for (let key in this.lid) {
+                        this.lid[key] = '';
+                    }
+                    this.v$.$reset()
+                    let msg={}
+                    msg.msg='Заявка успешно отправлена!'
+                    msg.color = 'green'
+                    store.commit('set_snack_message', msg)
+                } else {
+                    let msg = {}
+                    msg.msg=''
+                    msg.color = 'red'
+                    for (let e of Object.keys(value.data.errors)) {
+                        msg.msg += value.data.errors[e]+ ' ';
+                    }
+                    store.commit('set_snack_message', msg)
+                }
+
+            })
         }
     }
 };
@@ -260,6 +283,20 @@ export default {
             font-size: 32px;
         }
     }
+    .gift-card__banner
+    {
+        &-content
+        {
+            &__list
+            {
+                margin-bottom: 40px;
+                row-gap: 25px;
+                font-size: 14px;
+                line-height: 1.2em;
+            }
+        }
+
+    }
     .gift-card__execution
     {
         &-img
@@ -303,6 +340,7 @@ export default {
                     font-size: 14px;
                 }
             }
+
         }
     }
 }

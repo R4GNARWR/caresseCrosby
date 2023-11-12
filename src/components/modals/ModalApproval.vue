@@ -64,7 +64,11 @@ export default {
     max-height: 35rem;
     height: auto;
     width: 48rem;
-    padding: 3.2rem;
+    &.fancybox__content
+    {
+        padding: 3.2rem;
+    }
+    
     &__label
     {
         margin-bottom: 1.2rem;
@@ -102,22 +106,6 @@ export default {
         height: auto;
         max-height: 800px;
         width: 500px;
-    }
-}
-@media (max-width: 600px) {
-    .modal-base__wrap
-    {
-        .fancybox__slide::after
-        {
-            margin: 0;
-        }
-    }
-    .modal-approval
-    {
-        max-height: 90vh;
-        height: 100%;
-        width: 100%;
-        padding: 48px 20px !important;
         &__label
         {
             margin-bottom:16px;
@@ -138,6 +126,23 @@ export default {
                 font-size: 10px;
             }
         }
+    }
+}
+@media (max-width: 600px) {
+    .modal-base__wrap
+    {
+        .fancybox__slide::after
+        {
+            margin: 0;
+        }
+    }
+    .modal-approval
+    {
+        max-height: 90vh;
+        height: 100%;
+        width: 100%;
+        padding: 48px 20px !important;
+        
     }
 }
 </style>

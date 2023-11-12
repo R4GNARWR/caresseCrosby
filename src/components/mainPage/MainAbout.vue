@@ -111,7 +111,7 @@ export default {
             letter-spacing: -0.2px;
         }
     }
-    @media (max-width: 600px) {
+    @media (max-width: 960px) {
         .main-about__left
         {
             &-name
@@ -122,6 +122,24 @@ export default {
             {
                 font-size: 40px;
             }
+        }
+        .main-about__right
+        {
+            &-label
+            {
+                margin-top: initial;
+                margin-bottom: 16px;
+                font-size: 18px;
+            }
+            &-text
+            {
+                font-size: 14px;
+            }
+        }
+    }
+    @media (max-width: 600px) {
+        .main-about__left
+        {
             &-img
             {
                 display: grid;

@@ -4,17 +4,8 @@
             <div class="breadcrumbs text-page__breadcrumbs">
                 <router-link class="breadcrumbs-item" to="/">Главная</router-link>
                 <div class="breadcrumbs-divider">/</div>
-                <router-link class="breadcrumbs-item" :to="this.$route.path ">Каталог</router-link>
+                <a class="breadcrumbs-item active">Каталог</a>
             </div>
-            <v-row>
-                <v-col cols="12">
-                    <div class="catalog__head">
-                        <div class="catalog__head-left">
-                            <div class="catalog__head-label" v-if="name">{{name}}</div>
-                        </div>
-                    </div>
-                </v-col>
-            </v-row>
             <v-row>
                 <v-col cols="12" v-if="products && products.length > 0">
                     <SwiperCards v-for="(item, index) in products" :key="index" :slidesArray="item.products" :name="item.name" :catId="item.catId"></SwiperCards>

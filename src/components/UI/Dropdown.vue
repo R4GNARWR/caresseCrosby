@@ -1,42 +1,62 @@
 <template>
-    <div class="dropdown">
-        <div class="dropdown__head" @click="listShow = !listShow" >
-            <slot></slot>
-            <img class="dropdown__head-arrow" src="/svg/arrow-black.svg" alt="">
-        </div>
-        <ul class="dropdown__body show" v-if="listShow" @click.stop v-click-outside="() => {listShow = !listShow}">
-            <li v-for="(item, index) in listItems" :key="index">
-                <router-link :to="item.link" v-if="item.link">{{item.name}}</router-link>
-                <button v-else @click="clickItem(item.name, item.value)">{{item.name}}</button>
-            </li>
-        </ul>
+    <div class="dropdown" ref="dropdown">
+      <div class="dropdown__head" @click="toggleShow">
+        <slot></slot>
+        <img class="dropdown__head-arrow" src="/svg/arrow-black.svg" alt="">
+      </div>
+      <ul class="dropdown__body show" v-if="listShow">
+        <li v-for="(item, index) in listItems" :key="index">
+          <router-link :to="item.link" v-if="item.link">{{item.name}}</router-link>
+          <button v-else @click="clickItem(item.name, item.value)">{{item.name}}</button>
+        </li>
+      </ul>
     </div>
-</template>
-<script>
-import { ref, onMounted } from 'vue'
-import vClickOutside from "click-outside-vue3"
-export default {
-    data() {
-        return {
-            listShow: false,
-        }
-    },
-    directives: {
-      clickOutside: vClickOutside.directive
-    },
+  </template>
+  
+  <script>
+  import { ref, onMounted, watch } from 'vue'
+  import { onClickOutside } from '@vueuse/core'
+  
+  export default {
     props: {
-        listItems: [Array, Object],
+      listItems: {
+        type: [Array, Object],
+        required: true
+      },
     },
-    methods: {
-        clickItem(name, value)
-        {
-            this.listShow = false
-            this.$emit('items-action', name, value)
-            
-        }
-    },
-}
-</script>
+    setup(props, { emit }) {
+      const listShow = ref(false)
+      const dropdown = ref(null)
+  
+      const clickItem = (name, value) => {
+        listShow.value = false
+        emit('items-action', name, value)
+      }
+  
+      const toggleShow = () => {
+        listShow.value = !listShow.value
+        console.log(listShow.value)
+      }
+  
+      onMounted(() => {
+        onClickOutside(dropdown, () => {
+          if (listShow.value) {
+            listShow.value = false
+          }
+        })
+      })
+  
+      watch(() => props.listItems, () => {
+        listShow.value = false
+      })
+  
+      return { listShow, dropdown, clickItem, toggleShow }
+    }
+  }
+  </script>
+  
+
+
 <style lang="scss">
 .dropdown
 {
@@ -63,12 +83,13 @@ export default {
             width: 2rem;
             height: 2rem;
             object-fit: contain;
+            pointer-events: none;
         }
     }
 }
 .dropdown__body
 {
-    padding: 0 1.6rem;
+    padding: 1rem 1.6rem;
     display: none;
     background-color: #FFF;
     position: absolute;
@@ -77,6 +98,7 @@ export default {
     width: 100%;
     min-width: 23.4rem;
     list-style: none;
+    box-shadow: 0px 0px 4px 4px rgba(63, 36, 5, 0.04);
     z-index: 200;
     &.show
     {
@@ -117,6 +139,7 @@ export default {
         padding: 0 16px;
         width: 100%;
         min-width: 200px;
+        box-shadow: none;
         li
         {
             margin-bottom: 16px;

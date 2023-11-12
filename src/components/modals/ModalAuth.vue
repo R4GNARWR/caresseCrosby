@@ -1,31 +1,32 @@
 <template>
-    <div class="modal-auth" ref="modalEl" >
-        <button class="close-modal" @click="closeFancybox()">
+    <form class="modal-auth" ref="modalEl" >
+        <button class="close-modal" @click="closeFancybox">
             <img src="/svg/close.svg" alt="">
         </button>
         <div class="modal-approval__label">Вход в аккаунт</div>
         <div class="modal-approval__text" >Мы отправим код для авторизации</div>
         <div class="modal-approval__input" v-if="!smsSended">
             <div class="modal-approval__input-text"></div>
-            <Input placeholder="Телефон " v-model="phone"></Input>
+            <Input placeholder="Телефон" input-type="tel" validation-type="phone" v-model="phone"></Input>
         </div>
         <div class="modal-approval__divide modal-approval__text" v-if="!smsSended">или</div>
         <div class="modal-approval__input" v-if="!smsSended">
             <div class="modal-approval__input-text"></div>
-            <Input placeholder="E-mail" v-model="email"></Input>
+            <Input placeholder="E-mail" v-model="email" input-type="email" validation-type="email" required="true"></Input>
         </div>
         <div class="modal-approval__input" v-if="smsSended">
             <div class="modal-approval__input-text"></div>
             <Input placeholder="Пароль" v-model="password"></Input>
         </div>
-        <MainBtn class-name="btn-primary w-100" @click="login" v-if="smsSended">Войти</MainBtn>
-        <MainBtn class-name="btn-primary w-100" @click="sendSms" v-else>Отправить код</MainBtn>
+        <MainBtn class-name="btn-primary w-100" type="submit" @click.prevent="login()" v-if="smsSended">Войти</MainBtn>
+        <MainBtn class-name="btn-primary w-100" type="submit" @click.prevent="handleSubmit()" v-else>Отправить код</MainBtn>
         <!-- <button @click="openReg()">Зареги</button> -->
-    </div>
+    </form>
 </template>
 <script>
 import {mapState, mapMutations} from "vuex";
 import { Fancybox } from '@fancyapps/ui';
+import useVuelidate from "@vuelidate/core";
 import store from "../../store/store";
 
 import Input from '../UI/Input.vue';
@@ -49,12 +50,22 @@ export default {
     },
     methods: {
         closeFancybox(){
+            console.log('fancyclosing')
             Fancybox.close()
         },
         setPaddingModal() {
             if (window.innerWidth < 600) {
                 this.$refs.modalEl.style.maxHeight = window.innerHeight - this.paddingTop + 'px';
             }
+        },
+        async handleSubmit() {
+            var validationResult = await this.v$.$validate();
+            
+            if (!validationResult) {
+                console.log("Validation failed");
+                return;
+            }
+            this.sendSms()
         },
         login(){
             this.$API.tryLogin(this.phone, this.email, this.password)
@@ -67,6 +78,10 @@ export default {
                     this.email = '';
                     this.password = '';
                     this.smsSended = false;
+                    let msg={}
+                    msg.msg='Вы успешно вошли!'
+                    msg.color = 'green'
+                    this.$store.commit('set_snack_message', msg)
                     Fancybox.close()
                 } else if(value.data.errors) {
                     let msg={}
@@ -75,20 +90,14 @@ export default {
                     for (let e of Object.keys(value.data.errors)) {
                         msg.msg += value.data.errors[e]+ ' ';
                     }
-                    if (this.the_error === "Неверный пароль!") {
-                        this.sms_available=true;
-                        this.$store.commit('set_snack_message', msg)
-                    } else {
-                        this.the_error="Пользователь не найден";
-                        store.commit('set_snack_message', this.the_error)
-                    }
+                    store.commit('set_snack_message', msg)
                 }
             });
         },
         sendSms(){
             this.$API.ask_sms(this.phone, this.email).then(value => {
-                this.smsSended = false;
                 if (value.data.success) {
+                    this.smsSended = true;
                     let msg = {};
                     msg.msg = "Пароль отправлен!"
                     msg.color = "green";
@@ -96,6 +105,7 @@ export default {
 
                 } else {
                     if (value.data.errors) {
+                        this.smsSended = false;
                         let msg = {}
                         msg.msg = ''
                         msg.color = 'red'
@@ -105,7 +115,11 @@ export default {
                 }
             })
         },
-        
+    },
+    setup() {
+        return {
+            v$: useVuelidate(),
+        };
     },
     mounted() {
         this.setPaddingModal();
@@ -125,7 +139,11 @@ export default {
     max-height: 60rem;
     height: auto;
     width: 48rem;
-    padding: 3.2rem;
+    &.fancybox__content
+    {
+        padding: 3.2rem !important;
+    }
+
 }
 .modal-approval__divide
 {

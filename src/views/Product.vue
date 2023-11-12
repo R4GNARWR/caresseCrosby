@@ -35,17 +35,26 @@ export default {
     methods: {
         updateProduct(){
             if (this.pop_products[this.$route.params.id]){
+                if(this.pop_products[this.$route.params.id].category.id === 24473) {
+                    this.$router.push('/giftCard')
+                    return
+                }
                 this.product = this.pop_products[this.$route.params.id];
                 this.attributes = this.pop_products[this.$route.params.id].attributes;
                 this.category = this.pop_products[this.$route.params.id].category;
                 this.category.hide_name = true;
                 this.full_photos = this.pop_products[this.$route.params.id].full_photos;
                 this.similar_products = this.pop_products[this.$route.params.id]['similar_products'];
+
             }
             else{
                 this.attributes=[];
                 this.$API.getProductById(this.$route.params.id).then(value =>{
                     if (value.data.status == "OK"){
+                        if(value.data.response.category.id === 24473) {
+                            this.$router.push('/giftCard')
+                            return
+                        }
                         this.product = value.data.response.product?value.data.response.product:null;
                         this.attributes = value.data.response.attributes?value.data.response.attributes:null;
                         this.category = value.data.response.category?value.data.response.category:null;
@@ -64,8 +73,10 @@ export default {
                         })
                     }
                     else this.$router.push('/')
+
                 })
             }
+
         },
     },
     mounted() {

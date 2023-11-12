@@ -16,7 +16,7 @@
             <MainLink class-name="btn-primary w-100" @click="closeFancybox()" :destination="'/cart'" >Оформить заказ</MainLink>
             <MainBtn class-name="btn-white outline w-100" @click="closeFancybox()">Вернуться к покупкам</MainBtn>
         </div>
-
+        
     </div>
 </template>
 <script>
@@ -45,7 +45,6 @@ export default {
         setPaddingModal() {
             if (window.innerWidth < 600) {
                 this.$refs.modalEl.style.maxHeight = window.innerHeight - this.paddingTop + 'px';
-                console.log(this.$refs.modalEl.style.maxHeight)
             }
         },
         
@@ -67,7 +66,10 @@ export default {
     max-height: 89rem;
     height: auto;
     width: 48rem;
-    padding: 3.2rem;
+    &.fancybox__content
+    {
+        padding: 3.2rem;
+    }
     &__input
     {
         margin-bottom: 3.4rem;
@@ -135,7 +137,7 @@ export default {
     }
 }
 @media (max-width: 600px) {
-
+    
     .modal-tocart__product
     {
         img

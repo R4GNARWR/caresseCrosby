@@ -4,7 +4,7 @@
             <div class="breadcrumbs contacts-breadcrumbs">
                 <router-link class="breadcrumbs-item" to="/">Главная</router-link>
                 <div class="breadcrumbs-divider">/</div>
-                <router-link class="breadcrumbs-item active" :to="this.$route.path">Контакты</router-link>
+                <a class="breadcrumbs-item active">Контакты</a>
             </div>
             <div class="contacts-label">Контакты</div>
             <div class="contacts-props">
