@@ -33,11 +33,6 @@ export default {
     Widget,
     ModalAuth
   },
-  methods: {
-    updateOffsetTop(height) {
-      this.mainOffsetTop = height;
-    },
-  },
   computed: {...mapState(['loader', 'snack_message']),},
   data() {
     return {
@@ -50,33 +45,55 @@ export default {
             right: [],
           },
         },
+        
         Thumbs: false,
       }
     };
   },
   setup(){
   },
+  methods: {
+    updateOffsetTop(height) {
+      this.mainOffsetTop = height;
+    },
+    setFancyboxCloseButton() {
+      const isMobile = window.innerWidth < 960;
+      const closeButtonValue = isMobile ? true : false;
+      Fancybox.bind(this.$refs.wrapper, '[data-fancybox]', {
+        ...(this.options || {}),
+        closeButton: closeButtonValue,
+      });
+    },
+  },
   mounted() {
-    Fancybox.bind(this.$refs.wrapper, '[data-fancybox]', {
-      ...(this.options || {}),
-      closeButton: false,
-    });
+    this.setFancyboxCloseButton();
+    window.addEventListener('resize', this.setFancyboxCloseButton);
   },
   
   updated() {
     Fancybox.unbind(this.$refs.wrapper);
-    Fancybox.bind(this.$refs.wrapper, '[data-fancybox]', {
-      ...(this.options || {}),
-      closeButton: false,
-    });
+    this.setFancyboxCloseButton();
   },
   unmounted() {
     Fancybox.destroy();
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.setFancyboxCloseButton);
   },
 }
 
 </script>
 
 <style lang="scss"> 
-
+.fancybox__content > .f-button.is-close-btn
+{
+  right: 5% !important;
+}
+@media (max-width: 580px) {
+  .is-compact .fancybox__content > .f-button.is-close-btn
+  {
+    top: -15px !important;
+    right: 20px !important;
+  }
+}
 </style>

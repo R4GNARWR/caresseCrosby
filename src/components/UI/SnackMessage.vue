@@ -1,5 +1,5 @@
 <template>
-  <div class="snack" :class="type">{{message.msg}}</div>
+  <div class="snack" :class="type" v-html="message.msg"></div>
 </template>
 
 <script>
@@ -24,6 +24,7 @@ export default {
   min-width: 280px;
   bottom: 20px;
   font-size: 20px;
+  text-align: center;
 }
 .error{
   background-color: darksalmon;

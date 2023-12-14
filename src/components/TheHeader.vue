@@ -4,34 +4,40 @@
             <div class="header-top">
                 <div class="header-left__col">
                     <div class="header-search__mobile d-lg-none d-flex">
-                        <div class="header-search__icon " @click="showMenu = !showMenu">
+                        <div class="header-menu__icon" @click="showMenu = !showMenu">
                             <img src="/svg/lines.svg" alt="">
                         </div>
-                        <Search></Search>
+                        <div class="header-search__icon" @click.stop="searchStatus = !searchStatus">
+                            <img src="/svg/search.svg" alt="">
+                        </div>
                     </div>
-                    <Search class="d-lg-flex d-none"></Search>
+
+                    <router-link class="header-logo d-lg-flex d-none" to="/"> 
+                        <img src="/svg/logo-header.svg" alt="">
+                    </router-link>
+                    <div class="header-location" >
+                        <img src="/svg/placemark-outline.svg" alt="">
+                        г. Уфа
+                    </div>
+                </div>
+                <router-link class="header-logo d-lg-none d-block" to="/"> 
+                    <img src="/svg/logo-header.svg" alt="">
+                </router-link>
+                <Search class="d-lg-block d-none"></Search>
+                <div class="header-right__col">
                     <div class="header-contacts">
                         <div class="header-contacts__phone">
                             <img src="/svg/phone-outline.svg" alt="">
                             <a href="tel:+7 (917) 747-15-61">+7 (917) 747-15-61</a>
                         </div>
-                        <div class="header-contacts__socials">
+                        <!-- <div class="header-contacts__socials">
                             <a target="_blank" href="https://vk.com/ccrosby">
                                 <img src="/svg/vk-circle.svg" alt="">
                             </a>
                             <a target="_blank" href="https://t.me/+79177471561">
                                 <img src="/svg/telegram-circle.svg" alt="">
                             </a>
-                        </div>
-                    </div>
-                </div>
-                <router-link class="header-logo" to="/"> 
-                    <img src="/svg/logo-header.svg" alt="">
-                </router-link>
-                <div class="header-right__col">
-                    <div class="header-location">
-                        <img src="/svg/placemark-outline.svg" alt="">
-                        г. Уфа, ул. Менделеева 156/1
+                        </div> -->
                     </div>
                     <div class="header-links">
                         <router-link class="header-links__item" to="/favorite">
@@ -41,7 +47,7 @@
                         <button @click="accountClick"  class="header-links__item d-md-block d-none">
                             <img src="/svg/account.svg" alt="">
                         </button>
-                        <router-link class="header-links__item" to="/cart">
+                        <router-link class="header-links__item  " to="/cart">
                             <div class="count" v-if="cart.length>0">{{cart.length}}</div>
                             <img src="/svg/cart.svg" alt="">
                         </router-link>
@@ -53,7 +59,7 @@
                     <img src="/svg/close.svg" alt="">
                 </div>
                 <div class="header-catalog__inner">
-                    <Search class="d-lg-none d-flex"></Search>
+                    <Search class="d-lg-none d-flex" :searchActive="true"></Search>
                     <nav class="header-catalog__list">
                         <div class="header-catalog__list-item" v-for="(item, index) in left_menu.slice(0,4)" :key="index" v-if="left_menu && windowWidth > 960">
                             <Dropdown :list-items="item.children"  v-if="item.children">
@@ -113,6 +119,7 @@
                 </div>
             </div>
         </v-container>
+        <ModalSearch :searchActive="searchStatus" @toggleSearch="closeSearch"></ModalSearch>
     </header>
     
 </template>
@@ -122,21 +129,27 @@ import {mapState, mapMutations} from "vuex";
 
 import Dropdown from './UI/Dropdown.vue';
 import Search from './UI/Search.vue';
+import ModalSearch from "./modals/ModalSearch.vue";
+import { timestamp } from "@vueuse/core";
 
 
 export default {
-    components: { Search, Dropdown,},
+    components: { Search, Dropdown, ModalSearch },
     data() {
         return {
             menuItems: [],
             showMenu: false,
             windowWidth: 0,
+            searchStatus: false,
         };
     },
     emits: [
         'update-offset-top'
     ],
     methods: {
+        closeSearch() {
+            this.searchStatus = false
+        },
         showLoginForm(){
             Fancybox.show(
             [{
@@ -152,6 +165,9 @@ export default {
             let headerHeight = 0;
             if(this.$refs.headerElement) {
                 headerHeight = this.$refs.headerElement.clientHeight
+            }
+            if(window.innerWidth > 950) {
+                this.searchStatus = true;
             }
             this.$store.commit('setHeaderPadding', headerHeight)
             this.$emit('update-offset-top', headerHeight);
@@ -237,9 +253,10 @@ export default {
         ...mapMutations(['clearCart'])
     },
     watch:{
-        $route (to, from){
+        '$route.fullPath': function () {
             this.showMenu = false;
-        }
+            this.searchStatus = false
+        },
     },
     computed:{
         ...mapState(['project_params', 'loggedIn', 'user_info', 'cart','favorites','categoriesTree']),
@@ -347,7 +364,6 @@ export default {
     },
     created() {
         if (!this.categoriesTree.length) this.$API.getParentsCategories();
-        
     },
     mounted() {
         if (!this.categoriesTree.length){
@@ -377,10 +393,25 @@ header
 }
 .header-top
 {
-    display: flex;
-    column-gap: 5.5rem;
+    margin-bottom: 1rem;
+    padding: 1rem 0 1rem 0;
     position: relative;
-    padding: 1rem 0 2rem 0;
+    display: flex;
+    align-items: center;
+    column-gap: 5.5rem;
+    border-bottom: 1px solid #E5E1DA;
+}
+.header-search__icon,
+.header-menu__icon
+{
+    width: 24px;
+    height: 24px;
+    img
+    {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
 }
 .header-links
 {
@@ -439,10 +470,10 @@ header
 {
     position: relative;
     display: flex;
+    column-gap: 2.4rem;
     align-items: center;
     flex-grow: 1;
     justify-content: space-between;
-    border-bottom:1px solid #E5E1DA;
 }
 .header-right__col
 {
@@ -451,7 +482,6 @@ header
     align-items: center;
     flex-grow: 1;
     justify-content: space-between;
-    border-bottom:1px solid #E5E1DA;
 }
 .header-contacts
 {
@@ -612,13 +642,24 @@ header
         }
     }
 }
-
+.header-search
+    {
+        .search-wrap
+        {
+            margin-bottom: 0;
+        }
+    }
 @media (max-width: 960px) {
     .header-contacts,
     .header-location
     {
         display: none;
     }
+    .header-top
+    {
+        border-bottom: 0;
+    }
+
     .header-catalog__inner
     {
         padding: 0 0 20px 0;
@@ -626,6 +667,11 @@ header
         display: flex;
         flex-direction: column;
         overflow-y: scroll;
+        .header-search
+        {
+            margin-bottom: 32px;
+            width: 100%;
+        }
     }
     .header-catalog
     {
@@ -694,7 +740,6 @@ header
         {
             padding-top: 0;
             margin-bottom: 32px;
-            position: relative;
             width: 100%;
             left: initial;
             top: initial;
@@ -706,30 +751,22 @@ header
                 border-bottom: 1px solid #E9E9E9;
                 box-shadow: none;
             }
-            .header-search__icon
-            {
-                display: block;
-                top: 8px;
-                left: 8px;
-            }
         }
         .header-search__close
         {
             right: 8px;
-            top: 12px;
+        }
+        .search-wrap
+        {
+            margin-bottom: 10px;
         }
         .search-result
         {
-            padding-bottom: 0;
-            box-shadow: none;
+            background-color: #FFFFFF;
             &__item
             {
-                padding: 4px 16px 4px 0px;
+                padding: 4px 8px 4px 8px;
             }
-        }
-        .header-search__icon.static
-        {
-            display: none;
         }
         
     }

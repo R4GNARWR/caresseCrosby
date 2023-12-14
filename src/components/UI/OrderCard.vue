@@ -29,8 +29,7 @@ export default {
         },
         getPhoto(id) {
             this.$API.getFullPhoto(id).then(value => {
-                console.log(value)
-                if(value.status ===200 && value.data.length>1) {
+                if(value && value.status === 200 && value.data && value.data.length>1) {
                     this.photo = value.data;
                 }
             })

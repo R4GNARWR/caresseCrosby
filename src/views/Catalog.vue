@@ -105,11 +105,15 @@ export default {
             if(this.products && this.$route.params.brands) {
             let products = [...this.products];
             let productsFiltered = []
-            for (let i = 0; i < products.length; i++) {z
+            for (let i = 0; i < products.length; i++) {
+                if(this.$route.params.id === 'brands' || this.$route.params.id === 'search') {
+                    productsFiltered.push(products[i]);
+                } else {
                     if (Number(products[i].category_id) === Number(this.$route.params.id)) {
                         productsFiltered.push(products[i]);
                     }
                 }
+            }
             switch (this.activeSortValue) {
                 case 'priceAsc': {
                     productsFiltered.sort((a, b) => a.price - b.price);
@@ -127,9 +131,15 @@ export default {
             } else if (this.products && !this.$route.params.brands) {
                 let products = [...this.products];
                 let productsFiltered = []
-                for (let i = 0; i < products.length; i++) {
-                    if (Number(products[i].category_id) === Number(this.$route.params.id)) {
+                if(this.$route.params.id === 'search') {
+                    for (let i = 0; i < products.length; i++) {
                         productsFiltered.push(products[i]);
+                    }
+                } else {
+                    for (let i = 0; i < products.length; i++) {
+                    if (Number(products[i].category_id) === Number(this.$route.params.id)) {
+                            productsFiltered.push(products[i]);
+                        }
                     }
                 }
                 switch (this.activeSortValue) {
@@ -184,7 +194,25 @@ export default {
             this.products = []
             this.productsInitial = []
             this.status = 'Поиск...'
-            try {
+            if(this.$route.params.id === 'search') {
+                try {
+                    const [productsResponse] = await Promise.all([
+                        this.$API.searchProducts( this.$route.query.query, null, 1, null)
+                    ]);
+                    this.i = 1;
+                    
+                    if (productsResponse) {
+                        this.products = productsResponse.data.products;
+                        this.productsInitial = productsResponse.data.products;
+                        this.accept_product_request = true;
+                    }
+                    this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
+                } catch (error) {
+                    this.status = 'Ошибка поиска. Повторите попытку позднее'
+                    console.log(error);
+                }
+            } else {
+                try {
                 const [descriptionResponse, productsResponse] = await Promise.all([
                 this.$API.getCatDescription(this.$route.params.id),
                 this.cat_products[this.$route.params.id] || this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570)
@@ -207,20 +235,23 @@ export default {
                 this.status = 'Ошибка поиска. Повторите попытку позднее'
                 console.log(error);
             }
+            }
+
         },
         ...search,
         updateFilter(filter) {
+            console.log('test')
             if(filter.attributeValueId !== 0)
             {
                 switch (filter.attributeId) {
                     case 1:
-                    this.filter.brand = filter;
+                    this.filter['brand'] = filter;
                     break;
                     case 2:
-                    this.filter.sizes = filter;
+                    this.filter['sizes'] = filter;
                     break;
                     case 6:
-                    this.filter.colors = filter;
+                    this.filter['colors'] = filter;
                     break;
                 } 
             }
@@ -233,6 +264,14 @@ export default {
             this.filter.brand = ''
             this.filter.sizes = ''
             this.filter.colors = ''
+            this.i = 1
+        },
+        '$route.query.query': function () {
+            this.update();
+            this.filter.brand = ''
+            this.filter.sizes = ''
+            this.filter.colors = ''
+            this.i = 1
         },
     },
     created() {
@@ -247,7 +286,10 @@ export default {
         if(this.$route.params.brands || this.$route.params.sizes) {
             this.filter.brand.attributeValueId = this.$route.params.brands || '';
             this.filter.sizes.attributeValueId = this.$route.params.sizes || '';
-            this.to_search();
+            if(this.$route.params.sizes || this.$route.params.brands) {
+                this.to_search();
+            }
+
         }
         window.addEventListener("scroll", this.onScroll);
     },

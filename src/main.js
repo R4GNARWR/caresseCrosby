@@ -11,7 +11,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import {aliases, mdi } from 'vuetify/iconsets/mdi'
-
+import VueLazyload from 'vue-lazyload'
 // Fancybox
 
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
@@ -39,6 +39,12 @@ const vuetify = createVuetify({
 API.init();
 app.config.globalProperties.$API = API
 app.use(store)
+app.use(VueLazyload, {
+  preLoad: 1.3,
+  error: '/img/noPhoto.png',
+  loading: '/img/loading.gif',
+  attempt: 1,
+})
 app.use(vuetify)
 app.use(router)
 app.mount('#app')

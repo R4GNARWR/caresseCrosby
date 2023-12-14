@@ -1,17 +1,16 @@
 <template>
-    <div class="product-card" v-if="product">
+    <div class="product-card">
         <div class="product-card__img">
-            <img :src="product.photo" alt="">
-            <div class="product-card__img-new" v-if="product.labels">{{product.labels}}</div>
-            <div class="product-card__img-like">
+            <img v-lazy="product.photo" alt="" v-if="product.photo">
+            <div class="product-card__img-new" v-if="product && product.labels">{{product.labels}}</div>
+            <div class="product-card__img-like" v-if="product">
                 <v-icon icon="mdi-heart-outline" color="#27231E" v-if="!the_heart" @click="addFavor(product.id)"></v-icon>
                 <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart" @click="delFavor(product.id)"></v-icon>
                 <div class="tooltip" v-if="!the_heart">Добавить в избранное</div>
                 <div class="tooltip" v-if="the_heart">Убрать из изранного</div>
             </div>
-            
         </div>
-        <div class="product-card__info">
+        <div class="product-card__info"  v-if="product">
             <div class="product-card__info-name" v-if="product.name">{{product.name}}</div>
             <div class="product-card__info-props">
                 <div class="product-card__info-props__price" v-if="product.price">
@@ -62,7 +61,7 @@ export default {
         ...productCard,
         ...cart,
         ...mapMutations(['add2cart']),
-    }
+    },
 }
 </script>
 <style lang="scss">
@@ -77,9 +76,17 @@ export default {
         max-width: 100%;
         img
         {
+            position: absolute;
+            left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
+            z-index: 1;
+        }
+        .loading
+        {
+            z-index: 2;
         }
         &-new
         {

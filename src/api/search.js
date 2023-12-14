@@ -3,6 +3,7 @@ import store from "../store/store";
 export default {
     getVariants(callTime) {
         let vm = this;
+
         if (vm.keyPressedTime <= callTime) {
             if (vm.searchString.length>3) {
                 vm.activeSearchVariantIdx = null;
@@ -13,7 +14,11 @@ export default {
                             if (response.data.products && response.data.products.length) {
                                 vm.variants = response.data.products;
                                 vm.searchResultsVisible = true;
-                            } else {vm.variants = [];}
+                                vm.resultEmpty = false
+                            } else {
+                                vm.variants = [];
+                                vm.resultEmpty = true
+                            }
                             
                         }
                     }
@@ -67,9 +72,9 @@ export default {
             }
             break;
             case e && e.keyCode === 13: // Enter
-            if (vm.activeSearchVariantIdx !== null) {
-                vm.searchString = vm.variants[vm.activeSearchVariantIdx].product;
-            }
+                if(vm.searchString.length > 3) {
+                    this.$router.push('/catalog/search/?query=' + vm.searchString)
+                }
             break;
             case e && e.keyCode === 27: // Esc
             vm.$refs.searchStringInput.blur();
@@ -152,6 +157,7 @@ export default {
     },
     
     to_search(){
+        console.log('api test')
         this.i=1;
         this.products=[];
         this.filter_selected='';
@@ -197,7 +203,9 @@ export default {
         }
         attr = attr.substr(0, attr.length - 1);
         
-        if (!f['brand'].attributeValueId && !f['sizes'].attributeValueId & !f['colors'].attributeValueId) {
+        if (!f['brand'].attributeValueId && 
+        (f['sizes'] && !f['sizes'].attributeValueId) &&
+        !f['colors'].attributeValueId) {
           this.products = this.initialProduct;
           return;
         }
@@ -205,9 +213,9 @@ export default {
         this.$API.searchProducts(this.searchString, attr, page, category).then(value => {
           if (value.data.success) {
             if(this.products)
-            this.products = value.data.products;
+            this.products = [...this.products, ...value.data.products];
             if(this.initialProduct)
-            this.initialProduct = value.data.products;
+            this.initialProduct = [...this.initialProduct, ...value.data.products];
             this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
           } 
           if (value.data.products.length === 50) this.accept_product_request = true;

@@ -51,7 +51,7 @@ export default {
                 this.attributes=[];
                 this.$API.getProductById(this.$route.params.id).then(value =>{
                     if (value.data.status == "OK"){
-                        if(value.data.response.category.id === 24473) {
+                        if(value.data.response && value.data.response.category.id === 24473) {
                             this.$router.push('/giftCard')
                             return
                         }

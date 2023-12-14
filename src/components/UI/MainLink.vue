@@ -14,7 +14,14 @@ export default {
     props: {
         className: String,
         destination: String,
-
+        disabled: {
+            type: Boolean,
+            default: false
+        },
+        type: {
+            type: String,
+            default: 'button'
+        }
     },
     methods: {
         

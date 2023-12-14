@@ -32,6 +32,8 @@ export default  {
     },
 
     getPopularProducts(){return this.axios.get('popular-products')},
+    getHitsProducts(){return this.axios.get('hits-products')},
+    getNewProducts(){return this.axios.get('new-products')},
     getParentsCategories(){store.commit('loader');  this.axios.get('categories/parents').then(response=>{
                 if(response.data && response.data.response.categories){
                     store.commit('loader');
@@ -94,7 +96,7 @@ export default  {
     makeOrder(to_send){
         return this.axios.post('cart/checkout', to_send, {})
     },
-   registration(name, phone, email, password){
+    registration(name, phone, email, password){
         if (!name || name =='') name = "Любимый клиент";
         return this.axios.post('auth/reg', {name: name, phone: phone, email:email, password: password},{})
     },

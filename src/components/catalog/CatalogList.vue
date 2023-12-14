@@ -65,7 +65,7 @@ export default {
     .catalog-list
     {
         margin-bottom: 32px;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, calc(50% - 1.6rem));
     }
     .catalog-pagination
     {

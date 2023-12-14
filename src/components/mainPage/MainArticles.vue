@@ -33,7 +33,7 @@
                                     <span v-if="item.type === 'text'" >
                                         {{ item.content }}
                                     </span>
-                                    <img :src="'https://static.ccrosby.ru/blogs/' + item" alt="" v-for="(item, index) in item.content" :key="index" v-if="item.type === 'img'">
+                                    <!-- <img :src="'https://static.ccrosby.ru/blogs/' + item" alt="" v-for="(item, index) in item.content" :key="index" v-if="item.type === 'img'"> -->
                                 </div>
                             </router-link>
                         </div>
@@ -49,7 +49,7 @@
                 <img src="/svg/swiper-next.svg" alt="">
             </div>
         </div>
-        <router-link class="swiper-cards__more d-md-none d-flex" to="/articles">Все статьи</router-link>
+        <router-link class="swiper-cards__more d-md-none d-block text-center" to="/articles">Все статьи</router-link>
     </v-container>  
 </section>
 </template>
@@ -202,8 +202,13 @@ export default {
     {
         display: none;
     }
+    #mainArticles
+    {
+        padding: 32px 0 100px 0 !important;
+    }
     .main-article
     {
+
         &__img
         {
             height: 327px;

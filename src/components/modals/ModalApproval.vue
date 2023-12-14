@@ -39,6 +39,7 @@ export default {
         },
         setPaddingModal() {
             if (window.innerWidth < 600) {
+                if(this.$refs.modalEl)
                 this.$refs.modalEl.style.maxHeight = window.innerHeight - this.paddingTop + 'px';
             }
         },

@@ -27,8 +27,8 @@
                     </v-col>
                 </v-row>
             </div>
-            <v-row >
-                <v-col md="5" cols="12" style="align-self: flex-end;">
+            <v-row>
+                <v-col md="5" cols="12">
                     <div class="gift-card__execution-img">
                         <img src="/img/about1.jpg" alt="">
                     </div>
@@ -43,7 +43,7 @@
                             Оформить сертификат
                         </div>
                         <div class="gift-card__execution-content__form">
-                            <Input :placeholder="'От кого'" v-model="lid.from"></Input>
+                            <Input :placeholder="'От кого'" v-model="lid.from" ref="firstInput"></Input>
                             <Input :placeholder="'Кому'" v-model="lid.for"></Input>
                             <Input :placeholder="'E-mail*'" input-type="email" v-model="lid.emailToSend" :required="true" validation-type="email"></Input>
                             <Input :placeholder="'Телефон получателя*'" v-model="lid.phoneFrom" :required="true" input-type="tel" validation-type="phone"></Input>
@@ -102,12 +102,14 @@ export default {
             var validationResult = await this.v$.$validate();
             
             if (!validationResult) {
-                console.log("Validation failed");
+                let msg={}
+                msg.msg='Пожалуйста, заполните все поля!'
+                store.commit('set_snack_message', msg)
+                this.$refs.firstInput.$el.scrollIntoView({ behavior: "smooth" });
                 return;
             }
 
             this.$API.sentLid(this.lid).then(value => {
-                console.log(value)
                 if(value.data.success === true) {
                     for (let key in this.lid) {
                         this.lid[key] = '';
@@ -115,8 +117,8 @@ export default {
                     this.v$.$reset()
                     let msg={}
                     msg.msg='Заявка успешно отправлена!'
-                    msg.color = 'green'
                     store.commit('set_snack_message', msg)
+                    this.$router.push('/')
                 } else {
                     let msg = {}
                     msg.msg=''
@@ -209,12 +211,11 @@ export default {
 {
     &-img
     {
-        display: flex;
-        align-items: flex-end;
         width: 100%;
+        height: 100%;
         img
         {
-            height: 60rem;
+            height: 100%;
             width: 100%;
             object-fit: cover;
         }

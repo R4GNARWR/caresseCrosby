@@ -1,25 +1,32 @@
 <template>
-    <div class="header-search">
-        <div class="header-search__icon static" style="cursor: pointer" @click="searchVisible = !searchVisible">
-            <img src="/svg/search.svg" alt="">
-            Поиск
-        </div>
-        <div class="search-wrap show" v-if="searchVisible" v-click-outside="() => {searchVisible = !searchVisible}">
-            <div class="header-search__icon">
+    <div class="header-search" >
+        <div class="search-wrap" >
+            <div class="search__icon">
                 <img src="/svg/search.svg" alt="">
             </div>
             <input type="text" placeholder="Поиск"
             v-model="searchString"
+            ref="searchStringInput"
             @focus="focus"
-            @keydown="keydown">
-            <div class="header-search__close"   @click="closeSearch">
+            @keydown="keydown"
+            >
+            <div class="header-search__close d-lg-block d-none" @click="clearSearch">
                 <img src="/svg/close.svg" alt="">
             </div>
-            <div class="search-result">
-                <router-link class="search-result__item" :to="'/product/'+item.id" v-for="(item, index) in variants.slice(0,6)" :key="index" v-if="variants && variants.length > 0" @click="clickItem">
-                    <div class="search-result__item-name">{{item.product}}</div>
-                    <div class="search-result__item-type">({{item.category}})</div>
-                </router-link>
+            <div class="header-search__close d-lg-none d-block" @click="closeSearch">
+                <img src="/svg/close.svg" alt="">
+            </div>
+        </div>
+        
+        <div class="search-result" v-if="variants && variants.length > 0">
+            <router-link class="search-result__item" :to="'/product/'+item.id" v-for="(item, index) in variants.slice(0,6)" :key="index">
+                <div class="search-result__item-name">{{item.product}}</div>
+                <div class="search-result__item-type">({{item.category}})</div>
+            </router-link>
+        </div>
+        <div class="search-result" v-else-if="searchString.length >= 4 && resultEmpty">
+            <div class="empty">
+                Таких товаров не найдено
             </div>
         </div>
     </div>
@@ -31,10 +38,8 @@ import store from "../../store/store";
 import vClickOutside from "click-outside-vue3"
 
 export default {
-    
     data() {
         return {
-            searchVisible: false,
             products:[],
             no_result:false,
             searchString: '',
@@ -44,85 +49,82 @@ export default {
             activeSearchVariantIdx: null,
             one_size_attr: null,
             filter_selected: '', filter:{}, start_filter:{},
-            i:1, accept_product_request:false,
+            i:1,
+            accept_product_request:false,
+            resultEmpty: false,
         }
     },
+    props: {
+        searchActive: Boolean,
+    },
     directives: {
-      clickOutside: vClickOutside.directive
+        clickOutside: vClickOutside.directive
     },
     created() {this.for_created();},
-    computed: {...mapState(['market_group','brands_search','colors_search','sizes_search','OneSize','colors_list', 'addToOrder', 'search_result', 'search_settings']),},
+    computed: {
+        ...mapState(['market_group','brands_search','colors_search','sizes_search','OneSize','colors_list', 'addToOrder', 'search_result', 'search_settings']),
+        showSearch() {
+            if(window.innerWidth > 950) {
+                return true
+            } else {
+                return this.searchActive
+            }
+        },
+    },
     methods: {
-        closeSearch() {
+        clearSearch() {
             this.searchString = ''
-            this.searchVisible = false
+            this.keydown()
         },
-        clickItem()
-        {
-            this.searchVisible = false
+        closeSearch() {
+            this.$emit('closeSearch')
         },
-        ...SearchMethods,
-    }
+        ...SearchMethods
+    },
+    watch:{
+        '$route.fullPath': function () {
+            this.showMenu = false;
+            this.searchStatus = false
+        },
+    },
 }
 </script>
+
 <style lang="scss">
 .header-search
 {
+    width: 55rem;
+    position: relative;
     height: 100%;
     display: flex;
     align-items: center;
     column-gap: 1.2rem;
-    &__icon
+}
+.search-result
+{
+    .empty
     {
-        img
-        {
-            position: absolute;
-            left: 1.6rem;
-            top: 2.2rem;
-            width: 2.4rem;
-            height: 2.4rem;
-            z-index: 2;
-        }
-        &.static
-        {
-            img
-            {
-                top: 1.6rem;
-            }
-        }
-        padding-left: 5.2rem;
-        color: $primary;
-        font-size: 1.4rem;
-        font-style: normal;
-        font-weight: 500;
-        line-height: 3.2rem;
-        letter-spacing: -0.14px;
-        
+        text-align: center;
+        padding: .25em 0;
+        font-size: 16px;
     }
 }
 .search-wrap
 {
-    display: none;
-    position: absolute;
-    left: 0;
-    top: 1.2rem;
+    margin-bottom: 10px;
+    position: relative;
+    display: block;
     width: 100%;
     height: auto;
     z-index: 2;
-    &.show
-    {
-        display: block;
-    }
     input
     {
-        padding: 1.6rem 1.6rem 1.6rem 5.2rem;
+        padding: .4rem 1.2rem .4rem 4.4rem;
         width: 100%;
         height: 100%;
-        border-bottom: 1px solid #C0BFBD;
-        background-color: #FFF;
+        background-color: #F4F4F4;
         outline: 0;
-        box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.08);
-        border: 1px solid #E9E9E9;
+        border-radius: 12px;
         z-index: 1;
         &,
         &::placeholder
@@ -139,18 +141,30 @@ export default {
 .header-search__close
 {
     position: absolute;
-    right: 1.6rem;
-    top: 2.4rem;
     width: 1.6rem;
     height: 1.6rem;
+    right: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
     cursor: pointer;
+    img
+    {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
 }
 .search-result
 {
-    display: block;
-    border-top: 1px solid #C0BFBD;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
     background-color: #FFFEFD;
+    border-radius: 0 0 12px 12px;
     box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.08);
+    z-index: 100;
     &__item
     {
         display: flex;
@@ -177,21 +191,41 @@ export default {
         }
     }
 }
+.search__icon
+{
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    width: 2.4rem;
+    height: 2.4rem;
+    transform: translateY(-50%);
+    z-index: 200;
+    img
+    {
+        width: 100%;
+        height: 100%;
+    }
+}
+@media (max-width: 1280px) {
+    .header-search
+    {
+        width: 300px;
+    }
+}
 @media (max-width: 960px) {
+    .header-search
+    {
+        width: 400px;
+    }
+    header
+    {
+        position: relative;
+    }
     .search-wrap
     {
-        position: absolute;
-        width: 540px;
-        left: 0;
-        top: calc(100%);
-        .header-search__icon
-        {
-            position: absolute;
-            top: 6px;
-            left: 12px;
-        }
         input
         {
+            position: relative;
             padding: 8px 16px 8px 56px;
             height: auto;
             &, &::placeholder
@@ -200,32 +234,21 @@ export default {
             }
         }
     }
-    .header-search__icon.hide
+    .search__icon.hide
     {
         display: block;
     }
-    .header-search__icon,
-    .header-search__icon.static
+    .search__icon
     {
-        font-size: 0;
         width: 24px;
         height: 24px;
-        padding: 0;
-        img
-        {
-            position: static;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            transform: translateY(0);
-        }
     }
     .header-search__close
     {
         right: 20px;
-        top: 10px;
         width: 16px;
         height: 16px;
+        transform: translateY(-50%);
     }
     .search-result
     {
@@ -233,7 +256,7 @@ export default {
         padding-bottom: 28px;
         &__item
         {
-            padding: 4px 16px 4px 56px;
+            padding: 4px 16px 4px 16px;
             &-name
             {
                 font-size: 16px;
@@ -246,24 +269,13 @@ export default {
     }
 }
 @media (max-width: 600px) {
-    .search-wrap
+    .header-search
     {
-        width: 100vw;
-        left: 0;
-        top: 0;
-        height: auto;
-        padding-top: 32px;
-        background-color: #FFF;
-        z-index: 900;
+        width: 340px;
     }
-    .search-wrap .header-search__icon
+    .search-wrap .search__icon
     {
-        top: 40px;
         left: 16px;
-    }
-    .header-search__close
-    {
-        top: 40px;
     }
     .search-wrap input
     {

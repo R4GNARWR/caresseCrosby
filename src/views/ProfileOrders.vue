@@ -15,7 +15,7 @@
                 </router-link>
             </div>
             <v-row>
-                <v-col cols="12" v-for="(item, index) in orders" :key="index">
+                <v-col cols="12" v-for="(item, index) in orders" :key="index" v-if="orders && orders.length">
                     <div class="order__item">
                         <div class="order__item-head">
                             <div class="order__item-head__name">
@@ -89,6 +89,11 @@
                                 
                             </v-col>
                         </v-row>
+                    </div>
+                </v-col>
+                <v-col v-else>
+                    <div class="order__empty">
+                        У вас пока нет заказов
                     </div>
                 </v-col>
             </v-row>
@@ -174,9 +179,11 @@ export default {
     margin-bottom: 4rem;
     border: 1px solid #E9E9E9;
 }
-.order__item-wrap
+.order__empty
 {
-    
+    font-size: 36px;
+    padding: 50px;
+    text-align: center;
 }
 .order__item-head
 {

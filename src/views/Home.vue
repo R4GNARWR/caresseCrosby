@@ -1,12 +1,12 @@
 <template>
     <SwiperFullScreen :slidesArray="mainSlides" ></SwiperFullScreen>
     <MainProps></MainProps>
-    <SwiperCards name="Хиты продаж" :slidesArray="newProducts" v-if="newProducts"></SwiperCards>
+    <SwiperCards name="Хиты продаж" :slidesArray="hitProducts" v-if="hitProducts && hitProducts.length > 0"></SwiperCards>
     <MainCategories></MainCategories>
     <MainBanner></MainBanner>
-    <SwiperCards name="Популярное" :slidesArray="newProducts" v-if="newProducts"></SwiperCards>
+    <SwiperCards name="Популярное" :slidesArray="popularProducts" v-if="popularProducts && popularProducts.length > 0"></SwiperCards>
     <MainAbout></MainAbout>
-    <SwiperCards name="Новое поступление" :slidesArray="newProducts" v-if="newProducts"></SwiperCards>
+    <SwiperCards name="Новое поступление" :slidesArray="newProducts" v-if="newProducts && newProducts.length > 0"></SwiperCards>
     <MainArticles></MainArticles>
 </template>
 <script>
@@ -54,6 +54,8 @@ export default {
                     backgroundImageSrc: '/img/mainSlider2.jpg'
                 },
             ],
+            popularProducts:[],
+            hitProducts:[],
             newProducts:[],
             blogs:[],
             galleries: {},
@@ -75,7 +77,13 @@ export default {
         }
     },
     created() {
+        this.$API.getHitsProducts().then(value => {
+            if (value.data.success) this.hitProducts = value.data.products
+        })
         this.$API.getPopularProducts().then(value => {
+            if (value.data.success) this.popularProducts = value.data.products
+        })
+        this.$API.getNewProducts().then(value => {
             if (value.data.success) this.newProducts = value.data.products
         })
         this.$API.getGallery().then(value =>{

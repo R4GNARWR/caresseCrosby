@@ -16,7 +16,7 @@
                     <v-col md="6" cols="12">
                         <div class="articles-main__content" >
                             <div class="articles-main__content-label">
-                               {{ blogs[0].title }}
+                                {{ blogs[0].title }}
                             </div>
                             <div class="articles-main__content-text">
                                 {{ JSON.parse(blogs[0].json_string)[0].content }}
@@ -28,8 +28,14 @@
             </div>
             <div class="articles-list">
                 <v-row>
+                    <v-col cols="12">
+                        <div class="articles-more__label">
+                            Другие статьи
+                        </div>
+                    </v-col>
+                    
                     <v-col md="4" sm="6" cols="12" v-for="(item, index) in blogs.slice(1, blogs.length)" :key="index" v-if="blogs">
-                        <ArticleCard :cardData="item" :cardId="index" v-if="item"></ArticleCard>
+                        <ArticleCard :cardData="item" :cardId="index+1" v-if="item"></ArticleCard>
                     </v-col>
                 </v-row>
                 <!-- <MainBtn class-name="btn-white outline mx-auto d-lg-none d-block">Показать еще</MainBtn> -->
@@ -82,6 +88,16 @@ export default {
     padding-top: 2.4rem;
     padding-bottom: 17rem;
 }
+.articles-more__label
+{
+    margin-bottom: -3rem;
+    color: #27231E;
+    font-size: 3.4rem;
+    font-weight: 600;
+    line-height: 1.2em;
+    letter-spacing: -0.4px;
+}
+
 .articles-main
 {
     margin-bottom: 6.4rem;
@@ -145,6 +161,11 @@ export default {
     }
 }
 @media (max-width: 960px) {
+    .articles-more__label
+    {
+        font-size: 28px;
+        font-weight: 600;
+    }
     .articles
     {
         padding-bottom: 60px;

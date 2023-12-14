@@ -6,10 +6,10 @@
         <div class="modal-approval__label">Спасибо!</div>
         <div class="modal-approval__text">Вы добавили товар в корзину</div>
         <div class="modal-tocart__product">
-            <img src="/img/product-detail.jpg" alt="">
+            <img :src="product.photo || '/img/product-detail.jpg'" alt="">
             <div class="modal-tocart__product-info">
-                Nessa Selena Bra
-                <span>6 900 ₽</span>
+                {{ product.name || 'Nessa Selena Bra'}}
+                <span>{{ product.price || '6 900'}} ₽</span>
             </div>
         </div>
         <div class="modal-tocart__buttons">
@@ -30,9 +30,7 @@ import MainLink from '../UI/MainLink.vue';
 export default {
     components: { Input, MainBtn, MainLink },
     props: {
-        label: String,
-        subText: String,
-        destination: String,
+        product: null,
     },
     computed:{
         ...mapState(['headerPadding',]
@@ -44,6 +42,7 @@ export default {
         },
         setPaddingModal() {
             if (window.innerWidth < 600) {
+                if(this.$refs.modalEl)
                 this.$refs.modalEl.style.maxHeight = window.innerHeight - this.paddingTop + 'px';
             }
         },

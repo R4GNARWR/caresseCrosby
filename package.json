@@ -21,6 +21,7 @@
     "pinia": "^2.1.6",
     "swiper": "^10.3.0",
     "vue": "^3.3.4",
+    "vue-lazyload": "^3.0.0",
     "vue-router": "^4.2.5",
     "vue-yandex-maps": "^0.12.7",
     "vuetify": "^3.3.17",

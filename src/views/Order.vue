@@ -6,7 +6,7 @@
                     <div class="order-products">
                         <div class="order-label">
                             Ваш заказ
-                            <span>3 товара</span>
+                            <span>{{cartQuantity + ' ' + productsComputedText}}</span>
                         </div>
                         <div class="order-products__wrap">
                             <a class="order-products__wrap-item" href="#" v-for="(item, index) in cart" :key="index">
@@ -28,7 +28,7 @@
                             Данные для доставки
                         </div>
                         <div class="order-delivery__form" v-if="user_info">
-                            <Input class="inline" placeholder="Адрес доставки*" v-model="city" required="true"></Input>
+                            <Input class="inline" placeholder="Адрес доставки*" v-model="city" required="true" inputId="suggest"></Input>
                             <Input class="" placeholder="Имя*" v-model="name" required="true"></Input>
                             <!-- <Input class="" placeholder="Фамилия*"></Input> -->
                             <Input class="" placeholder="Телефон*" validationType="phone" input-type="tel" v-model="phone" required="true"></Input>
@@ -187,6 +187,21 @@ export default {
     },
     
     created() {
+        const script = document.createElement('script')
+
+
+        script.onload = () => {
+            ymaps.ready(init);
+        };
+
+        function init() {
+            var suggestView1 = new ymaps.SuggestView('suggest');
+        }
+
+        script.id = 'ymaps'
+        script.src = "https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=453f5758-6290-4de4-bae1-d645fb102e5c&suggest_apikey=6d832aa2-715a-4c2f-bac8-daf07218d006"
+        document.head.append(script);
+
         // if (this.user_info.city) {this.address.city = this.user_info.city; this.geocode_address()}
         // if (this.user_info.phone) this.phone = this.user_info.phone;
         // if (this.user_info.apartment) this.address.apartment = this.user_info.apartment;
@@ -208,6 +223,9 @@ export default {
         this.phone = this.user_info.phone || ''
         this.name = this.user_info.name || ''
         this.city = this.user_info.city || ''
+    },
+    destroyed() {
+        document.head.querySelector('script#ymaps').remove()
     }
 };
 </script>

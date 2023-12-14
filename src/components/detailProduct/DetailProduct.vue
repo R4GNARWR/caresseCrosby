@@ -10,10 +10,13 @@
         <section class="product-detail">
             <v-row>
                 <v-col md="8" cols="12">
-                    <div class="product-detail__images d-lg-grid d-none" v-if="full_photos">
-                        <img :src="item" v-for="(item, index) in full_photos.slice(0,4)" :key="index" alt="">
+                    <div class="product-detail__images d-lg-grid d-none" v-if="!photosLoaded">
+                        <img src="/img/noPhoto.png" v-for="(item, index) in 4" :key="index" alt="" >
                     </div>
-                    <div class="d-lg-none d-block" style="position: relative;" v-if="full_photos">
+                    <div class="product-detail__images d-lg-grid d-none" v-if="photosLoaded && full_photos">
+                        <img v-lazy="item" v-for="(item, index) in full_photos.slice(0,4)" :key="index" alt="" >
+                    </div>
+                    <div class="d-lg-none d-block" style="position: relative;">
                         <swiper-container
                         class="swiper product-detail__swiper"
                         slides-per-view="1"
@@ -23,8 +26,11 @@
                             el: '.product-swiper__pagination'
                         }"
                         >
-                        <swiper-slide class="swiper-slide" v-for="(item, index) in full_photos" :key="index">
-                            <img :src="item" alt="">
+                        <swiper-slide class="swiper-slide" v-if="!photosLoaded">
+                            <img src="/img/loading.gif" alt="">
+                        </swiper-slide>
+                        <swiper-slide class="swiper-slide" v-for="(item, index) in full_photos" :key="index" v-if="photosLoaded && full_photos">
+                            <img v-lazy="item" alt="" >
                         </swiper-slide>
                         
                     </swiper-container>
@@ -124,7 +130,7 @@
         </v-row>
     </section>
     <ModalSizes id="modalSizes"></ModalSizes>
-    <ModalToCart id="modalToCart"></ModalToCart>
+    <ModalToCart id="modalToCart" :product="product"></ModalToCart>
     <SwiperCards class="product-detail__section" name="Вам понравится" v-if="products" :slidesArray="products"></SwiperCards>
     <SwiperCards class="product-detail__section" name="С этим товаром покупают" v-if="products" :slidesArray="products"></SwiperCards>
 </v-container>
@@ -154,6 +160,7 @@ export default {
             attributes:[],
             category:"",
             full_photos:null,
+            photosLoaded: false,
             similar_products:[],
         };
     },
@@ -257,6 +264,7 @@ export default {
             this.addProductToCart()
         },
         updateProduct(){
+
             if (this.pop_products[this.$route.params.id]){
                 this.product = this.pop_products[this.$route.params.id];
                 this.attributes = this.pop_products[this.$route.params.id].attributes;
@@ -278,6 +286,7 @@ export default {
                         this.pop_products[this.$route.params.id].category = this.category;
                         
                         this.$API.getFullPhotos(this.$route.params.id).then(value => {
+                            this.photosLoaded = true
                             if(value.status ===200 && value.data.length>1) {
                                 this.full_photos = value.data;
                                 this.pop_products[this.$route.params.id].full_photos = this.full_photos;
@@ -618,6 +627,24 @@ export default {
     }
 }
 @media (max-width: 960px) {
+    .btn.heart
+    {
+        width: auto;
+    }
+    .product-detail__info-buttons-counter
+    {
+        font-size: 16px;
+        column-gap: 30px;
+        button
+        {
+            padding: 10px;
+            font-size: 25px;
+        }
+    }
+    .product-detail__info-sizes__item .buttons-item
+    {
+        min-width: 40px;
+    }
     .product-detail__section
     {
         padding: 16px 0 !important;

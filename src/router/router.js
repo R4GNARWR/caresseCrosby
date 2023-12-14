@@ -20,6 +20,12 @@ import GiftCard from '../views/giftCard.vue'
 import SizeTable from '../views/SizeTable.vue'
 import NotFound from '../views/404.vue'
 
+// Admin
+
+import BlogEdit from '../views/BlogEdit.vue'
+import EditOrder from '../views/EditOrder.vue'
+import OrderToPay from '../views/OrderToPay.vue'
+
 export default createRouter({
   history: createWebHistory(),
   routes: [
@@ -104,6 +110,18 @@ export default createRouter({
     {
       path: '/giftCard',
       component: GiftCard
+    },
+    {
+      path: '/admin/EditOrder/:id',
+      component: EditOrder
+    },
+    {
+      path: '/admin/OrderToPay/:id',
+      component: OrderToPay
+    },
+    {
+      path: '/admin/BlogEdit',
+      component: BlogEdit
     },
   ],
   scrollBehavior() {

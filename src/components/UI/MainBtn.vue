@@ -1,5 +1,5 @@
 <template lang="">
-    <button class="btn" :class="className" :type="type ?? 'button'" :disabled="disabled ?? 'false'">
+    <button class="btn" :class="className" :type="type ?? 'button'" :disabled="disabled">
         <slot></slot>
     </button>
 </template>
@@ -13,8 +13,14 @@ export default {
     },
     props: {
         className: String,
-        type: String,
-        disabled: Boolean,
+        type: {
+            type: String,
+            default: 'button'
+        },
+        disabled: {
+            type: Boolean,
+            default: false
+        },
     },
     methods: {
         

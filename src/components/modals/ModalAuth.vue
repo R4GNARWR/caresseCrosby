@@ -12,7 +12,7 @@
         <div class="modal-approval__divide modal-approval__text" v-if="!smsSended">или</div>
         <div class="modal-approval__input" v-if="!smsSended">
             <div class="modal-approval__input-text"></div>
-            <Input placeholder="E-mail" v-model="email" input-type="email" validation-type="email" required="true"></Input>
+            <Input placeholder="E-mail" v-model="email" input-type="email" validation-type="email" :required="true"></Input>
         </div>
         <div class="modal-approval__input" v-if="smsSended">
             <div class="modal-approval__input-text"></div>
@@ -55,6 +55,7 @@ export default {
         },
         setPaddingModal() {
             if (window.innerWidth < 600) {
+                if(this.$refs.modalEl)
                 this.$refs.modalEl.style.maxHeight = window.innerHeight - this.paddingTop + 'px';
             }
         },
@@ -99,7 +100,7 @@ export default {
                 if (value.data.success) {
                     this.smsSended = true;
                     let msg = {};
-                    msg.msg = "Пароль отправлен!"
+                    msg.msg = "Пароль отправлен! <br> Если вы не видите пароль на вашей почте, проверьте папку спам."
                     msg.color = "green";
                     store.commit('set_snack_message', msg);
 

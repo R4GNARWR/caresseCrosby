@@ -28,7 +28,7 @@ export default {
         } else if(cartPosition.quantity) {
             fin_q = Number(cartPosition.quantity) + Number(quantity_inc);
         }
-        console.log(quantity_inc, fin_q)
+        // console.log(quantity_inc, fin_q)
         if (fin_q > 0) {
             this.cartItemChangeQ({id: cartPosition.id, quantity_inc: quantity_inc});
             this.$API.update_quantity_in_cart(cartPosition.id, fin_q)

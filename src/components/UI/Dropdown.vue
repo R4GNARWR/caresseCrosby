@@ -14,46 +14,52 @@
   </template>
   
   <script>
-  import { ref, onMounted, watch } from 'vue'
-  import { onClickOutside } from '@vueuse/core'
-  
-  export default {
-    props: {
-      listItems: {
-        type: [Array, Object],
-        required: true
-      },
+import { ref, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { onClickOutside } from '@vueuse/core'
+
+export default {
+  props: {
+    listItems: {
+      type: [Array, Object],
+      required: true
     },
-    setup(props, { emit }) {
-      const listShow = ref(false)
-      const dropdown = ref(null)
-  
-      const clickItem = (name, value) => {
-        listShow.value = false
-        emit('items-action', name, value)
-      }
-  
-      const toggleShow = () => {
-        listShow.value = !listShow.value
-        console.log(listShow.value)
-      }
-  
-      onMounted(() => {
-        onClickOutside(dropdown, () => {
-          if (listShow.value) {
-            listShow.value = false
-          }
-        })
-      })
-  
-      watch(() => props.listItems, () => {
-        listShow.value = false
-      })
-  
-      return { listShow, dropdown, clickItem, toggleShow }
+  },
+  setup(props, { emit }) {
+    const listShow = ref(false)
+    const dropdown = ref(null)
+    const route = useRoute()
+
+    const clickItem = (name, value) => {
+      listShow.value = false
+      emit('items-action', name, value)
     }
+
+    const toggleShow = () => {
+      listShow.value = !listShow.value
+    }
+
+    onMounted(() => {
+      onClickOutside(dropdown, () => {
+        if (listShow.value) {
+          listShow.value = false
+        }
+      })
+    })
+
+    watch(
+      () => route.fullPath,
+      (newPath, oldPath) => {
+        listShow.value = false; // Set listShow to false when route.fullPath changes
+      }
+    )
+
+    return { listShow, dropdown, clickItem, toggleShow }
   }
+}
+
   </script>
+  
   
 
 

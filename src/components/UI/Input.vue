@@ -6,6 +6,7 @@
         :name="name"
         :value="modelValue"
         :required="required ? 'true' : null"
+        :id="inputId"
         v-if="inputType !== 'tel'"
         @input="$emit('update:modelValue', $event.target.value)">
         <input class="form-control"
@@ -13,6 +14,7 @@
         :name="name"
         :value="modelValue"
         :required="required ? 'true' : null"
+        :id="inputId"
         v-maska data-maska="+7 (###) ###-##-##"
         v-if="inputType === 'tel'"
         @input="$emit('update:modelValue', $event.target.value)">
@@ -28,12 +30,19 @@ import { required, helpers, email, minLength} from '@vuelidate/validators'
 
 export default {
     props: {
-        inputType: String,
+        inputType: {
+            type: String,
+            default: 'text'
+        },
         name: String,
         validationType: String,
         modelValue: String,
         placeholder: String,
-        required: Boolean,
+        required: {
+            type: Boolean,
+            default: false
+        },
+        inputId:String,
     },
     directives: { maska: vMaska },
     data() {

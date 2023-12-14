@@ -9,8 +9,9 @@
             <div class="photo-album__label">
                 Фотоальбомы
             </div>
+            
             <v-row class="photo-album__row">
-                <v-col md="4" sm="6" cols="12" v-for="(item, index) in Object.keys(galleries)" :key="index">
+                <v-col md="4" sm="6" cols="12" v-for="(item, index) in Object.keys(galleries)" :key="index" v-if="galleries && Object.keys(galleries).length > 0">
                     <div class="photo-album__item">
                         <Fancybox
                         class="photo-album__item-photos"
@@ -19,7 +20,10 @@
                                 infinite: true,
                             },
                         }">
-                        <img :src="photos" :data-fancybox="'gallery' + index" alt="" v-for="(photos, i) in galleries[item].slice(0,4)" :key="index">
+                        <div v-for="(photos, i) in 4" :key="i">
+                            <img :src="galleries[item][i]" :data-fancybox="'gallery' + index" alt="" v-if="galleries[item] && galleries[item][i]">
+                            <div class="blank" alt="" v-else></div>
+                        </div>
                         <img :src="photos" class="d-none" :data-fancybox="'gallery' + index" alt="" v-for="(photos, i) in galleries[item].slice(4,item.length)" :key="index">
                     </Fancybox>
                     <div class="photo-album__item-label">
@@ -28,9 +32,17 @@
                     </div>
                 </div>
             </v-col>
-            
-        </v-row>
-    </v-container>
+            <v-col md="4" sm="6" cols="12" v-for="(item, index2) in 6" :key="index2" v-else>
+                    <div class="photo-album__item">
+                        <div class="photo-album__item-photos">
+                        <div v-for="(photos, i) in 4" :key="i">
+                            <div class="blank" alt=""></div>
+                        </div>
+                    </div>
+                </div>
+            </v-col>
+    </v-row>
+</v-container>
 </section>
 </template>
 
@@ -103,7 +115,6 @@ export default {
         },
         get_galleries(){
             this.galleries_ready = false;
-            this.galleries={}
             this.$API.getGallery().then(value =>{
                 if(value.data.success && value.data.banners){
                     for (let b of value.data.banners){
@@ -129,10 +140,10 @@ export default {
             this.$API.changeGalleryName(oldName, newName.trim()).then(() => {
                 this.$router.push(newName); this.get_galleries();});
             },
-        delGalleryPhoto(path){
-            this.$API.delGalleryPhoto(path);
-            setTimeout(()=>this.get_galleries(),500);
-        },
+            delGalleryPhoto(path){
+                this.$API.delGalleryPhoto(path);
+                setTimeout(()=>this.get_galleries(),500);
+            },
             
         },
         computed:{
@@ -177,6 +188,14 @@ export default {
             height: 100%;
             object-fit: cover;
             cursor: pointer;
+        }
+        .blank
+        {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(100deg, #eceff1 30%, #f6f7f8 50%, #eceff1 70%);
+            background-size: 400%;
+            animation: blankAnimation 1.2s ease-in-out infinite;
         }
     }
     &-label
