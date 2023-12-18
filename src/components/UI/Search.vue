@@ -17,7 +17,7 @@
                 <img src="/svg/close.svg" alt="">
             </div>
         </div>
-        
+
         <div class="search-result" v-if="variants && variants.length > 0">
             <router-link class="search-result__item" :to="'/product/'+item.id" v-for="(item, index) in variants.slice(0,6)" :key="index">
                 <div class="search-result__item-name">{{item.product}}</div>
@@ -60,7 +60,7 @@ export default {
     directives: {
         clickOutside: vClickOutside.directive
     },
-    created() {this.for_created();},
+    // created() {this.for_created();},
     computed: {
         ...mapState(['market_group','brands_search','colors_search','sizes_search','OneSize','colors_list', 'addToOrder', 'search_result', 'search_settings']),
         showSearch() {
@@ -85,6 +85,7 @@ export default {
         '$route.fullPath': function () {
             this.showMenu = false;
             this.searchStatus = false
+            this.variants=[]
         },
     },
 }
@@ -106,7 +107,7 @@ export default {
     {
         text-align: center;
         padding: .25em 0;
-        font-size: 16px;
+        font-size: 2rem;
     }
 }
 .search-wrap

@@ -12,7 +12,7 @@
                         </div>
                     </div>
 
-                    <router-link class="header-logo d-lg-flex d-none" to="/"> 
+                    <router-link class="header-logo d-lg-flex d-none" to="/">
                         <img src="/svg/logo-header.svg" alt="">
                     </router-link>
                     <div class="header-location" >
@@ -20,7 +20,7 @@
                         г. Уфа
                     </div>
                 </div>
-                <router-link class="header-logo d-lg-none d-block" to="/"> 
+                <router-link class="header-logo d-lg-none d-block" to="/">
                     <img src="/svg/logo-header.svg" alt="">
                 </router-link>
                 <Search class="d-lg-block d-none"></Search>
@@ -75,7 +75,7 @@
                             <button @click="item.action" v-if="item.action">{{item.name}}</button>
                             <router-link :to="item.link"  v-if="item.link">{{item.name}}</router-link>
                         </div>
-                        
+
                         <div class="header-catalog__list-item">
                             <router-link to="/giftCard">
                                 <img src="/svg/gift.svg" alt="">
@@ -121,7 +121,7 @@
         </v-container>
         <ModalSearch :searchActive="searchStatus" @toggleSearch="closeSearch"></ModalSearch>
     </header>
-    
+
 </template>
 <script>
 import { Fancybox } from "@fancyapps/ui";
@@ -288,7 +288,7 @@ export default {
                         lm_catalog.push({ name: category.name, link: '/catalog/' + category.id });
                     }
                 }
-                    
+
             }
             let lm = []
             if(this.windowWidth > 960) {
@@ -354,7 +354,7 @@ export default {
                 { name: 'Доставка', link: '/delivery' },
                 ];
             }
-            
+
             return lm;
         },
     },
@@ -362,9 +362,7 @@ export default {
         this.$API.tryAuth();
         this.$API.loadCart();
     },
-    created() {
-        if (!this.categoriesTree.length) this.$API.getParentsCategories();
-    },
+    // created() {if (!this.categoriesTree.length) this.$API.getParentsCategories();},
     mounted() {
         if (!this.categoriesTree.length){
             this.$API.getParentsCategories();
@@ -376,7 +374,7 @@ export default {
         // удаляем обработчик события при уничтожении компонента
         window.removeEventListener('resize', this.changeSize);
     },
-    
+
 }
 </script>
 <style lang="scss">
@@ -451,7 +449,7 @@ header
             height: 100%;
             object-fit: contain;
         }
-        
+
     }
 }
 .header-logo
@@ -623,7 +621,7 @@ header
         font-weight: 700;
         line-height: 1.5em;
         letter-spacing: -0.128px;
-        
+
     }
 }
 @media (max-width: 1280px) {
@@ -699,16 +697,16 @@ header
             &-item
             {
                 font-size: 16px;
-                a 
+                a
                 {
-                    
+
                     column-gap: 8px;
                     img
                     {
                         width: 20px;
                         height: 20px;
                     }
-                    
+
                 }
             }
             .dropdown
@@ -768,7 +766,7 @@ header
                 padding: 4px 8px 4px 8px;
             }
         }
-        
+
     }
     .header-catalog__contacts
     {
@@ -809,7 +807,7 @@ header
                     height: 24px;
                 }
             }
-            
+
         }
     }
     .header-location
@@ -855,7 +853,7 @@ header
         &-links
         {
             column-gap: 24px;
-            
+
             &__item
             {
                 .count
@@ -868,7 +866,7 @@ header
                 height: 24px;
             }
         }
-        
+
     }
     .header-left__col
     {

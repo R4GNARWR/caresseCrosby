@@ -29,7 +29,7 @@ export default {
                 else if (this.loggedIn) this.$router.push("/profileData");
                 else this.$router.push('/');
                 let msg = {}
-                msg.msg = 'Ваш заказ успешно оформлен. Мы свяжемся с вами в ближайшее время.'
+                msg.msg = 'Ваш заказ успешно оформлен. Мы свяжемся с вами в ближайшее время, чтобы убедиться, верно ли вы подобрали размер.'
                 store.commit('set_snack_message',msg,'success')
             } else {
                 if(value.data.errors)

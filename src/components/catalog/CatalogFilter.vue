@@ -15,7 +15,7 @@
             <FilterItem @update-filters="updateFilters" :filterObject="sizes_search" :filterName="'Размеры'"></FilterItem>
             <FilterItem @update-filters="updateFilters" :filterObject="colors_search" :filterName="'Цвета'"></FilterItem>
         </div>
-        
+
     </div>
 </div>
 
@@ -32,7 +32,10 @@ export default {
         FilterItem
     },
     computed:{
-        ...mapState(['headerPadding', 'brands_search','colors_search','sizes_search']),
+        ...mapState([
+            'headerPadding',
+          //'brands_search',//'colors_search','sizes_search'
+        ]),
     },
     data() {
         return {
@@ -54,6 +57,9 @@ export default {
     },
     props: {
         filterStatus: Boolean,
+        brands_search: Array,
+        sizes_search: Array,
+        colors_search: Array
     },
     mounted() {
         this.setCatalogPadding()
@@ -63,9 +69,9 @@ export default {
         // удаляем обработчик события при уничтожении компонента
         window.removeEventListener('resize', this.setCatalogPadding);
     },
-    created() {
-        this.for_created();
-    },
+    // created() {
+    //     this.for_created();
+    // },
 
 }
 </script>
@@ -119,7 +125,7 @@ export default {
             font-weight: 500;
             line-height: 1.33em;
             letter-spacing: -0.24px;
-            
+
         }
     }
     .catalog__filter-wrap

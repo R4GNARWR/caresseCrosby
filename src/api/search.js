@@ -19,7 +19,7 @@ export default {
                                 vm.variants = [];
                                 vm.resultEmpty = true
                             }
-                            
+
                         }
                     }
                 })
@@ -98,8 +98,8 @@ export default {
         vm.activeSearchVariantIdx = null;
         vm.variants = [];
     },
-    
-    
+
+
     for_created() {
         if (!store.state.brands_search.length){
             this.$API.getAttributeValues(1).then(value => {
@@ -155,9 +155,8 @@ export default {
             }
         }
     },
-    
+
     to_search(){
-        console.log('api test')
         this.i=1;
         this.products=[];
         this.filter_selected='';
@@ -169,7 +168,7 @@ export default {
         this.blur();
         this.no_result = false;
         this.$store.commit('setSearchSettings', {'brand':this.filter['brand'],'colors':this.filter['colors'],'sizes':this.filter['sizes']})
-        
+
         if (this.filter['colors'] && Object.values(this.filter['colors'])[0] && Array.isArray(Object.values(this.filter['colors'])[0])) {
             Object.values(this.filter['colors'])[0].forEach(color => {
               store.state.colors_search.forEach(cs => {
@@ -202,14 +201,14 @@ export default {
           attr += '6-' + f['colors'].attributeValueId + ',';
         }
         attr = attr.substr(0, attr.length - 1);
-        
-        if (!f['brand'].attributeValueId && 
+
+        if (!f['brand'].attributeValueId &&
         (f['sizes'] && !f['sizes'].attributeValueId) &&
         !f['colors'].attributeValueId) {
           this.products = this.initialProduct;
           return;
         }
-        
+
         this.$API.searchProducts(this.searchString, attr, page, category).then(value => {
           if (value.data.success) {
             if(this.products)
@@ -217,10 +216,10 @@ export default {
             if(this.initialProduct)
             this.initialProduct = [...this.initialProduct, ...value.data.products];
             this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
-          } 
+          }
           if (value.data.products.length === 50) this.accept_product_request = true;
         });
-        
+
         if (
           f['sizes'] &&
           [

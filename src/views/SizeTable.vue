@@ -35,7 +35,7 @@
                 </v-col>
                 <v-col md="5" cols="12">
                     <div class="table-size__calc-label">Видео о том как правильно снять мерки</div>
-                    <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/D1-iP7rtnIg?si=_evLVmbNr8Jv26cG" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/D1-iP7rtnIg?si=я" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                 </v-col>
             </v-row>
             <div class="table-size_wrapper">
@@ -79,7 +79,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <div class="table-size__text">
                 Определить размер трусиков намного проще, чем размер бюстгальтера - сантиметровой лентой измеряем обхват бедер (по наиболее выступающим точкам бедер и ягодиц). При измерении лента должна ложиться параллельно полу и обязательно быть натянутой.
             </div>
@@ -406,7 +406,7 @@
                             <td>XXL</td>
                             <td>XXL</td>
                         </tr>
-                        
+
                     </tbody>
                 </table>
             </div>
@@ -426,7 +426,7 @@ export default {
     MainBtn,
     MainLink
 },
-    
+
     data() {
         return {
             b1:null,
@@ -521,8 +521,9 @@ table.table-size
         font-weight: 500;
         line-height: 1.4em;
         letter-spacing: -0.056px;
+        text-wrap: nowrap;
     }
-    
+
     th
     {
         color: $primary;

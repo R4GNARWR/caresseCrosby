@@ -9,7 +9,7 @@
         <input v-else type="checkbox" :value="value"
         ref="inputEl"
         @input="$emit('update:modelValue', value)">
-        <label for=""></label>
+        <label></label>
         {{value}}
     </div>
 </template>
@@ -63,7 +63,7 @@ export default {
     color: $primary;
     font-size: 1.7rem;
     line-height: 1.4em;
-    
+
     label
     {
         position: relative;
@@ -84,7 +84,7 @@ export default {
             height: 100%;
             opacity: 0;
             background-position: center;
-            
+
         }
     }
     input
@@ -115,7 +115,7 @@ export default {
         column-gap: 12px;
         font-size: 14px;
         line-height: 1.4em;
-        
+
         label
         {
             width: 24px;

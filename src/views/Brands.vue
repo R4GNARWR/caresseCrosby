@@ -30,6 +30,7 @@ import {mapState, mapMutations} from "vuex";
 
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
+import store from "../store/store";
 export default {
     components: {
         Breadcrumbs,
@@ -41,6 +42,11 @@ export default {
     computed:{
         ...mapState(['brands_search',]),
     },
+    beforeCreate() {
+        this.$API.getAttributeValues(1).then(value => {
+          if (value.data.success && value.data.attributeValues) store.commit('setBrands', value.data.attributeValues);
+        })
+    }
 };
 </script>
 
@@ -83,7 +89,7 @@ export default {
         }
         &__text
         {
-            font-size: 5.2rem;
+            font-size: 4rem;
             line-height: 1.33em;
         }
         &__hover

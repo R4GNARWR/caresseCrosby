@@ -27,18 +27,64 @@
             </v-row>
             <v-row>
                 <v-col md="3" cols="12">
-                    <CatalogFilter :filterStatus="showFilters" @updateFilter="updateFilter" @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
+                    <CatalogFilter
+                        :filterStatus="showFilters"
+                        :brands_search="brandFilters"
+                        :colors_search="colorFilter"
+                        :sizes_search="sizesFilter"
+                        @updateFilter="updateFilter" @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
                 </v-col>
                 <v-col md="9" cols="12">
                     <CatalogList :productArray="productsComputed" :searchStatus="status"></CatalogList>
                 </v-col>
             </v-row>
         </v-container>
-        
+
     </section>
-    
+
 </template>
 <script>
+const objectsEqual = (o1, o2) =>
+    typeof o1 === 'object' && Object.keys(o1).length > 0
+        ? Object.keys(o1).length === Object.keys(o2).length
+        && Object.keys(o1).every(p => objectsEqual(o1[p], o2[p]))
+        : o1 === o2;
+
+const filterSuccess = (a, b) => {
+  a=Array.from(a)
+  b=Array.from(b)
+
+  let groupedFilter = {};
+  for (var i=0; i<a.length; i++) {
+    let p = a[i]["attributeId"];
+    if (!groupedFilter[p]) { groupedFilter[p] = []; }
+    groupedFilter[p].push(a[i]);
+  }
+
+  let groupedProductAttr = {};
+  for (var i=0; i<b.length; i++) {
+    let p = b[i]["attributeId"];
+    if (!groupedProductAttr[p]) { groupedProductAttr[p] = []; }
+    groupedProductAttr[p].push(b[i]);
+  }
+
+  let result = {}
+  for (let k in groupedFilter){
+    result[k]=false
+    groupedFilter[k].forEach(a1=>{
+      if (groupedProductAttr[k])
+        groupedProductAttr[k].forEach(b1=>{
+          if (objectsEqual(a1, b1)) result[k]= true
+        })
+    })
+    if (!result[k]) break
+  }
+
+  let final=true
+  for (let r in result) final=final * result[r]
+  return final
+}
+
 import { mapState } from "vuex";
 import CatalogFilter from "../components/catalog/CatalogFilter.vue";
 import CatalogList from "../components/catalog/CatalogList.vue";
@@ -74,7 +120,7 @@ export default {
             activeSortString: 'По популярности',
             activeSortValue: 'popularityDesc',
             description:"",
-            products:[],
+            products:[], brandFilters:null,sizesFilter:null,colorFilter:null,
             productsInitial:[],
             TotalAmount: 0,
             i:1,
@@ -96,69 +142,35 @@ export default {
                     "attributeValueId":'',
                     "value":""}
                 },
+            filters:[],
             start_filter:{},
             isLoading: false,
         }
     },
     computed:{
         productsComputed() {
-            if(this.products && this.$route.params.brands) {
-            let products = [...this.products];
-            let productsFiltered = []
-            for (let i = 0; i < products.length; i++) {
-                if(this.$route.params.id === 'brands' || this.$route.params.id === 'search') {
-                    productsFiltered.push(products[i]);
-                } else {
-                    if (Number(products[i].category_id) === Number(this.$route.params.id)) {
-                        productsFiltered.push(products[i]);
-                    }
-                }
+          let productsFiltered = []
+          if (this.filters && this.filters.length>0){
+            for (let p of this.products)
+              if (p.attributes)
+                if (filterSuccess(this.filters, p.attributes)) productsFiltered.push(p)
+          }
+          else productsFiltered=this.products
+
+          switch (this.activeSortValue) {
+            case 'priceAsc': {
+              productsFiltered.sort((a, b) => a.price - b.price);
+              break;
             }
-            switch (this.activeSortValue) {
-                case 'priceAsc': {
-                    productsFiltered.sort((a, b) => a.price - b.price);
-                    break;
-                }
-                case 'priceDesc': {
-                    productsFiltered.sort((a, b) => b.price - a.price);
-                    break;
-                }
-                case 'popularityDesc': {
-                    break;
-                }
+            case 'priceDesc': {
+              productsFiltered.sort((a, b) => b.price - a.price);
+              break;
             }
-            return productsFiltered
-            } else if (this.products && !this.$route.params.brands) {
-                let products = [...this.products];
-                let productsFiltered = []
-                if(this.$route.params.id === 'search') {
-                    for (let i = 0; i < products.length; i++) {
-                        productsFiltered.push(products[i]);
-                    }
-                } else {
-                    for (let i = 0; i < products.length; i++) {
-                    if (Number(products[i].category_id) === Number(this.$route.params.id)) {
-                            productsFiltered.push(products[i]);
-                        }
-                    }
-                }
-                switch (this.activeSortValue) {
-                    case 'priceAsc': {
-                        productsFiltered.sort((a, b) => a.price - b.price);
-                        break;
-                    }
-                    case 'priceDesc': {
-                        productsFiltered.sort((a, b) => b.price - a.price);
-                        break;
-                    }
-                    case 'popularityDesc': {
-                        break;
-                    }
-                }
-                return productsFiltered
-            } else {
-                return this.productsInitial
+            case 'popularityDesc': {
+              break;
             }
+          }
+          return productsFiltered
 
         },
         ...mapState(['headerPadding', 'categoriesTree', 'cat_products','brands_search' ]
@@ -200,9 +212,12 @@ export default {
                         this.$API.searchProducts( this.$route.query.query, null, 1, null)
                     ]);
                     this.i = 1;
-                    
+
                     if (productsResponse) {
                         this.products = productsResponse.data.products;
+                        this.sizesFilter = productsResponse.data.sizes;
+                        this.brandFilters = productsResponse.data.brands;
+                        this.colorFilter = productsResponse.data.colors;
                         this.productsInitial = productsResponse.data.products;
                         this.accept_product_request = true;
                     }
@@ -221,10 +236,12 @@ export default {
                     this.description = descriptionResponse.data.description;
                 }
                 this.i = 1;
-                
                 if (productsResponse) {
-                    this.products = productsResponse;
+                    this.products = productsResponse.data.products;
                     this.productsInitial = productsResponse;
+                    this.sizesFilter = productsResponse.data.sizes;
+                    this.brandFilters = productsResponse.data.brands;
+                    this.colorFilter = productsResponse.data.colors;
                     this.accept_product_request = true;
                     if(!this.cat_products[this.$route.params.id]) {
                         this.cat_products[this.$route.params.id] = productsResponse;
@@ -240,23 +257,10 @@ export default {
         },
         ...search,
         updateFilter(filter) {
-            console.log('test')
-            if(filter.attributeValueId !== 0)
-            {
-                switch (filter.attributeId) {
-                    case 1:
-                    this.filter['brand'] = filter;
-                    break;
-                    case 2:
-                    this.filter['sizes'] = filter;
-                    break;
-                    case 6:
-                    this.filter['colors'] = filter;
-                    break;
-                } 
-            }
-            this.to_search();
+          if (this.filters.indexOf(filter)>-1) this.filters.splice(this.filters.indexOf(filter),1)
+          else this.filters.push(filter)
         },
+
     },
     watch: {
         '$route.params.id': function () {
@@ -278,7 +282,7 @@ export default {
         if(!this.$route.params.brands)
         {
             this.update();
-            this.for_created();
+            // this.for_created();
         }
 
     },
@@ -291,11 +295,11 @@ export default {
             }
 
         }
-        window.addEventListener("scroll", this.onScroll);
+        // window.addEventListener("scroll", this.onScroll);
     },
-    beforeUnmount() {
-        window.removeEventListener("scroll", this.onScroll)
-    },
+    // beforeUnmount() {
+    //     window.removeEventListener("scroll", this.onScroll)
+    // },
 }
 </script>
 

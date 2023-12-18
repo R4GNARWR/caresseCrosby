@@ -1,43 +1,56 @@
 <template>
-    <div class="catalog__filter-item" v-if="filterName === 'Цвета'">
-        <div class="catalog__filter-item__label">{{ filterName }}</div>
-        <div class="catalog__filter-items" :class="{'all': showAll}">
-            <div class="catalog__filter-item__input" v-for="filter in values" :key="filter.value" >
-                <input type="radio" name="color" @click="clickFilter(filter, $event)">
-                <label></label>
-                <div class="catalog__filter-item__color" :style="{ backgroundColor: filter.color }"></div>
-                <div class="catalog__filter-item__name">{{ filter.value }}</div>
-            </div>
-        </div>
-        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll">Посмотреть все</button>
-        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll">Скрыть</button>
-    </div>
+  <div v-if="filterObject">
+
     <div class="catalog__filter-item" v-if="filterName === 'Бренды'">
         <div class="catalog__filter-item__label">{{ filterName }}</div>
         <div class="catalog__filter-items" :class="{'all': showAll}">
             <div class="catalog__filter-item__input" v-for="filter in values" :key="filter.value" >
-                <input type="radio" name="brand" @click="clickFilter(filter, $event)" :checked="Number(filter.attributeValueId) === Number($route.params.brands)">
+                <input type="radio" :name="filter.value"
+                       @click="clickFilter(filter)"
+                       :checked="this.currentFilter.lastIndexOf(filter)>-1"
+                >
                 {{ filter.value }}
                 <label></label>
             </div>
         </div>
-        
+
         <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll">Посмотреть все</button>
         <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll">Скрыть</button>
     </div>
     <div class="catalog__filter-item" v-if="filterName === 'Размеры'">
-        <div class="catalog__filter-item__label">{{ filterName }}</div>
-        <div class="catalog__filter-items half" :class="{'all': showAll}" v-for="filter in values" :key="filter.value" v-if="values"> 
-            <div class="catalog__filter-item__input" v-for="(item, index) in filter" :key="index" >
-                <input type="radio" name="size" @click="clickFilter(item, $event)" :checked="Number(item.attributeValueId) === Number($route.params.sizes)">
-                {{ item.value }}
-                <label></label>
-            </div>
+      <div class="catalog__filter-item__label">{{ filterName }}</div>
+      <div class="catalog__filter-items" :class="{'all': showAll}">
+        <div class="catalog__filter-item__input" v-for="filter in values" :key="filter.value" >
+          <input type="radio" :name="filter.value"
+                 @click="clickFilter(filter)"
+                 :checked="this.currentFilter.lastIndexOf(filter)>-1"
+          >
+          <label></label>
+          <div class="catalog__filter-item__color" :style="{ backgroundColor: filter.color }"></div>
+          <div class="catalog__filter-item__name">{{ filter.value }}</div>
         </div>
-        
+      </div>
         <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll">Посмотреть все</button>
         <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll">Скрыть</button>
     </div>
+
+    <div class="catalog__filter-item" v-if="filterName === 'Цвета'">
+      <div class="catalog__filter-item__label">{{ filterName }}</div>
+      <div class="catalog__filter-items" :class="{'all': showAll}">
+        <div class="catalog__filter-item__input" v-for="filter in values" :key="filter.value" >
+          <input type="radio" :name="filter.value"
+                 @click="clickFilter(filter)"
+                 :checked="this.currentFilter.lastIndexOf(filter)>-1"
+          >
+          <label></label>
+          <div class="catalog__filter-item__color" :style="{ backgroundColor: filter.color }"></div>
+          <div class="catalog__filter-item__name">{{ filter.value }}</div>
+        </div>
+      </div>
+      <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll">Посмотреть все</button>
+      <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll">Скрыть</button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -47,19 +60,13 @@ export default {
         return {
             showAll: false,
             values: [],
-            currentFilter: null,
+            currentFilter: [],
         };
     },
     emits: ['update-filters'],
     props: {
-        filterObject: {
-            type: [Array, Object],
-            required: true,
-        },
-        filterName: {
-            type: String,
-            required: true,
-        },
+        filterObject: Array,
+        filterName: String
     },
     watch: {
         filterObject: {
@@ -86,21 +93,28 @@ export default {
         toggleFilters() {
             this.showAll = !this.showAll;
         },
-        clickFilter(filter, e) {
-            if (filter) {
-                if (this.currentFilter === filter.value) {
-                    e.target.checked = '';
-                    this.currentFilter = null;
-                    this.$emit('update-filters', {
-                        attributeId: filter.attributeId,
-                        attributeValueId: '',
-                        value: filter.value,
-                    });
-                } else {
-                    this.currentFilter = filter.value;
-                    this.$emit('update-filters', filter);
-                }
-            }
+        clickFilter(filter) {
+          this.$emit('update-filters', filter);
+          if (this.currentFilter.lastIndexOf(filter)<0) this.currentFilter.push(filter)
+          else this.currentFilter.splice(this.currentFilter.lastIndexOf(filter),1 )
+
+          // if (e.target.checked ===false) e.target.checked = true
+          // else e.target.checked = false
+            //
+            // if (filter) {
+            //     if (this.currentFilter === filter.value) {
+
+            //         this.currentFilter = null;
+            //         this.$emit('update-filters', {
+            //             attributeId: filter.attributeId,
+            //             attributeValueId: '',
+            //             value: filter.value,
+            //         });
+            //     } else {
+            //         this.currentFilter = filter.value;
+            //         this.$emit('update-filters', filter);
+            //     }
+            // }
         },
     },
 };
@@ -181,7 +195,7 @@ export default {
             opacity: 0;
             z-index: 1;
             cursor: pointer;
-            
+
         }
         & > input:checked ~ label
         {
@@ -191,7 +205,7 @@ export default {
                 opacity: 1;
             }
         }
-        
+
     }
     &__label
     {

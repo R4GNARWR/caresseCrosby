@@ -41,10 +41,12 @@ export default  {
                 }
             }).catch(error => {console.log(error); this.errored = true;});},
     getProjectCategories(){return this.axios.get('categories/parents', {params:{all_cat: true}})},
-    getCategoryTopProducts(id, pW, pH, page){return this.axios.get('categories/'+id+'/products', {params:{photoW:pW, photoH:pH, page:page}})
+    getCategoryTopProducts(id, pW, pH, page){
+        return this.axios.get('products', {params:{categoryId:id}})
+        // return this.axios.get('categories/'+id+'/products', {params:{photoW:pW, photoH:pH, page:page}})
         .then(value => {
-                if(value.data && value.data.response.products){
-                    return value.data.response.products;
+                if(value.data && value.data.success){
+                    return value;
                 }
             }).catch(error => {console.log(error); this.errored = true;});},
     getCatDescription(catID){return this.axios.get('categories/'+catID+'/description')},
@@ -76,7 +78,7 @@ export default  {
     },
     put_to_cart(product) {return this.axios.post('cart/products', {productId: product.id, market_id: product.lowerPrice.market_id, quantity: product.unit === 'кг' ? .1 : 1, color: product.color, size:product.size}, {});},
     update_quantity_in_cart(product, quantity) {
-        
+
         this.axios.put('cart/products/'+product, {quantity:quantity}, {headers: {'Content-Type': 'application/json',}}).then(response => {
                 if (!response.data.success || !response.data.product){console.log('ahtung!!',response);}
             });},
@@ -91,7 +93,7 @@ export default  {
     getFavorites(){return this.axios.get('favorites').then(value => {if (value.status ===200){store.commit('setFavorites', value.data);}})},
 
     searchProductsVariants(query){return this.axios.get('search-products', {params: {query: query }})},
-    searchProducts(query,attr, page, category){return this.axios.get('products',{params: {attr:attr, query:query, per_page: 100, page:page, category_id:category}}).then(value => {return value;})},
+    searchProducts(query,attr, page, category){return this.axios.get('products',{params: {attr:attr, query:query, per_page: 1000, page:page, category_id:category}}).then(value => {return value;})},
 
     makeOrder(to_send){
         return this.axios.post('cart/checkout', to_send, {})
@@ -133,7 +135,7 @@ export default  {
                 {
                     console.log(error)
                 }
-            }) 
+            })
     },
     get_payments_history(){return this.axios.get('account/billing/history')},
     get_ordered_products(){return this.axios.get('account/ordered-products')},

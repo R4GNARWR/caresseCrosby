@@ -1,7 +1,8 @@
 <template>
     <section class="articles-detail">
         <div class="articles-detail__img">
-            <img :src="'https://static.ccrosby.ru/blogs/'+ blog.img" alt="">
+            <img v-if="blog.img"
+                :src="'https://static.ccrosby.ru/blogs/'+ blog.img" alt="">
         </div>
         <v-container>
             <div class="row">
@@ -14,7 +15,8 @@
                         <div class="articles-detail__content-label">
                             {{ blog.title }}
                         </div>
-                        <div class="articles-detail__content-text" v-for="item in JSON.parse(blog.json_string)" v-if="blog.json_string">
+
+                        <div class="articles-detail__content-text" v-for="item in JSON.parse(blog.json_string.replace(/(\\r)*\\n\\n/g, '<br>'))" v-if="blog.json_string">
                             <div class="img" v-if="item.type === 'img'" >
                                 <img v-if="item.content.split(',').length===1" :alt="blog.title"
                                 :src="'https://static.ccrosby.ru/blogs/'+item.content">
@@ -25,16 +27,15 @@
                                     :loop= "true"
                                     :spaceBetween= "28"
                                     :pagination="true"
-                                    
+
                                     >
                                     <swiper-slide class="swiper-slide img" v-for="img in item.content.split(',')">
                                         <img :alt="blog.title" :src="'https://static.ccrosby.ru/blogs/'+img">
                                     </swiper-slide>
-                                    
+
                                 </swiper-container>
                             </div>
-                            <p v-if="item.type === 'text'">
-                                {{item.content}}
+                            <p v-if="item.type === 'text'" v-html="item.content">
                             </p>
                         </div>
                         <DetailLinks></DetailLinks>
@@ -73,8 +74,8 @@ export default {
                 if (value.data.success) {
                     this.blogs = value.data.blogs;
                     this.blog=this.blogs[this.$route.params.id];
-                } 
-                
+                }
+
             })
         }
         register()
@@ -123,10 +124,10 @@ export default {
             font-size: 2rem;
             line-height: 1.8em;
             letter-spacing: -0.32px;
-            
+
         }
     }
-    
+
 }
 .articles-detail__content-text
 {
@@ -187,7 +188,7 @@ export default {
             {
                 font-size: 14px;
             }
-        } 
+        }
     }
 }
 @media (max-width: 600px) {

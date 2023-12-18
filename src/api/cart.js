@@ -146,7 +146,7 @@ export default {
         if (brand) {attr+='1-'+brand.attributeValueId+',';}
         if (color) {attr+='6-'+color.attributeValueId+',';}
         attr = attr.substr(0, attr.length-1);
-        if (this.similar_products.length<10 && attr.length>0)
+        if (this.similar_products && this.similar_products.length<10 && attr.length>0)
             this.$API.searchProducts('', attr, 1).then(value => {
                 if (value.data.success) value.data.products.forEach(p=>{
                     if (this.similar_products.length<10 && p.id !== this.product.id && !this.similar_products.includes(this.similar_products.find(el=>el.id===p.id))){this.similar_products.push(p)}

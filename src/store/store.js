@@ -182,7 +182,11 @@ export default new Vuex.Store({
       state.user_position = position;
     },
 
-    setBrands(state, brands){state.brands_search = brands},
+    setBrands(state, brands){
+      state.brands_search=[]
+      state.brands_search.push({"attributeId" : 1, "attributeValueId" : 14435, "value" : "Умные купальники"}) //костыль про умные купальники
+      for (let item of brands) state.brands_search.push(item)
+    },
     setColors(state, colors){state.colors_search = colors},
     setSizes(state,sizes){state.sizes_search  = sizes},
     OneSize(state, attr){state.OneSize = attr},
