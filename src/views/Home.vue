@@ -50,7 +50,7 @@ export default {
                     yearColor: 'white',
                     buttonText: 'В каталог',
                     buttonColor: 'white',
-                    buttonDestination: '/catalog',
+                    buttonDestination: '/catalogAll',
                     backgroundImageSrc: '/img/mainSlider2.jpg'
                 },
             ],

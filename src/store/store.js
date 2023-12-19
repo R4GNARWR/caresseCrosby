@@ -10,9 +10,7 @@ export default new Vuex.Store({
       phone:"+79177471561",
       phone_string:"8 917 747 1561",
       time:["Пн-Пт: 11.00 - 20.00","Вс, Сб: 11.00 - 19.00"],
-
       address:"г.Уфа ул.Менделеева 156/1"
-
     },
 
     snack_message:{},

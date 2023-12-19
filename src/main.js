@@ -41,7 +41,6 @@ app.config.globalProperties.$API = API
 app.use(store)
 app.use(VueLazyload, {
   preLoad: 1.3,
-  error: '/img/noPhoto.png',
   loading: '/img/loading.gif',
   attempt: 1,
 })

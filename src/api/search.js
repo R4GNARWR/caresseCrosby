@@ -210,6 +210,7 @@ export default {
         }
 
         this.$API.searchProducts(this.searchString, attr, page, category).then(value => {
+            console.log('test')
           if (value.data.success) {
             if(this.products)
             this.products = [...this.products, ...value.data.products];

@@ -38,7 +38,7 @@ export default createRouter({
       component: Catalog,
     },
     {
-      path: '/catalog/',
+      path: '/catalogAll',
       component: CatalogAll,
     },
     {

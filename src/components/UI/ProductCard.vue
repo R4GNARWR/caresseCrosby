@@ -2,6 +2,9 @@
     <div class="product-card">
         <div class="product-card__img">
             <img v-lazy="product.photo" alt="" v-if="product.photo">
+            <div class="no-photo" v-if="!product.photo">
+                Вышлем фото по запросу
+            </div>
             <div class="product-card__img-new" v-if="product && product.labels">{{product.labels}}</div>
             <div class="product-card__img-like" v-if="product">
                 <v-icon icon="mdi-heart-outline" color="#27231E" v-if="!the_heart" @click="addFavor(product.id)"></v-icon>
@@ -21,7 +24,7 @@
                 </div>
             </div>
         </div>
-        <router-link class="link" :to="{ name: 'Product', params: { id: product.id }}"></router-link>
+        <router-link class="link" :to="{ name: 'Product', params: { id: product.id }}" v-if="product && product.id"></router-link>
     </div>
 </template>
 <script>
@@ -87,6 +90,17 @@ export default {
         .loading
         {
             z-index: 2;
+        }
+        .no-photo
+        {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            line-height: 1.33em;
+            
         }
         &-new
         {

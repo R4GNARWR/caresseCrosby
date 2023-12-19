@@ -94,9 +94,9 @@ export default {
 <style lang="scss">
 .header-search
 {
-    width: 55rem;
     position: relative;
     height: 100%;
+    flex-grow: 1;
     display: flex;
     align-items: center;
     column-gap: 1.2rem;

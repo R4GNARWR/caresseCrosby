@@ -11,11 +11,14 @@
             <v-row>
                 <v-col md="8" cols="12">
                     <div class="product-detail__images d-lg-grid d-none" v-if="!photosLoaded">
-                        <img src="/img/noPhoto.png" v-for="(item, index) in 4" :key="index" alt="" >
+                        <img src="/img/loading.gif" v-for="(item, index) in 4" :key="index" alt="" >
                     </div>
                     <div class="product-detail__images d-lg-grid d-none" v-if="photosLoaded && full_photos">
                         <img v-lazy="item" v-for="(item, index) in full_photos.slice(0,4)" :key="index" alt="" >
                     </div>
+                    <div class="no-photo" v-if="photosLoaded && !full_photos">
+                            Вышлем фото по запросу
+                        </div>
                     <div class="d-lg-none d-block" style="position: relative;">
                         <swiper-container
                         class="swiper product-detail__swiper"
@@ -266,19 +269,30 @@ export default {
             this.addProductToCart()
         },
         updateProduct(){
-
             if (this.pop_products[this.$route.params.id]){
+                if(this.pop_products[this.$route.params.id].category.id === 24473) {
+                    this.$router.push('/giftCard')
+                    return
+                }
                 this.product = this.pop_products[this.$route.params.id];
                 this.attributes = this.pop_products[this.$route.params.id].attributes;
                 this.category = this.pop_products[this.$route.params.id].category;
                 this.category.hide_name = true;
                 this.full_photos = this.pop_products[this.$route.params.id].full_photos;
                 this.similar_products = this.pop_products[this.$route.params.id]['similar_products'];
+                if(this.full_photos) {
+                    this.photosLoaded = true
+                }
+                
             }
             else{
                 this.attributes=[];
                 this.$API.getProductById(this.$route.params.id).then(value =>{
-                    if (value.data.status == "OK"){
+                    if (value.data.status == "OK") {
+                        if(value.data.response && value.data.response.category.id && value.data.response.category.id === 24473) {
+                            this.$router.push('/giftCard')
+                            return
+                        }
                         this.product = value.data.response.product?value.data.response.product:null;
                         this.attributes = value.data.response.attributes?value.data.response.attributes:null;
                         this.category = value.data.response.category?value.data.response.category:null;
@@ -293,21 +307,20 @@ export default {
                                 this.full_photos = value.data;
                                 this.pop_products[this.$route.params.id].full_photos = this.full_photos;
                               //similar products
-                              this.search_sim_products(this.brand?this.brand[0]:null, this.colors?this.colors[0]:null, this.product.name)
+                              this.search_sim_products(this.brand ? this.brand[0]: null, this.colors?this.colors[0]:null, this.product.name)
 
-                            }
-                            else this.$API.getFullPhoto(this.$route.params.id).then(value => {
+                            } else this.$API.getFullPhoto(this.$route.params.id).then(value => {
                                 if (value.status && value.data){
                                     this.product.photo = value.data
                                     this.full_photos = [value.data]
+                                    this.pop_products[this.$route.params.id].full_photos = [value.data];
                                   //similar products
                                   this.search_sim_products(this.brand?this.brand[0]:null, this.colors?this.colors[0]:null, this.product.name)
 
                                 }
                             })
                         })
-                    }
-                    else this.$router.push('/')
+                    } else this.$router.push('/')
                 })
             }
         },
@@ -359,12 +372,14 @@ export default {
         ])
     },
     watch: {
-        '$route'(newRoute, oldRoute) {if (oldRoute && newRoute !== oldRoute.params.id) {
-            window.scroll(0,0);
-            this.product=[];
-            this.full_photos=null
-            this.updateProduct();
-        }},
+        '$route'(newRoute, oldRoute) {
+                if (newRoute && newRoute.name === "Product" && newRoute !== oldRoute.params.id) {
+                window.scroll(0,0);
+                this.product=[];
+                this.full_photos=null
+                this.updateProduct();
+            }
+        },
     },
     beforeCreate() {
         register()
@@ -398,7 +413,17 @@ export default {
         height: 51rem;
         object-fit: cover;
     }
-
+}
+.product-detail .no-photo
+{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.9rem;
+    line-height: 1.33em;
+    grid-column: 2 span;
+    grid-row: 2 span;
 }
 .product-detail__swiper
 {
@@ -635,6 +660,10 @@ export default {
     }
 }
 @media (max-width: 960px) {
+    .product-detail .no-photo
+    {
+        font-size: 24px;
+    }
     .btn.heart
     {
         width: auto;

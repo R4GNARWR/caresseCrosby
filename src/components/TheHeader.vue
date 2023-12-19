@@ -288,12 +288,10 @@ export default {
                         lm_catalog.push({ name: category.name, link: '/catalog/' + category.id });
                     }
                 }
-
             }
             let lm = []
             if(this.windowWidth > 960) {
-                lm = !this.loggedIn
-                ? [
+                lm = [
                 lm_underwear,
                 lm_swimsuit,
                 ...lm_catalog,
@@ -305,18 +303,6 @@ export default {
                 { name: 'Доставка', link: '/delivery' },
                 { name: 'Избранные товары', link: '/favorite' },
                 ]
-                : [
-                lm_underwear,
-                lm_swimsuit,
-                { name: 'Избранные товары', link: '/favorite' },
-                ...lm_catalog,
-                { name: 'Бренды', link: '/Brands' },
-                { name: 'О нас', link: '/about' },
-                { name: 'Контакты', link: '/contacts' },
-                { name: 'Фотогалерея', link: '/photoAlbum' },
-                { name: 'Статьи', link: '/articles' },
-                { name: 'Доставка', link: '/delivery' },
-                ];
             } else {
                 lm = !this.loggedIn
                 ? [
@@ -392,11 +378,11 @@ header
 .header-top
 {
     margin-bottom: 1rem;
-    padding: 1rem 0 1rem 0;
+    padding: 1rem 6rem 1rem 6rem;
     position: relative;
     display: flex;
     align-items: center;
-    column-gap: 5.5rem;
+    column-gap: 3.2rem;
     border-bottom: 1px solid #E5E1DA;
 }
 .header-search__icon,
@@ -462,24 +448,22 @@ header
         width: 100%;
         height: 100%;
         object-fit: contain;
+        object-position: left;
     }
 }
 .header-left__col
 {
     position: relative;
     display: flex;
-    column-gap: 2.4rem;
+    column-gap: 6.5rem;
     align-items: center;
-    flex-grow: 1;
-    justify-content: space-between;
 }
 .header-right__col
 {
     position: relative;
     display: flex;
     align-items: center;
-    flex-grow: 1;
-    justify-content: space-between;
+    column-gap: 6.5rem;
 }
 .header-contacts
 {
@@ -565,7 +549,7 @@ header
 
 .header-catalog
 {
-    padding: .8rem 0 2.8rem 0;
+    padding: .8rem 6rem 2.8rem 6rem;
     display: flex;
     &__list
     {
@@ -648,6 +632,13 @@ header
         }
     }
 @media (max-width: 960px) {
+    .header-logo
+    {
+        img
+        {
+            object-position: center;
+        }
+    }
     .header-contacts,
     .header-location
     {
