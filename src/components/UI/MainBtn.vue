@@ -120,6 +120,29 @@ export default {
             border: 1px solid #867B6E;
         }
     }
+    &-danger
+    {
+        color: $primary;
+        background: #FFF;
+        border: 1px solid #dc3545;
+        outline: 0;
+        &:focus-visible,
+        &:hover,
+        &:active,
+        :not(.btn-check)+&:active,
+        &:first-child:active,
+        &.active,
+        &.show
+        {
+            color: #FFFFFF;
+            background: #dc3545;
+            border: 1px solid #dc3545;
+            i
+            {
+                color: #FFF !important;
+            }
+        }
+    }
 }
 @media (max-width: 960px) {
     .btn

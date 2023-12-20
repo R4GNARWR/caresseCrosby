@@ -17,8 +17,8 @@
                         <img v-lazy="item" v-for="(item, index) in full_photos.slice(0,4)" :key="index" alt="" >
                     </div>
                     <div class="no-photo" v-if="photosLoaded && !full_photos">
-                            Вышлем фото по запросу
-                        </div>
+                        Вышлем фото по запросу
+                    </div>
                     <div class="d-lg-none d-block" style="position: relative;">
                         <swiper-container
                         class="swiper product-detail__swiper"
@@ -27,17 +27,16 @@
                         :pagination="{
                             clickable: true,
                             el: '.product-swiper__pagination'
-                        }"
-                        >
+                        }">
                         <swiper-slide class="swiper-slide" v-if="!photosLoaded">
                             <img src="/img/loading.gif" alt="">
                         </swiper-slide>
                         <swiper-slide class="swiper-slide" v-for="(item, index) in full_photos" :key="index" v-if="photosLoaded && full_photos">
                             <img v-lazy="item" alt="" >
                         </swiper-slide>
-
+                        
                     </swiper-container>
-                    <SwiperPagination class="product-swiper__pagination" />
+                    <SwiperPagination class="product-swiper__pagination"></SwiperPagination>
                 </div>
             </v-col>
             <v-col md="4" cols="12">
@@ -72,13 +71,31 @@
                             </div>
                         </div>
                     </div>
-                    <div class="product-detail__info-buttons">
+                    <div class="product-detail__info-buttons" v-if="!addToOrder">
                         <MainBtn v-if="!cartQuantity || cartQuantity===0" :disabled="!product.size" class-name="btn-primary" @click="handleAddToCart()">Добавить в корзину</MainBtn>
                         <div v-else class="product-detail__info-buttons-counter">
                             <button class="eq-minus" @click.prevent="changeQ(product, -1);">-</button>
                             {{cartQuantity}}
                             <button class="eq-plus" @click.prevent="changeQ(product, +1)">+</button>
                         </div>
+                        <MainBtn class-name="btn-danger btn-icon" @click="delProduct(product.id)" v-if="user_info.role === 3">
+                            <v-icon icon="mdi-trash-can-outline" color="#FF7171">
+                            </v-icon>
+                        </MainBtn>
+                        <MainBtn class-name="btn-primary heart btn-icon" @click="addFavorite(product.id)" :class="{'active': the_heart}">
+                            <v-icon icon="mdi-heart-outline" color="#FFF" v-if="!the_heart">
+                            </v-icon>
+                            <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart"></v-icon>
+                            <div class="tooltip" v-if="!the_heart">Добавить в избранное</div>
+                            <div class="tooltip" v-if="the_heart">Убрать из изранного</div>
+                        </MainBtn>
+                    </div>
+                    <div class="product-detail__info-buttons" v-else>
+                        <MainBtn :disabled="!product.size" class-name="btn-primary" @click="handleAddToCart()">Добавить в заказ</MainBtn>
+                        <MainBtn class-name="btn-danger btn-icon" @click="delProduct(product.id)" v-if="user_info.role === 3">
+                            <v-icon icon="mdi-trash-can-outline" color="#FF7171">
+                            </v-icon>
+                        </MainBtn>
                         <MainBtn class-name="btn-primary heart btn-icon" @click="addFavorite(product.id)" :class="{'active': the_heart}">
                             <v-icon icon="mdi-heart-outline" color="#FFF" v-if="!the_heart">
                             </v-icon>
@@ -135,7 +152,7 @@
     <ModalSizes id="modalSizes"></ModalSizes>
     <ModalToCart id="modalToCart" :product="product"></ModalToCart>
     <SwiperCards class="product-detail__section" name="Вам понравится" v-if="similar_products" :slidesArray="similar_products"></SwiperCards>
-<!--    <SwiperCards class="product-detail__section" name="С этим товаром покупают" v-if="similar_products" :slidesArray="products"></SwiperCards>-->
+    <!--    <SwiperCards class="product-detail__section" name="С этим товаром покупают" v-if="similar_products" :slidesArray="products"></SwiperCards>-->
 </v-container>
 </template>
 
@@ -174,9 +191,9 @@ export default {
             if (this.attributes && this.attributes.length>0){
                 let sizes=[]
                 for (let attr of this.attributes) if (attr.attributeId === 2 && attr.attributeValueText) sizes.push(attr.attributeValueText)
-
-              this.product.size = sizes[0]
-              return sizes.sort(function( a, b ) {return parseInt(a)-parseInt(b)});
+                
+                this.product.size = sizes[0]
+                return sizes.sort(function( a, b ) {return parseInt(a)-parseInt(b)});
             } else return null;
         },
         colors(){
@@ -265,8 +282,14 @@ export default {
             );
         },
         handleAddToCart() {
-            this.openFancybox()
-            this.addProductToCart()
+
+            if(this.addToOrder) {
+                this.addProductToOrder(this.addToOrder)
+            } else {
+                this.addProductToCart()
+                this.openFancybox()
+            }
+
         },
         updateProduct(){
             if (this.pop_products[this.$route.params.id]){
@@ -300,23 +323,23 @@ export default {
                         this.pop_products[this.$route.params.id] = this.product;
                         this.pop_products[this.$route.params.id].attributes = this.attributes;
                         this.pop_products[this.$route.params.id].category = this.category;
-
+                        
                         this.$API.getFullPhotos(this.$route.params.id).then(value => {
                             this.photosLoaded = true
                             if(value.status ===200 && value.data.length>1) {
                                 this.full_photos = value.data;
                                 this.pop_products[this.$route.params.id].full_photos = this.full_photos;
-                              //similar products
-                              this.search_sim_products(this.brand ? this.brand[0]: null, this.colors?this.colors[0]:null, this.product.name)
-
+                                //similar products
+                                this.search_sim_products(this.brand ? this.brand[0]: null, this.colors?this.colors[0]:null, this.product.name)
+                                
                             } else this.$API.getFullPhoto(this.$route.params.id).then(value => {
                                 if (value.status && value.data){
                                     this.product.photo = value.data
                                     this.full_photos = [value.data]
                                     this.pop_products[this.$route.params.id].full_photos = [value.data];
-                                  //similar products
-                                  this.search_sim_products(this.brand?this.brand[0]:null, this.colors?this.colors[0]:null, this.product.name)
-
+                                    //similar products
+                                    this.search_sim_products(this.brand?this.brand[0]:null, this.colors?this.colors[0]:null, this.product.name)
+                                    
                                 }
                             })
                         })
@@ -337,32 +360,32 @@ export default {
                 this.delFavor(id)
             }
         },
-        handleSizeChange(value) {
-            // if(this.cart.length>0) {
-            //     let size = value;
-            //     let hasSize = false;
-            //     for(let item in this.cart) {
-            //         if(item.size === size) {
-            //             console.log(item.size === size);
-            //             hasSize = true;
-            //             break;
-            //         }
-            //     };
-            //     if(!hasSize) {
-            //         this.deleteFromCart(this.product.id)
-            //     }
-
-            // }
-            // if(this.cartHasSize) {
-            //     for(let item in this.cart) {
-            //         if(item.id === this.product.id && item.size === this.product.size) {
-            //             this.product.quantity = item.q
-            //             this.product.quantity.m = item.m;
-
-            //         }
-            //     }
-            // }
-        },
+        // handleSizeChange(value) {
+        //     if(this.cart.length>0) {
+        //         let size = value;
+        //         let hasSize = false;
+        //         for(let item in this.cart) {
+        //             if(item.size === size) {
+        //                 console.log(item.size === size);
+        //                 hasSize = true;
+        //                 break;
+        //             }
+        //         };
+        //         if(!hasSize) {
+        //             this.deleteFromCart(this.product.id)
+        //         }
+                
+        //     }
+        //     if(this.cartHasSize) {
+        //         for(let item in this.cart) {
+        //             if(item.id === this.product.id && item.size === this.product.size) {
+        //                 this.product.quantity = item.q
+        //                 this.product.quantity.m = item.m;
+                        
+        //             }
+        //         }
+        //     }
+        // },
         ...cart, ...productCard,
         ...mapMutations([
         "add2cart",
@@ -373,7 +396,7 @@ export default {
     },
     watch: {
         '$route'(newRoute, oldRoute) {
-                if (newRoute && newRoute.name === "Product" && newRoute !== oldRoute.params.id) {
+            if (newRoute && newRoute.name === "Product" && newRoute !== oldRoute.params.id) {
                 window.scroll(0,0);
                 this.product=[];
                 this.full_photos=null
@@ -465,7 +488,7 @@ export default {
 }
 .product-detail__info-color
 {
-
+    
     &__name
     {
         margin-bottom: 1.8rem;
@@ -753,7 +776,7 @@ export default {
             {
                 column-gap: 8px;
                 row-gap: 8px;
-
+                
                 &-item
                 {
                     label
@@ -793,7 +816,7 @@ export default {
     {
         display: none;
     }
-
+    
     .product-detail__info
     {
         max-width: 320px;

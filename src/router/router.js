@@ -22,9 +22,12 @@ import NotFound from '../views/404.vue'
 
 // Admin
 
+import Admin from '../views/Admin.vue'
+import BlogAdd from '../views/BlogAdd.vue'
 import BlogEdit from '../views/BlogEdit.vue'
 import EditOrder from '../views/EditOrder.vue'
 import OrderToPay from '../views/OrderToPay.vue'
+import CreateCertificate from '../views/CreateCertificate.vue'
 
 export default createRouter({
   history: createWebHistory(),
@@ -112,6 +115,10 @@ export default createRouter({
       component: GiftCard
     },
     {
+      path: '/admin/',
+      component: Admin
+    },
+    {
       path: '/admin/EditOrder/:id',
       component: EditOrder
     },
@@ -120,9 +127,17 @@ export default createRouter({
       component: OrderToPay
     },
     {
-      path: '/admin/BlogEdit',
+      path: '/admin/BlogAdd',
+      component: BlogAdd
+    },
+    {
+      path: '/admin/BlogEdit/:id',
       component: BlogEdit
     },
+    {
+      path: '/admin/CreateCertificate',
+      component: CreateCertificate
+    }
   ],
   scrollBehavior() {
     window.scrollTo(0,0);

@@ -56,7 +56,8 @@ export default new Vuex.Store({
         state.headerPadding = value
     },
     addToOrder(state, orderId){
-      state.addToOrder = orderId},
+      state.addToOrder = orderId
+    },
     set_snack_message(state, msg, type) {
       state.snack_message.message = msg;
       state.snack_message.type = type?type:''

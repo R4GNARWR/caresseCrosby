@@ -20,11 +20,19 @@
         height: 100%;
     }
 }
+.v-label
+{
+    font-size: 1.4rem;
+}
 @media (max-width: 960px) {
     .swiper-button
     {
         width: 32px;
         height: 32px;
+    }
+    .v-label
+    {
+        font-size: 12px;
     }
 }
 @media (max-width: 600px) {
@@ -167,4 +175,8 @@ a.link
             padding: 25px 0;
         }
     }
+}
+.v-btn.v-btn--density-default
+{
+    height: auto;
 }
