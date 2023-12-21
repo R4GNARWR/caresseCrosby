@@ -46,14 +46,10 @@
         
         
     </section>
-    <div class="admin">
-        <v-dialog v-model="edit_cat"
-        width="90%"
-        max-width="700px"
-        >
+    <v-dialog class="cat-modal" v-model="edit_cat" width="90%" max-width="700px">
         <v-card>
-            <v-card-title v-if="new_cat">Создать категорию:</v-card-title>
-            <v-card-title v-else>Редактировать категорию:</v-card-title>
+            <div class="cat-modal__label" v-if="new_cat">Создать категорию:</div>
+            <div class="cat-modal__label" v-else>Редактировать категорию:</div>
             <v-text-field class="text_input" v-model="the_cat.name" regular label="Имя категории"></v-text-field>
             <v-select
             v-if="!new_cat"
@@ -62,147 +58,149 @@
             label="Выбрать родительскую категорию"
             :items="parents_categories"
             item-value="id"
-            item-text="name"
+            item-title="name"
             return-object
             ></v-select>
-            <v-text-field class="text_input" v-model="the_cat.priority" regular label="Приоритет" v-mask="'####'" placeholder="...."></v-text-field>
-            <div style="margin: 20px; display: flex; flex-direction: row; justify-content: space-around">
-                <v-file-input
-                v-model="the_cat_photo"
-                regular
-                label="Загрузить фото категории"
-                style="max-width: 80%"
-                accept=".jpeg, .jpg, .png"
-                value=""
-                
-                >
-            </v-file-input>
-            <!--        <v-checkbox v-model="the_cat.use_multiplier=true" regular label="Делать наценку на товары"></v-checkbox>-->
-        </div>
+            <v-text-field
+            class="text_input"
+            v-model="the_cat.priority"
+            regular
+            label="Приоритет"
+            v-mask="'####'"
+            placeholder="...."></v-text-field>
+            <v-file-input
+            v-model="the_cat_photo"
+            regular
+            label="Загрузить фото категории"
+            accept=".jpeg, .jpg, .png"
+            value="">
+        </v-file-input>
+        <!-- <div style="display: flex; flex-direction: row; justify-content: space-around; width:100%" >
+            <v-checkbox v-model="the_cat.use_multiplier=true" regular label="Делать наценку на товары"></v-checkbox>
+        </div> -->
         <div v-if="the_cat_photo" style="color: red">Фотография обновится на сайте в течении 5 минут.</div>
-        <div v-if="!new_cat" class="grey_button" @click="delete_cat"><v-icon>mdi-delete-outline</v-icon> Удалить категорию</div>
-        <v-card-actions style="justify-content: space-between">
-            <div class="order_button" @click="update_category">Сохранить</div>
-            <div class="order_button" @click="edit_cat=false; new_cat = false;">Отмена</div>
-        </v-card-actions>
+        
+        <div class="cat-modal__buttons">
+            <button v-if="!new_cat" class="btn btn-danger mr-auto" @click="delete_cat"><v-icon>mdi-delete-outline</v-icon> Удалить категорию</button>
+            <button class="btn btn-white" @click="edit_cat=false; new_cat = false;">Отмена</button>
+            <button class="btn btn-primary" @click="update_category">Сохранить</button>
+        </div>
+        
     </v-card>
 </v-dialog>
 
-<v-dialog
-v-model="create_product"
-width="90%"
-max-width="700px"
->
-<v-card>
-    <v-card-title>Создать товар</v-card-title>
-    <v-text-field class="text_input" v-model="the_product.name" regular label="Название товара"></v-text-field>
-    <v-select
-    class="text_input"
-    v-model="the_product.categoryId"
-    label="Категория товара"
-    :items="categories"
-    item-value="id"
-    item-text="name"
-    return-object
-    ></v-select>
-    <v-file-input
-    class="text_input"
-    v-model="new_product_photo"
-    multiple
-    regular
-    label="Загрузите фото товара"
-    accept=".jpeg, .jpg, .png"
-    value=""
-    >
-</v-file-input>
-<div style="margin: 20px; display: flex; flex-direction: row; justify-content: space-around">
-    <v-text-field style="max-width: 40%" v-model="the_product.sizes" regular label="Размеры: 44(38), 70G(70G), 70A(85A)"></v-text-field>
-    <v-text-field style="max-width: 40%" v-model="the_product.brand" regular label="Бренд"></v-text-field>
-</div>
-<div style="margin: 20px; display: flex; flex-direction: row; justify-content: space-around">
-    <v-text-field style="max-width: 30%" v-model="the_product.article" regular label="Артикул"></v-text-field>
-    <v-text-field style="max-width: 30%" v-model="the_product.barcode" regular v-mask="'#############'" placeholder="............." label="Ш-код товара"></v-text-field>
-    <!--        <v-text-field style="max-width: 20%" v-model="the_product.unit = 'шт'" regular label="Единица измерения"></v-text-field>-->
-</div>
-<div style="margin: 20px; display: flex; flex-direction: row; justify-content: space-around">
-    <v-text-field style="max-width: 30%" v-model="the_product.price" regular placeholder="5 789.99" label="Цена"></v-text-field>
-    <v-text-field style="max-width: 30%;" v-model="the_product.old_price" regular placeholder="5 789.99" label="Старая Цена (для товаров по скидке)"></v-text-field>
-</div>
-
-<div style="margin: 20px; display: flex; flex-direction: row; justify-content: space-around; align-items: center">
-    <v-radio-group column multiple v-model="labels">
-        <v-radio v-for="label in Object.entries(product_labels)" :key="label[0]" :value="label[0]">
-            <template v-slot:label>
-                <div :class="'dt_'+label[0]+' dt_label'" style="right: 40px">{{ label[1] }}</div>
-            </template>
-        </v-radio>
-        <div class="grey_button" @click="labels=[]" style="width: 100px">Очистить</div>
-    </v-radio-group>
-    <div>
-        <v-menu top max-width="50%">
-            <template v-slot:activator="{ on, attrs }">
-                <div class="select_button" v-if="!the_colors.length" v-bind="attrs" v-on="on">Выбирите цвет</div>
-                <div class="select_button" v-else v-bind="attrs" v-on="on">Добавить цвет</div>
-            </template>
-            <v-card>
+<v-dialog class="product-modal" v-model="create_product" width="90%" max-width="700px">
+    <v-card>
+        <div class="product-modal__label">Создать товар</div>
+        <v-text-field class="text_input" v-model="the_product.name" regular label="Название товара"></v-text-field>
+        <v-select
+        class="text_input"
+        v-model="the_product.categoryId"
+        label="Категория товара"
+        :items="categories"
+        item-value="id"
+        item-title="name"
+        return-object></v-select>
+        <v-file-input
+        class="text_input"
+        v-model="new_product_photo"
+        multiple
+        regular
+        label="Загрузите фото товара"
+        accept=".jpeg, .jpg, .png"
+        value="" ></v-file-input>
+        <div class="product-modal__inputs">
+            <v-text-field v-model="the_product.sizes" regular label="Размеры: 44(38), 70G(70G), 70A(85A)"></v-text-field>
+            <v-text-field v-model="the_product.brand" regular label="Бренд"></v-text-field>
+        </div>
+        <div class="product-modal__inputs">
+            <v-text-field v-model="the_product.article" regular label="Артикул"></v-text-field>
+            <v-text-field v-model="the_product.barcode" regular v-mask="'#############'" placeholder="............." label="Ш-код товара"></v-text-field>
+            <!--        <v-text-field style="max-width: 20%" v-model="the_product.unit = 'шт'" regular label="Единица измерения"></v-text-field>-->
+        </div>
+        <div class="product-modal__inputs">
+            <v-text-field v-model="the_product.price" regular placeholder="5 789.99" label="Цена"></v-text-field>
+            <v-text-field v-model="the_product.old_price" regular placeholder="5 789.99" label="Старая Цена (для товаров по скидке)"></v-text-field>
+        </div>
+        
+        <div style="margin: 20px; display: flex; flex-direction: row; justify-content: space-around; align-items: center">
+            <v-radio-group column multiple v-model="labels" v-if="product_labels">
+                <v-radio v-for="label in Object.entries(product_labels)" :key="label[0]" :value="label[0]">
+                    <template v-slot:label>
+                        <div :class="'dt_'+label[0]+' dt_label'" style="right: 40px">{{ label[1] }}</div>
+                    </template>
+                </v-radio>
+                <div class="grey_button" @click="labels=[]" style="width: 100px">Очистить</div>
+            </v-radio-group>
+        </div>
+        
+        <div class="product-modal__color-pick">
+            <div class="product-modal__color-pick__left">
+                <v-menu>
+                    <template v-slot:activator="{ on, attrs }">
+                        <div class="select_button" v-if="!the_colors.length" v-bind="attrs" v-on="on">Выбeрите цвет</div>
+                        <div class="select_button" v-else v-bind="attrs" v-on="on">Добавить цвет</div>
+                    </template>
+                </v-menu>
                 <v-color-picker
                 v-model="add_color"
-                hide-sliders
                 hide-inputs
                 hide-canvas
                 :swatches="swatches"
                 show-swatches
-                @update:color="color_selected(add_color)"
-                >
-            </v-color-picker>
-        </v-card>
-    </v-menu>
-    <div class="row" style="margin: 20px auto 0 auto">
-        <v-menu top max-width="50%" v-if="the_colors" v-for="(color,index) in the_colors" :key="index">
-            <template v-slot:activator="{ on, attrs }">
-                <div style="margin-left:20px; border: 1px solid #d7c6b0; border-radius: 5px;">
-                    <div v-bind="attrs" v-on="on" :style="' width: 60px; height: 20px; background-color: ' +color"></div>
-                    <div style="cursor: pointer" @click="the_colors.splice(index,1)">X</div>
+                @update:modelValue="color_selected(add_color)"></v-color-picker>
+            </div>
+            <div class="product-modal__color-pick__right">
+                <div class="product-modal__color-pick__list">
+                    <v-menu top max-width="50%" v-if="the_colors" v-for="(color,index) in the_colors" :key="index">
+                    <template v-slot:activator="{ on, attrs }">
+                        <div class="product-modal__color-pick__item">
+                            <div class="background" v-bind="attrs" v-on="on" :style="'background-color: ' +color"></div>
+                            <div class="delete" @click="the_colors.splice(index,1)">×</div>
+                        </div>
+                    </template>
+                </v-menu>
                 </div>
-                
-            </template>
-            <v-card>
-                <v-color-picker
-                v-model="the_colors[index]"
-                hide-sliders
-                hide-inputs
-                hide-canvas
-                :swatches="swatches"
-                show-swatches
-                >
-            </v-color-picker>
-        </v-card>
-    </v-menu>
-</div>
-</div>
 
-</div>
-
-
-<v-textarea
-outlined
-label="Состав"
-v-model="the_product.structure"
-style="margin: 20px; border-radius: 20px"
-/>
-<v-textarea
-outlined
-label="Описание товара"
-v-model="the_product.description"
-style="margin: 20px; border-radius: 20px"
-/>
-<v-card-actions style="justify-content: space-between">
-    <div class="order_button" @click="createProduct">Сохранить</div>
-    <div class="order_button" @click="create_product=false;">Отмена</div>
-</v-card-actions>
-</v-card>
+            </div>
+            <!-- <div class="row" style="margin: 20px auto 0 auto">
+                <v-menu top max-width="50%" v-if="the_colors" v-for="(color,index) in the_colors" :key="index">
+                    <template v-slot:activator="{ on, attrs }">
+                        <div style="margin-left:20px; border: 1px solid #d7c6b0; border-radius: 5px;">
+                            <div v-bind="attrs" v-on="on" :style="' width: 60px; height: 20px; background-color: ' +color"></div>
+                            <div style="cursor: pointer" @click="the_colors.splice(index,1)">X</div>
+                        </div>
+                    </template>
+                    <v-card>
+                        <v-color-picker
+                        v-model="the_colors[index]"
+                        hide-sliders
+                        hide-inputs
+                        hide-canvas
+                        :swatches="swatches"
+                        show-swatches></v-color-picker>
+                    </v-card>
+                </v-menu>
+            </div> -->
+        </div>
+        
+        <v-textarea
+        outlined
+        label="Состав"
+        v-model="the_product.structure"
+        style="border-radius: 20px"></v-textarea>
+        <v-textarea
+        outlined
+        label="Описание товара"
+        v-model="the_product.description"
+        style="border-radius: 20px"></v-textarea>
+        
+        <div class="product-modal__modals">
+            <button class="btn btn-white" @click="create_product=false;">Отмена</button>
+            <button class="btn btn-primary" @click="createProduct">Сохранить</button>
+        </div>
+    </v-card>
 </v-dialog>
-</div>
 </template>
 
 <script>
@@ -255,7 +253,7 @@ export default {
     methods:{
         update_category(){
             if (this.new_cat) this.$API.create_new_cat(this.the_cat, this.the_cat_photo)
-            .then(window.location.reload(true));               //todo закрыть окно, обновить товары
+            // .then(window.location.reload(true));               //todo закрыть окно, обновить товары
             // .then(setTimeout(()=> window.location.reload(true),3000));
             else {
                 this.the_cat.parentId = this.the_cat.parentId.id;
@@ -286,8 +284,13 @@ export default {
             this.create_product = false;
         },
         color_selected(color){
-            if (this.the_colors.length ===1 && this.the_colors[0] ==='#FF0000') this.the_colors[0] = color.hex
-            else this.the_colors.push(color.hex);
+            if (this.the_colors.length === 1 && this.the_colors[0] ==='#FF0000') {
+                this.the_colors[0] = color.hex
+            } else {
+                if(!this.the_colors.includes(color)) {
+                    this.the_colors.push(color);
+                }
+            }
         },
         createProduct() {
             if (this.the_product && this.the_product.categoryId && this.the_product.categoryId.id) this.the_product.categoryId=this.the_product.categoryId.id
@@ -424,5 +427,80 @@ export default {
     line-height: 1.33em;
     color: $primary;
 }
-
+.cat-modal__label,
+.product-modal__label
+{
+    font-size: 2.4rem;
+    margin-bottom: 2rem;
+}
+.cat-modal__buttons
+{
+    display: flex;
+    column-gap: .8rem;
+    .btn-white
+    {
+        border: 1px solid $primary;
+    }
+}
+.cat-modal,
+.product-modal
+{
+    .v-card
+    {
+        padding: 2rem 4rem;
+    }
+}
+.product-modal__inputs
+{
+    display: flex;
+    column-gap: 2rem;
+    .v-input
+    {
+        flex-grow: 1;
+    }
+}
+.product-modal__modals
+{
+    display: flex;
+    justify-content: space-between; 
+}
+.select_button
+{
+    margin-bottom: 2rem;
+    font-size: 1.6rem;
+}
+.product-modal__color-pick
+{
+    margin-bottom: 2rem;
+    display: flex;
+    column-gap: 2rem;
+}
+.product-modal__color-pick__list
+{
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 2rem;
+    row-gap: 2rem;
+}
+.product-modal__color-pick__item
+{
+    position: relative;
+    width: 6rem;
+    height: 6rem;
+    .background
+    {
+        width: 100%;
+        height: 100%;
+    }
+    .delete
+    {
+        position: absolute;
+        right: 1rem;
+        top: 0;
+        font-size: 3rem;
+        line-height: 1em;
+        cursor: pointer;
+        overflow: hidden;
+    }
+}
 </style>

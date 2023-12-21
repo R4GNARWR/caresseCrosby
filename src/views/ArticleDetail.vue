@@ -1,5 +1,5 @@
 <template>
-    <section class="articles-detail">
+    <section class="articles-detail" v-if="blog">
         <div class="articles-detail__img">
             <img v-if="blog.img"
                 :src="'https://static.ccrosby.ru/blogs/'+ blog.img" alt="">
@@ -38,6 +38,7 @@
                             <p v-if="item.type === 'text'" v-html="item.content">
                             </p>
                         </div>
+                        <button class="ms-auto btn btn-danger" @click="deleteBlog(blog.title)" v-if="user_info && user_info.role === 3">Удалить статью</button>
                         <DetailLinks></DetailLinks>
                     </div>
                 </v-col>
@@ -49,6 +50,7 @@
 <script>
 import DetailLinks from '../components/UI/DetailLinks.vue';
 import { register } from 'swiper/element/bundle';
+import {mapMutations, mapState} from "vuex";
 
 export default {
     components: {
@@ -59,6 +61,18 @@ export default {
             blogs: [],
             blog: [],
         };
+    },
+    methods: {
+        deleteBlog(title) {
+            this.$API.delThisBlog(title).then(response => {
+                if(response && response.status) {
+                    this.$route.go(-1)
+                }
+            })
+        }
+    },
+    computed: {
+        ...mapState(['user_info'])
     },
     beforeCreate() {
         this.$API.getBlogs().then(value => {

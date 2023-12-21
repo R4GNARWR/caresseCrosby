@@ -142,31 +142,7 @@ export default  {
     get_user_orders(){return this.axios.get('account/orders')},
     get_order_info(id){return this.axios.get('account/orders/' + id + '/products')},
 
-
-    getAttributeValues(group_id){
-        return this.axios.get("attributes/"+ group_id + "/values")
-    },
-
     getOrderInfo(id){return this.axios.get("sms-payment/order-info",{params:{id:id}})},
-    updateOrder(order){return this.axios.put("admin/orders/"+order.id,
-        { house:order.house, street:order.street, city:order.city, phone: order.phone, comment:order.comment, commission:order.commission, apartment:order.apartment},
-        {headers: {'Content-Type': 'application/json'}})},
-    updateOrderProduct(orderId, products){
-        for (let p in products){
-            this.axios.put("admin/orders/"+orderId+"/product-update/"+products[p].orderProductId,
-                {quantity:products[p].quantity, price:products[p].price, notice:products[p].notice},
-                {headers: {'Content-Type': 'application/json'}})
-        }
-    },
-
-    preOrder(product, phone, name, email){return this.axios.get('sms-payment/pre-order', {params:{product:product, phone:phone, name:name, email:email}})},
-
-    orderToPay(orderId){return this.axios.put('sms-payment/order-to-pay/'+ orderId)},
-
-    deleteProductFromOrder(orderId, productId){return this.axios.delete("admin/orders/"+orderId+"/products/"+productId)},
-    addProductToOrder(orderId, productId, notice){return this.axios.post("admin/orders/"+orderId+"/products", {productId:productId, notice: notice})},
-
-
     payment(amount, orderId){ return this.axios.post("account/billing", {sum:amount, orderId:orderId})},
 
     getGallery(){
@@ -195,5 +171,72 @@ export default  {
             cost:lid.cost,
             whenSend:lid.when,
         })
-    }
+    },
+
+    //admin api
+    create_new_cat(new_cat, photo){
+        return this.axios.post('admin/new-category', new_cat,{}).then(value => {
+            if (value.data.success && value.data.new_category_id){
+                if (photo) {
+                    let file_name = 'cat.'+value.data.new_category_id;
+                    let fd = new FormData;
+                    fd.append(file_name, photo);
+                    this.axios.post('admin/photos', fd,{})
+                }
+
+            }
+        });
+    },
+    update_new_cat(new_cat, photo){
+        return this.axios.post('admin/update-category', new_cat,{}).then(value => {
+                if (photo) {
+                    let file_name = 'cat.'+new_cat.id;
+                    let fd = new FormData;
+                    fd.append(file_name, photo);
+                    this.axios.post('admin/photos', fd,{})
+                }
+        }
+        );
+
+    },
+    delete_category(id){
+        return this.axios.get("admin/delete-category", {params:{category_id:id}})
+    },
+
+    createProduct(new_product){
+        return this.axios.post('admin/create-product', new_product,{})
+    },
+    uploadPhoto(fd){return this.axios.post('admin/photos', fd, {})},
+    deleteProduct(id) {
+        return this.axios.delete("admin/products/"+id+"/delete")
+    },
+
+    getAttributeValues(group_id){
+        return this.axios.get("attributes/"+ group_id + "/values")
+    },
+
+    getUsersList(){return this.axios.get("admin/users").then(value => {
+        if (value.data.success){
+            return value.data.users;
+        } else return null;
+    })},
+
+    getOrderInfo(id){return this.axios.get("sms-payment/order-info",{params:{id:id}})},
+    updateOrder(order){return this.axios.put("admin/orders/"+order.id,
+        { house:order.house, street:order.street, city:order.city, phone: order.phone, comment:order.comment, commission:order.commission, apartment:order.apartment},
+        {headers: {'Content-Type': 'application/json'}})},
+    updateOrderProduct(orderId, products){
+        for (let p in products){
+            this.axios.put("admin/orders/"+orderId+"/product-update/"+products[p].orderProductId,
+                {quantity:products[p].quantity, price:products[p].price, notice:products[p].notice},
+                {headers: {'Content-Type': 'application/json'}})
+        }
+    },
+    newCertificate(data){return this.axios.post("new-cert",data,{})},
+    preOrder(product, phone, name, email){return this.axios.get('sms-payment/pre-order', {params:{product:product, phone:phone, name:name, email:email}})},
+
+    orderToPay(orderId){return this.axios.put('sms-payment/order-to-pay/'+ orderId)},
+
+    deleteProductFromOrder(orderId, productId){return this.axios.delete("admin/orders/"+orderId+"/products/"+productId)},
+    addProductToOrder(orderId, productId, notice){return this.axios.post("admin/orders/"+orderId+"/products", {productId:productId, notice: notice})},
 }

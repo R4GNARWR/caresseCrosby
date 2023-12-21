@@ -28,7 +28,7 @@
                 :breakpoints="{
                     0:
                     {
-                        slidesPerView: 1.7,
+                        slidesPerView: 2.3,
                         spaceBetween: 16,
                     },
                     600: {

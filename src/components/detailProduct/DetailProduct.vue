@@ -78,7 +78,7 @@
                             {{cartQuantity}}
                             <button class="eq-plus" @click.prevent="changeQ(product, +1)">+</button>
                         </div>
-                        <MainBtn class-name="btn-danger btn-icon" @click="delProduct(product.id)" v-if="user_info.role === 3">
+                        <MainBtn class-name="btn-danger btn-icon" @click="delete_prod()" v-if="user_info.role === 3">
                             <v-icon icon="mdi-trash-can-outline" color="#FF7171">
                             </v-icon>
                         </MainBtn>
@@ -92,7 +92,7 @@
                     </div>
                     <div class="product-detail__info-buttons" v-else>
                         <MainBtn :disabled="!product.size" class-name="btn-primary" @click="handleAddToCart()">Добавить в заказ</MainBtn>
-                        <MainBtn class-name="btn-danger btn-icon" @click="delProduct(product.id)" v-if="user_info.role === 3">
+                        <MainBtn class-name="btn-danger btn-icon" @click="delete_prod()" v-if="user_info.role === 3">
                             <v-icon icon="mdi-trash-can-outline" color="#FF7171">
                             </v-icon>
                         </MainBtn>
@@ -348,9 +348,12 @@ export default {
             }
         },
         delete_prod(){
-            this.$API.deleteProduct(this.$route.params.id);
-            this.cat_products[this.product.category_id] = null;
-            this.$router.go(-1);
+            this.$API.deleteProduct(this.$route.params.id).then(response => {
+                if(response) {
+                    this.cat_products[this.product.category_id] = null;
+                    this.$router.go(-1);
+                }
+            });
         },
         addFavorite(id) {
             if(!this.the_heart){

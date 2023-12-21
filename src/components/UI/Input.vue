@@ -15,7 +15,7 @@
         :value="modelValue"
         :required="required ? 'true' : null"
         :id="inputId"
-        v-maska data-maska="+7 (###) ###-##-##"
+        v-maska data-maska="# (###) ###-##-##"
         v-if="inputType === 'tel'"
         @input="$emit('update:modelValue', $event.target.value)">
         <div class="form-control__errors" v-for="error of v$.$errors" :key="error.$uid">
@@ -74,7 +74,7 @@ export default {
                 case 'phone':
                 return {
                     modelValue: {
-                        minLength: helpers.withMessage("Пожалуйста введи телефон полностью", minLength(18)),
+                        minLength: helpers.withMessage("Пожалуйста введи телефон полностью", minLength(17)),
                         required: helpers.withMessage("Пожалуйста, введите ваш телефон", required),
                     }
                 };

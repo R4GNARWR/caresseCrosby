@@ -122,7 +122,7 @@ export default {
     }
     &-danger
     {
-        color: $primary;
+        color: #dc3545;
         background: #FFF;
         border: 1px solid #dc3545;
         outline: 0;
