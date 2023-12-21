@@ -210,11 +210,15 @@ export default {
         }
 
         this.$API.searchProducts(this.searchString, attr, page, category).then(value => {
-            console.log('test')
           if (value.data.success) {
-            if(this.products)
-            this.products = [...this.products, ...value.data.products];
-            if(this.initialProduct)
+            if(this.products){
+                this.products = [...this.products, ...value.data.products];
+                this.sizesFilter = value.data.sizes?value.data.sizes:"";
+                this.brandFilters = value.data.brands?value.data.brands:"";
+                this.colorFilter = value.data.colors?value.data.colors:"";
+            }
+
+              if(this.initialProduct)
             this.initialProduct = [...this.initialProduct, ...value.data.products];
             this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
           }

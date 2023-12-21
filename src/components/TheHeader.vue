@@ -264,7 +264,7 @@ export default {
             let lm_catalog = [];
             let lm_swimsuit = {
                 name: 'Купальники',
-                children: []
+                children: [{ name: "Все модели", link: '/catalog/search/?query=купальник'}]
             };
             let lm_underwear = {
                 name: 'Нижнее белье',
@@ -310,6 +310,7 @@ export default {
                     name: 'Войти в личный кабинет',
                     action: this.showLoginForm,
                 },
+                { name: 'Бренды', link: '/Brands' },
                 lm_underwear,
                 lm_swimsuit,
                 ...lm_catalog,
@@ -325,10 +326,7 @@ export default {
                     name: 'Личный кабинет',
                     link: '/profileData',
                 },
-                {
-                    name: 'Выйти',
-                    action: this.showLoginForm,
-                },
+                { name: 'Бренды', link: '/Brands' },
                 lm_underwear,
                 lm_swimsuit,
                 { name: 'Избранные товары', link: '/favorite' },
