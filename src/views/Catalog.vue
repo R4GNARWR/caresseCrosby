@@ -102,10 +102,10 @@ export default {
     data() {
         return {
             sortTypes: [
-            {
-                name: 'По популярности',
-                value: 'popularityDesc'
-            },
+            // {
+            //     name: 'По популярности',
+            //     value: 'popularityDesc'
+            // },
             {
                 name: 'По убыванию цены',
                 value: 'priceDesc'
@@ -117,7 +117,7 @@ export default {
             ],
             status: 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.',
             showFilters: false,
-            activeSortString: 'По популярности',
+            activeSortString: 'Сортировать',
             activeSortValue: 'popularityDesc',
             description:"",
             products:[], brandFilters:null,sizesFilter:null,colorFilter:null,
