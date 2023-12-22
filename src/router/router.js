@@ -135,7 +135,7 @@ export default createRouter({
       component: BlogEdit
     },
     {
-      path: '/admin/CreateCertificate',
+      path: '/admin/CreateCert',
       component: CreateCertificate
     }
   ],

@@ -143,7 +143,7 @@ export default  {
     get_order_info(id){return this.axios.get('account/orders/' + id + '/products')},
 
     getOrderInfo(id){return this.axios.get("sms-payment/order-info",{params:{id:id}})},
-    payment(amount, orderId){ return this.axios.post("account/billing", {sum:amount, orderId:orderId})},
+    payment(amount, orderId, promocode, phone){ return this.axios.post("account/billing", {sum:Number(amount), orderId:orderId, promocode:promocode, phone:phone})},
 
     getGallery(){
         return this.axios.get("banners/galleries")

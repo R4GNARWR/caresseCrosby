@@ -41,20 +41,7 @@
                 
                 >
                 <swiper-slide class="swiper-slide " v-for="product in slidesArray" v-if="slidesArray">
-                    <div class="product-card" v-if="product">
-                        <div class="product-card__img">
-                            <img v-lazy="product.productPhoto" alt="" v-if="product.productPhoto">
-                        </div>
-                        <div class="product-card__info" v-if="product">
-                            <div class="product-card__info-name" v-if="product.productTitle">{{product.productTitle}}</div>
-                            <div class="product-card__info-props">
-                                <div class="product-card__info-props__price" v-if="product.price">
-                                    {{product.price}} руб
-                                </div>
-                            </div>
-                        </div>
-                        <router-link class="link" :to="{ name: 'Product', params: { id: product.orderProductId }}"></router-link>
-                    </div>
+                    <ordered-product-card @updateProduct="initUpdateProduct" :product="product"></ordered-product-card>
                 </swiper-slide>
                 
             </swiper-container>
@@ -65,27 +52,23 @@
 </section>
 </template>
 <script>
-import {mapState} from "vuex";
+
 import { register } from 'swiper/element/bundle';
 import ProductCard from './UI/ProductCard.vue';
+import OrderedProductCard from "./UI/OrderedProductCard.vue";
 export default {
     components: {
-        ProductCard
+        ProductCard,
+        OrderedProductCard
     },
     props: {
         slidesArray: [Array, Object],
         name: String,
         catId: null,
     },
-    computed:{
-        ...mapState(['colors_list',]
-        ),
-    },
-    data() {
-        return {
-            swiperParams:  {
-                
-            },
+    methods: {
+        initUpdateProduct(productId, newPrice, newCount){
+            this.$emit('updateProduct', productId, newPrice, newCount)
         }
     },
     beforeCreate() {

@@ -19,7 +19,11 @@
       <v-text-field class="order_input" v-model="order.commission" label="Стоимость доставки" type="number"></v-text-field>
       
       <v-btn color="success" style="margin-bottom: 20px" @click="addToOrderSearch(orderId)">+ добавить товар в заказ</v-btn>
-      <OrderedProducts v-if="products && products.length>0" :slides-array="products" name="Товары в заказе"></OrderedProducts>
+      <OrderedProducts
+      v-if="products && products.length>0"
+      :slides-array="products"
+      name="Товары в заказе"
+      @updateProduct="changeProduct"></OrderedProducts>
       
       <v-btn color="success" style="margin-right: 20px; margin-bottom: 20px;" v-if="products && products.length>0" @click="to_pay">
         Сохранить и на оплату!
@@ -90,6 +94,13 @@ export default {
     }
   },
   methods: {
+    changeProduct(productId, newPrice, newCount) {
+      const product = this.products.find((item) => item.orderProductId === productId)
+      if(product) {
+        product.quantity = newCount
+        product.price = newPrice
+      }
+    },
     addToOrderSearch(orderId) {
       store.commit("addToOrder", orderId);
       this.$router.push('/catalog/search/?query=');
