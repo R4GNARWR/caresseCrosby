@@ -46,8 +46,8 @@
                             <Input :placeholder="'От кого'" v-model="lid.from" ref="firstInput"></Input>
                             <Input :placeholder="'Кому'" v-model="lid.for"></Input>
                             <Input :placeholder="'E-mail*'" input-type="email" v-model="lid.emailToSend" :required="true" validation-type="email"></Input>
-                            <Input :placeholder="'Телефон получателя*'" v-model="lid.phoneFrom" :required="true" input-type="tel" validation-type="phone"></Input>
-                            <Input :placeholder="'Телефон отправителя*'" v-model="lid.phonefor" :required="true" input-type="tel" validation-type="phone"></Input>
+                            <Input :placeholder="'Телефон получателя*'" v-model="lid.phonefor" :required="true" input-type="tel" validation-type="phone"></Input>
+                            <Input :placeholder="'Телефон отправителя*'" v-model="lid.phoneFrom" :required="true" input-type="tel" validation-type="phone"></Input>
                             <Input :placeholder="'Номинал в рублях'" v-model="lid.cost" :required="true"></Input>
                             <Input :placeholder="'Когда отправить сертификат получателю'" class="inline" v-model="lid.when" input-type="date"></Input>
                         </div>
