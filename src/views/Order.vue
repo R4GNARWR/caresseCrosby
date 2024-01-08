@@ -27,10 +27,25 @@
                         <div class="order-delivery__label">
                             Данные для доставки
                         </div>
+                        <!-- <div class="order-type">
+                            <div class="order-type__item" :class="{'active': deliveryType === 'courier'}">
+                                <input type="radio" name="delivery-type" value="courier" id="" v-model="deliveryType">
+                                <img :src="deliveryType === 'courier' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
+                                Курьером
+                            </div>
+                            <div class="order-type__item" :class="{'active': deliveryType === 'pickup'}">
+                                <input type="radio" name="delivery-type" value="pickup" id="" v-model="deliveryType">
+                                <img :src="deliveryType === 'pickup' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
+                                Самовывоз
+                            </div>
+                        </div> -->
+                        <button class="order-pickup" v-if="deliveryType === 'pickup'">
+                            Выбрать пункт самовывоза
+                        </button>
                         <div class="order-delivery__form" v-if="user_info">
-                            <Input class="inline" placeholder="Адрес доставки*" v-model="city" required="true" inputId="suggest"></Input>
+                            <Input class="inline" placeholder="Адрес доставки*" v-model="city" required="true" inputId="suggest" v-if="deliveryType === 'courier'"></Input>
                             <Input class="" placeholder="Имя*" v-model="name" required="true"></Input>
-                            <!-- <Input class="" placeholder="Фамилия*"></Input> -->
+                            <Input class="" placeholder="Фамилия"></Input>
                             <Input class="" placeholder="Телефон*" validationType="phone" input-type="tel" v-model="phone" required="true"></Input>
                             <Input class="" placeholder="E-mail*" validationType="email" input-type="email" v-model="email" required="true"></Input>
                         </div>
@@ -95,10 +110,11 @@ export default {
     data(){return{
         p_e:false, s_e:false, t_e:false, w_e:false,
         c_p:true, c_s:false, c_t:false, c_w:false,
-        city: '', phone:'', name: '', address: {}, email: '',
+        city: '', phone:'', name: '', surname: '', address: {}, email: '',
         comment:'',
         commission: 0, dates_available:[], hours:{},
         the_error: '',
+        deliveryType: 'courier'
     }},
     setup() {
         return {
@@ -120,9 +136,9 @@ export default {
             if(this.cart.length>0
             && this.delivery_date
             && this.full_address)
-                return true
+            return true
             else
-                return false
+            return false
         },
         cartQuantity() {
             let q = 0;
@@ -188,40 +204,40 @@ export default {
     
     created() {
         const script = document.createElement('script')
-
-
+        
         script.onload = () => {
             ymaps.ready(init);
         };
-
+        
         function init() {
             var suggestView1 = new ymaps.SuggestView('suggest');
         }
-
+        
         script.id = 'ymaps'
         script.src = "https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=453f5758-6290-4de4-bae1-d645fb102e5c&suggest_apikey=6d832aa2-715a-4c2f-bac8-daf07218d006"
         document.head.append(script);
-
+        
         // if (this.user_info.city) {this.address.city = this.user_info.city; this.geocode_address()}
         // if (this.user_info.phone) this.phone = this.user_info.phone;
         // if (this.user_info.apartment) this.address.apartment = this.user_info.apartment;
         // if (this.user_info.street) {this.address.street = this.user_info.street; this.geocode_address()}
         // if (this.user_info.email) this.email = this.user_info.email;
         // if (!this.address && store.state.user_position.length > 0) {
-            //     setTimeout(() => this.address = this.get_point_location(store.state.user_position), 1200);
-            // } else if (!this.address) {
-                //     this.$getLocation().then(value => {
-                    //         setTimeout(() => this.address = this.get_point_location(value), 1200);
-                    //     }).catch(error => {
-                        //         console.log(error);
-                        //         this.errored = true;
-                        //     });
-                        // }
+        //     setTimeout(() => this.address = this.get_point_location(store.state.user_position), 1200);
+        // } else if (!this.address) {
+        //     this.$getLocation().then(value => {
+        //         setTimeout(() => this.address = this.get_point_location(value), 1200);
+        //     }).catch(error => {
+        //         console.log(error);
+        //         this.errored = true;
+        //     });
+        // }
     },
     mounted() {
         this.email = this.user_info.email || ''
         this.phone = this.user_info.phone || ''
         this.name = this.user_info.name || ''
+        this.surname = this.user_info.surname || ''
         this.city = this.user_info.city || ''
     },
     destroyed() {
@@ -256,7 +272,7 @@ export default {
 }
 .order-products__wrap
 {
-
+    
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     column-gap: 3.2rem;
@@ -324,6 +340,55 @@ export default {
             grid-column: span 2;
         }
     }
+}
+.order-type
+{
+    margin-bottom: 3.2rem;
+    width: 100%;
+    display: flex;
+    column-gap: 1.6rem;
+}
+.order-type__item
+{
+    position: relative;
+    padding: 1.6rem;
+    display: flex;
+    align-items: center;
+    column-gap: 1.2rem;
+    flex-grow: 1;
+    border: 1px solid #E9E9E9;
+    transition: .3s;
+    &.active
+    {
+        border: 1px solid #1B1916;
+    }
+    input
+    {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+    color: #27231F;
+    font-size: 1.6rem;
+    line-height: 1.5em;
+    letter-spacing: -0.128px;
+}
+.order-pickup
+{
+    margin-bottom: 3.2rem;
+    width: 100%;
+    padding: 2rem;
+    border: 1px solid #867B6E;
+    color: #867B6E;
+    font-size: 1.7rem;
+    font-weight: 600;
+    line-height: 1.4em;
+    letter-spacing: -0.204px;
+    text-align: center;
 }
 @media (max-width: 1280px) {
     .order-products__wrap

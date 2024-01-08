@@ -29,7 +29,7 @@
                 </div>
             </div>
         </v-container>
-        <div class="contacts-map">
+        <div class="contacts-map" @click="to2Gis">
             <yandex-map :settings="settings"
             :coords="coords"
             :controls="[]"
@@ -79,6 +79,11 @@ export default {
             }
         };
     },
+    methods: {
+        to2Gis() {
+            window.open('https://go.2gis.com/1xqkl', '_blank').focus()
+        }
+    }
 };
 </script>
 

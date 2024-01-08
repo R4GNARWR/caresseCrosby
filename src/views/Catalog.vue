@@ -39,7 +39,7 @@
                 </v-col>
             </v-row>
         </v-container>
-
+        <ArrowScrollUp></ArrowScrollUp>
     </section>
 
 </template>
@@ -91,14 +91,16 @@ import CatalogList from "../components/catalog/CatalogList.vue";
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue'
 import Dropdown from "../components/UI/Dropdown.vue";
 import search from './../api/search'
+import ArrowScrollUp from "../components/UI/ArrowScrollUp.vue";
 
 export default {
     components: {
-        Breadcrumbs,
-        CatalogFilter,
-        CatalogList,
-        Dropdown
-    },
+    Breadcrumbs,
+    CatalogFilter,
+    CatalogList,
+    Dropdown,
+    ArrowScrollUp
+},
     data() {
         return {
             sortTypes: [
@@ -257,6 +259,7 @@ export default {
         },
         ...search,
         updateFilter(filter) {
+          window.scrollTo(0,0)
           if (this.filters.indexOf(filter)>-1) this.filters.splice(this.filters.indexOf(filter),1)
           else this.filters.push(filter)
         },

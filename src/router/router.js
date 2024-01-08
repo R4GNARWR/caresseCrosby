@@ -14,6 +14,7 @@ import PhotoAlbum from '../views/PhotoAlbum.vue'
 import About from '../views/About.vue'
 import ProfileData from '../views/ProfileData.vue'
 import ProfileOrders from '../views/ProfileOrders.vue'
+import CDEKpoints from '../views/CDEKpoints.vue'
 import Contacts from '../views/Contacts.vue'
 import Delivery from '../views/Delivery.vue'
 import GiftCard from '../views/giftCard.vue'
@@ -137,6 +138,10 @@ export default createRouter({
     {
       path: '/admin/CreateCert',
       component: CreateCertificate
+    },
+    {
+      path: '/pick-point',
+      component: CDEKpoints
     }
   ],
   scrollBehavior() {

@@ -11,19 +11,18 @@
                             <img src="/svg/search.svg" alt="">
                         </div>
                     </div>
-
-                    <router-link class="header-logo d-lg-flex d-none" to="/">
-                        <img src="/svg/logo-header.svg" alt="">
-                    </router-link>
-                    <div class="header-location" >
+                    
+                    
+                    <!-- <div class="header-location" >
                         <img src="/svg/placemark-outline.svg" alt="">
                         г. Уфа
-                    </div>
+                    </div> -->
+                    <Search class="d-lg-block d-none"></Search>
                 </div>
-                <router-link class="header-logo d-lg-none d-block" to="/">
+                <router-link class="header-logo " to="/">
                     <img src="/svg/logo-header.svg" alt="">
                 </router-link>
-                <Search class="d-lg-block d-none"></Search>
+                
                 <div class="header-right__col">
                     <div class="header-contacts">
                         <div class="header-contacts__phone">
@@ -75,7 +74,7 @@
                             <button @click="item.action" v-if="item.action">{{item.name}}</button>
                             <router-link :to="item.link"  v-if="item.link">{{item.name}}</router-link>
                         </div>
-
+                        
                         <div class="header-catalog__list-item">
                             <router-link to="/giftCard">
                                 <img src="/svg/gift.svg" alt="">
@@ -121,7 +120,7 @@
         </v-container>
         <ModalSearch :searchActive="searchStatus" @toggleSearch="closeSearch"></ModalSearch>
     </header>
-
+    
 </template>
 <script>
 import { Fancybox } from "@fancyapps/ui";
@@ -144,7 +143,7 @@ export default {
         };
     },
     emits: [
-        'update-offset-top'
+    'update-offset-top'
     ],
     methods: {
         closeSearch() {
@@ -277,13 +276,13 @@ export default {
                     {
                         lm_swimsuit.children.push({ name: category.name, link: '/catalog/' + category.id })
                     } else if(category.name === 'Трусики'
-                            || category.name === "Бюстгальтеры"
-                            || category.name === "Коррекция"
-                            || category.name === "Белье для кормления"
-                            || category.name === "Спортивный бюстгальтер"
-                            || category.name === "Специализированное белье"
-                            || category.name === "Боди"){
-                                lm_underwear.children.push({ name: category.name, link: '/catalog/' + category.id })
+                    || category.name === "Бюстгальтеры"
+                    || category.name === "Коррекция"
+                    || category.name === "Белье для кормления"
+                    || category.name === "Спортивный бюстгальтер"
+                    || category.name === "Специализированное белье"
+                    || category.name === "Боди"){
+                        lm_underwear.children.push({ name: category.name, link: '/catalog/' + category.id })
                     } else {
                         lm_catalog.push({ name: category.name, link: '/catalog/' + category.id });
                     }
@@ -338,7 +337,7 @@ export default {
                 { name: 'Доставка', link: '/delivery' },
                 ];
             }
-
+            
             return lm;
         },
     },
@@ -358,7 +357,7 @@ export default {
         // удаляем обработчик события при уничтожении компонента
         window.removeEventListener('resize', this.changeSize);
     },
-
+    
 }
 </script>
 <style lang="scss">
@@ -379,6 +378,7 @@ header
     padding: 1rem 6rem 1rem 6rem;
     position: relative;
     display: flex;
+    justify-content: space-between;
     align-items: center;
     column-gap: 3.2rem;
     border-bottom: 1px solid #E5E1DA;
@@ -433,7 +433,7 @@ header
             height: 100%;
             object-fit: contain;
         }
-
+        
     }
 }
 .header-logo
@@ -446,7 +446,7 @@ header
         width: 100%;
         height: 100%;
         object-fit: contain;
-        object-position: left;
+        object-position: center;
     }
 }
 .header-left__col
@@ -454,6 +454,7 @@ header
     position: relative;
     display: flex;
     column-gap: 6.5rem;
+    flex-basis: 44.5rem;
     align-items: center;
 }
 .header-right__col
@@ -603,7 +604,7 @@ header
         font-weight: 700;
         line-height: 1.5em;
         letter-spacing: -0.128px;
-
+        
     }
 }
 @media (max-width: 1280px) {
@@ -623,12 +624,12 @@ header
     }
 }
 .header-search
+{
+    .search-wrap
     {
-        .search-wrap
-        {
-            margin-bottom: 0;
-        }
+        margin-bottom: 0;
     }
+}
 @media (max-width: 960px) {
     .header-logo
     {
@@ -637,16 +638,24 @@ header
             object-position: center;
         }
     }
+    .header-top
+    {
+        padding: 12px 0;
+    }
     .header-contacts,
     .header-location
     {
         display: none;
     }
+    .header-left__col
+    {
+        flex-basis: initial;
+    }
     .header-top
     {
         border-bottom: 0;
     }
-
+    
     .header-catalog__inner
     {
         padding: 0 0 20px 0;
@@ -688,14 +697,14 @@ header
                 font-size: 16px;
                 a
                 {
-
+                    
                     column-gap: 8px;
                     img
                     {
                         width: 20px;
                         height: 20px;
                     }
-
+                    
                 }
             }
             .dropdown
@@ -755,7 +764,7 @@ header
                 padding: 4px 8px 4px 8px;
             }
         }
-
+        
     }
     .header-catalog__contacts
     {
@@ -796,7 +805,7 @@ header
                     height: 24px;
                 }
             }
-
+            
         }
     }
     .header-location
@@ -842,7 +851,7 @@ header
         &-links
         {
             column-gap: 24px;
-
+            
             &__item
             {
                 .count
@@ -855,7 +864,7 @@ header
                 height: 24px;
             }
         }
-
+        
     }
     .header-left__col
     {
@@ -863,6 +872,14 @@ header
     }
 }
 @media (max-width: 600px) {
+    header
+    {
+        .v-container
+        {
+            max-width: 100%;
+            padding: 0 20px;
+        }
+    }
     .header-top
     {
         position: static;

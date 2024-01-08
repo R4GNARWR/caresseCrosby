@@ -49,6 +49,7 @@
 <script>
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
+import { Fancybox } from '@fancyapps/ui';
 import {mapState} from "vuex";
 import store from "../store/store";
 

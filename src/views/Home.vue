@@ -1,7 +1,7 @@
 <template>
     <SwiperFullScreen :slidesArray="mainSlides" ></SwiperFullScreen>
     <MainProps></MainProps>
-    <SwiperCards name="Хиты продаж" :slidesArray="hitProducts" v-if="hitProducts && hitProducts.length > 0"></SwiperCards>
+    <SwiperCards id="hits" name="Хиты продаж" :slidesArray="hitProducts" v-if="hitProducts && hitProducts.length > 0"></SwiperCards>
     <MainCategories></MainCategories>
     <MainBanner></MainBanner>
     <SwiperCards name="Популярное" :slidesArray="popularProducts" v-if="popularProducts && popularProducts.length > 0"></SwiperCards>

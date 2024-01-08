@@ -26,7 +26,7 @@
                 </swiper-slide>
                 
             </swiper-container>
-            <SwiperPagination class="swiper-fullscreen__pagination" />
+            <!-- <SwiperPagination class="swiper-fullscreen__pagination" /> -->
         </div>
     </div>
 </section>

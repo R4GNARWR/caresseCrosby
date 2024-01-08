@@ -14,7 +14,8 @@
                     </div>
                 </div>
             </div>
-            
+        </v-container>
+        <v-container class="pa-0 cards">
             <div class="swiper-cards">
                 <swiper-container
                 class="swiper"
@@ -49,8 +50,8 @@
             </swiper-container>
             <router-link class="swiper-cards__more" :to="'/catalog/'+ catId" v-if="catId">Смотреть все</router-link>
         </div>
-        
     </v-container>
+
 </section>
 </template>
 <script>
@@ -67,8 +68,8 @@ export default {
         catId: null,
     },
     computed:{
-    ...mapState(['colors_list',]
-    ),
+        ...mapState(['colors_list',]
+        ),
     },
     data() {
         return {
@@ -116,6 +117,13 @@ export default {
     }
 }
 @media (max-width: 600px) {
+    .main-section
+    {
+        .v-container.cards
+        {
+            max-width: 100%;
+        }
+    }
     .swiper-cards
     {
         margin-top: 40px;

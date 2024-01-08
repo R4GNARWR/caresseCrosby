@@ -1,6 +1,7 @@
 
 
 <template>
+  <Metrika></Metrika>
   <main :style="{ paddingTop: mainOffsetTop + 'px' }" ref="wrapper">
     <TheHeader @update-offset-top="updateOffsetTop"></TheHeader>
     <router-view />
@@ -16,14 +17,15 @@
 
 <script>
 import {mapState} from "vuex"; 
+import { Fancybox } from "@fancyapps/ui";
 
 
 import TheHeader from './components/TheHeader.vue'
 import TheFooter from './components/TheFooter.vue'
 import SnackMessage from './components/UI/SnackMessage.vue'
-import { Fancybox } from "@fancyapps/ui";
 import Widget from "./components/UI/Widget.vue";
 import ModalAuth from "./components/modals/ModalAuth.vue";
+import Metrika from "./components/Metrika.vue";
 
 export default {
   components: {
@@ -31,8 +33,9 @@ export default {
     TheHeader,
     SnackMessage,
     Widget,
-    ModalAuth
-  },
+    ModalAuth,
+    Metrika
+},
   computed: {...mapState(['loader', 'snack_message']),},
   data() {
     return {

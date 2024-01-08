@@ -61,22 +61,30 @@
             </v-row>
         </v-container>
     </section>
+    <section>
+        <v-container>
+            <SwiperCards :slidesArray="products" :name="'Сертификаты'" :catId="24473"></SwiperCards>
+        </v-container>
+    </section>
 </template>
 <script>
 import { useVuelidate } from '@vuelidate/core'
+import { mapState } from "vuex";
 import store from "../store/store";
 
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import Input from '../components/UI/Input.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
 import MainLink from '../components/UI/MainLink.vue';
+import SwiperCards from '../components/SwiperCards.vue'
 
 export default {
     components: {
         Breadcrumbs,
         MainBtn,
         MainLink,
-        Input
+        Input,
+        SwiperCards
     },
     data() {
         return {
@@ -88,9 +96,13 @@ export default {
                 phonefor: '',
                 cost: '',
                 when: '',
-            }
+            },
+            products: [],
             
         };
+    },
+    computed: {
+        ...mapState(["categoriesTree", "cat_products"]),
     },
     setup () {
         return {
@@ -130,7 +142,23 @@ export default {
                 }
 
             })
-        }
+        },
+        async getProducts() {
+            if (this.cat_products[24473]) {
+                this.products = this.cat_products[24473];
+            } else if(!this.cat_products[24473]){
+                try {
+                    const response = await this.$API.getCategoryTopProducts(24473, 380, 570);
+                    this.products = response.data.products;
+                    this.cat_products[24473] = response.data.products;
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        },
+    },
+    created() {
+        this.getProducts()
     }
 };
 </script>

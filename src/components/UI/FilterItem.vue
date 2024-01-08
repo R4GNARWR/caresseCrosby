@@ -1,9 +1,8 @@
 <template>
   <div v-if="filterObject">
-
     <div class="catalog__filter-item" v-if="filterName === 'Бренды'">
         <div class="catalog__filter-item__label">{{ filterName }}</div>
-        <div class="catalog__filter-items" :class="{'all': showAll}">
+        <div class="catalog__filter-items" :class="{'all': showAll, 'shrink': values.length < 7}">
             <div class="catalog__filter-item__input" v-for="filter in values" :key="filter.value" >
                 <input type="radio" :name="filter.value"
                        @click="clickFilter(filter)"
@@ -14,8 +13,8 @@
             </div>
         </div>
 
-        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll">Посмотреть все</button>
-        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll">Скрыть</button>
+        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll && values.length > 6">Посмотреть все</button>
+        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll && values.length > 6">Скрыть</button>
     </div>
     <div class="catalog__filter-item" v-if="filterName === 'Размеры'">
       <div class="catalog__filter-item__label">{{ filterName }}</div>
@@ -30,8 +29,8 @@
           <div class="catalog__filter-item__name">{{ filter.value }}</div>
         </div>
       </div>
-        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll">Посмотреть все</button>
-        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll">Скрыть</button>
+        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll && values.length > 6">Посмотреть все</button>
+        <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll && values.length > 6">Скрыть</button>
     </div>
 
     <div class="catalog__filter-item" v-if="filterName === 'Цвета'">
@@ -47,8 +46,8 @@
           <div class="catalog__filter-item__name">{{ filter.value }}</div>
         </div>
       </div>
-      <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll">Посмотреть все</button>
-      <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll">Скрыть</button>
+      <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="!showAll && values.length > 6">Посмотреть все</button>
+      <button class="catalog__filter-item__button" @click="toggleFilters()" v-if="showAll && values.length > 6">Скрыть</button>
     </div>
   </div>
 </template>
@@ -128,6 +127,10 @@ export default {
     row-gap: 1.2rem;
     height: calc(3.4rem * 6);
     overflow: hidden;
+    &.shrink
+    {
+        height: auto;
+    }
     &.half
     {
         height: calc(3.2rem * 3);

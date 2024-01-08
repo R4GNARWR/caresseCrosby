@@ -47,7 +47,7 @@ export default {
                     name: "Средства ухода",
                 },
                 {
-                    id: 25031,
+                    id: 'search/?query=купальник',
                     name: "Купальники",
                 },
                 {

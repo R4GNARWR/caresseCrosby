@@ -25,15 +25,15 @@
                 </v-col>
                 <v-col sm="4" md="2" cols="12" offset-md="1">
                     <div class="footer-links">
-                        <router-link to="/catalog" class="footer-links__label">КАТАЛОГ</router-link>
+                        <router-link to="/catalogAll" class="footer-links__label">КАТАЛОГ</router-link>
                         <ul class="footer-links__list">
-                            <li><a href="">Новинки</a></li>
-                            <li><a href="">Популярное</a></li>
-                            <li><a href="">Нижнее белье</a></li>
-                            <li><a href="">Средства ухода</a></li>
-                            <li><a href="">Купальники</a></li>
-                            <li><a href="">Подарочные сертификаты</a></li>
-                            <li><a href="">Аксессуары</a></li>
+                            <!-- <li><router-link to="/#hits">Хиты продаж</router-link></li> -->
+                            <li><router-link to="/catalog/24402">Бюстгалтеры</router-link></li>
+                            <li><router-link to="/catalog/24403">Трусики</router-link></li>
+                            <li><router-link to="/catalog/25035">Средства ухода</router-link></li>
+                            <li><router-link to="/catalog/search/?query=купальник">Купальники</router-link></li>
+                            <li><router-link to="/giftCard">Подарочные сертификаты</router-link></li>
+                            <li><router-link to="/catalog/24449">Аксессуары</router-link></li>
                         </ul>
                     </div>
                 </v-col>
@@ -52,7 +52,7 @@
                         <router-link to="/delivery" class="footer-links__label">ПОЛЬЗОВАТЕЛЯМ</router-link>
                         <ul class="footer-links__list">
                             <li><router-link to="/delivery">Доставка и оплата</router-link></li>
-                            <li><a href="">Помощь</a></li>
+                            <!-- <li><a href="">Помощь</a></li> -->
                             <li><router-link to="/contacts">Контакты</router-link></li>
                         </ul>
                         <div class="footer-additional-info d-lg-flex d-none">
