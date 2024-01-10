@@ -11,9 +11,9 @@
             </div>
         </div>
         <div class="catalog__filter-filters">
-            <FilterItem @update-filters="updateFilters" :filterObject="brands_search" :filterName="'Бренды'"></FilterItem>
-            <FilterItem @update-filters="updateFilters" :filterObject="sizes_search" :filterName="'Размеры'"></FilterItem>
-            <FilterItem @update-filters="updateFilters" :filterObject="colors_search" :filterName="'Цвета'"></FilterItem>
+            <FilterItem @update-filters="updateFilters" :filterObject="brands_search" :filterName="'Бренды'" v-if="brands_search && brands_search.length > 0"></FilterItem>
+            <FilterItem @update-filters="updateFilters" :filterObject="sizes_search" :filterName="'Размеры'" v-if="sizes_search && sizes_search.length > 0"></FilterItem>
+            <FilterItem @update-filters="updateFilters" :filterObject="colors_search" :filterName="'Цвета'" v-if="colors_search && colors_search.length > 0"></FilterItem>
         </div>
 
     </div>

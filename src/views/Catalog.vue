@@ -28,11 +28,11 @@
             <v-row>
                 <v-col md="3" cols="12">
                     <CatalogFilter
-                        :filterStatus="showFilters"
-                        :brands_search="brandFilters"
-                        :colors_search="colorFilter"
-                        :sizes_search="sizesFilter"
-                        @updateFilter="updateFilter" @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
+                    :filterStatus="showFilters"
+                    :brands_search="brandFilters"
+                    :colors_search="colorFilter"
+                    :sizes_search="sizesFilter"
+                    @updateFilter="updateFilter" @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
                 </v-col>
                 <v-col md="9" cols="12">
                     <CatalogList :productArray="productsComputed" :searchStatus="status"></CatalogList>
@@ -41,48 +41,48 @@
         </v-container>
         <ArrowScrollUp></ArrowScrollUp>
     </section>
-
+    
 </template>
 <script>
 const objectsEqual = (o1, o2) =>
-    typeof o1 === 'object' && Object.keys(o1).length > 0
-        ? Object.keys(o1).length === Object.keys(o2).length
-        && Object.keys(o1).every(p => objectsEqual(o1[p], o2[p]))
-        : o1 === o2;
+typeof o1 === 'object' && Object.keys(o1).length > 0
+? Object.keys(o1).length === Object.keys(o2).length
+&& Object.keys(o1).every(p => objectsEqual(o1[p], o2[p]))
+: o1 === o2;
 
 const filterSuccess = (a, b) => {
-  a=Array.from(a)
-  b=Array.from(b)
-
-  let groupedFilter = {};
-  for (var i=0; i<a.length; i++) {
-    let p = a[i]["attributeId"];
-    if (!groupedFilter[p]) { groupedFilter[p] = []; }
-    groupedFilter[p].push(a[i]);
-  }
-
-  let groupedProductAttr = {};
-  for (var i=0; i<b.length; i++) {
-    let p = b[i]["attributeId"];
-    if (!groupedProductAttr[p]) { groupedProductAttr[p] = []; }
-    groupedProductAttr[p].push(b[i]);
-  }
-
-  let result = {}
-  for (let k in groupedFilter){
-    result[k]=false
-    groupedFilter[k].forEach(a1=>{
-      if (groupedProductAttr[k])
-        groupedProductAttr[k].forEach(b1=>{
-          if (objectsEqual(a1, b1)) result[k]= true
+    a=Array.from(a)
+    b=Array.from(b)
+    
+    let groupedFilter = {};
+    for (var i=0; i<a.length; i++) {
+        let p = a[i]["attributeId"];
+        if (!groupedFilter[p]) { groupedFilter[p] = []; }
+        groupedFilter[p].push(a[i]);
+    }
+    
+    let groupedProductAttr = {};
+    for (var i=0; i<b.length; i++) {
+        let p = b[i]["attributeId"];
+        if (!groupedProductAttr[p]) { groupedProductAttr[p] = []; }
+        groupedProductAttr[p].push(b[i]);
+    }
+    
+    let result = {}
+    for (let k in groupedFilter){
+        result[k]=false
+        groupedFilter[k].forEach(a1=>{
+            if (groupedProductAttr[k])
+            groupedProductAttr[k].forEach(b1=>{
+                if (objectsEqual(a1, b1)) result[k]= true
+            })
         })
-    })
-    if (!result[k]) break
-  }
-
-  let final=true
-  for (let r in result) final=final * result[r]
-  return final
+        if (!result[k]) break
+    }
+    
+    let final=true
+    for (let r in result) final=final * result[r]
+    return final
 }
 
 import { mapState } from "vuex";
@@ -95,19 +95,15 @@ import ArrowScrollUp from "../components/UI/ArrowScrollUp.vue";
 
 export default {
     components: {
-    Breadcrumbs,
-    CatalogFilter,
-    CatalogList,
-    Dropdown,
-    ArrowScrollUp
-},
+        Breadcrumbs,
+        CatalogFilter,
+        CatalogList,
+        Dropdown,
+        ArrowScrollUp
+    },
     data() {
         return {
             sortTypes: [
-            // {
-            //     name: 'По популярности',
-            //     value: 'popularityDesc'
-            // },
             {
                 name: 'По убыванию цены',
                 value: 'priceDesc'
@@ -133,7 +129,8 @@ export default {
                 "brand": {
                     "attributeId":1,
                     "attributeValueId":'',
-                    "value":""},
+                    "value":""
+                },
                 "sizes": {
                     "attributeId":2,
                     "attributeValueId":'',
@@ -142,8 +139,9 @@ export default {
                 "colors": {
                     "attributeId":6,
                     "attributeValueId":'',
-                    "value":""}
-                },
+                    "value":""
+                }
+            },
             filters:[],
             start_filter:{},
             isLoading: false,
@@ -151,32 +149,34 @@ export default {
     },
     computed:{
         productsComputed() {
-          let productsFiltered = []
-          if (this.filters && this.filters.length>0){
-            for (let p of this.products)
-              if (p.attributes)
-                if (filterSuccess(this.filters, p.attributes)) productsFiltered.push(p)
-          }
-          else productsFiltered=this.products
-
-          switch (this.activeSortValue) {
-            case 'priceAsc': {
-              productsFiltered.sort((a, b) => a.price - b.price);
-              break;
+            let productsFiltered = []
+            if (this.filters && this.filters.length>0){
+                for (let p of this.products) {
+                    if (p.attributes) {
+                        if (filterSuccess(this.filters, p.attributes)) {
+                            productsFiltered.push(p)
+                        } 
+                    }
+                }
+            } else {
+                productsFiltered=this.products
             }
-            case 'priceDesc': {
-              productsFiltered.sort((a, b) => b.price - a.price);
-              break;
+            switch (this.activeSortValue) {
+                case 'priceAsc': {
+                    productsFiltered.sort((a, b) => a.price - b.price);
+                    break;
+                }
+                case 'priceDesc': {
+                    productsFiltered.sort((a, b) => b.price - a.price);
+                    break;
+                }
+                case 'popularityDesc': {
+                    break;
+                }
             }
-            case 'popularityDesc': {
-              break;
-            }
-          }
-          return productsFiltered
-
+            return productsFiltered
         },
-        ...mapState(['headerPadding', 'categoriesTree', 'cat_products','brands_search' ]
-        ),
+        ...mapState(['headerPadding', 'categoriesTree', 'cat_products','brands_search', 'search_result' ]),
         totalAmount() {
             return this.productsComputed.length
         },
@@ -185,10 +185,11 @@ export default {
             if(this.categoriesTree && !paramId) {
                 const category = this.categoriesTree.find(element => Number(this.$route.params.id) === Number(element.id));
                 return category ? category.name : 'Каталог';
-            } else if(paramId && this.brands_search && this.filter["brand"].attributeValueId === paramId){
+            } else if(paramId && this.brands_search && this.filter["brand"].attributeValueId === paramId) {
                 const brand = this.brands_search.find(element => Number(element.attributeValueId) === Number(paramId));
-                if(brand)
-                return brand.value;
+                if(brand) {
+                    return brand.value;
+                }
             } else {
                 return 'Каталог';
             }
@@ -210,60 +211,89 @@ export default {
             this.status = 'Поиск...'
             if(this.$route.params.id === 'search') {
                 try {
-                    const [productsResponse] = await Promise.all([
-                        this.$API.searchProducts( this.$route.query.query, null, 1, null)
-                    ]);
-                    this.i = 1;
-
-                    if (productsResponse) {
-                        this.products = productsResponse.data.products;
-                        this.sizesFilter = productsResponse.data.sizes;
-                        this.brandFilters = productsResponse.data.brands;
-                        this.colorFilter = productsResponse.data.colors;
-                        this.productsInitial = productsResponse.data.products;
+                    if(this.search_result.query === this.$route.query.query && this.search_result) {
+                        this.products = this.search_result.products;
+                        this.sizesFilter = this.search_result.sizesFilter;
+                        this.brandFilters = this.search_result.brandFilters;
+                        this.colorFilter = this.search_result.colorFilter;
+                        this.productsInitial = this.search_result.products;
                         this.accept_product_request = true;
+                    } else {
+                        const [productsResponse] = await Promise.all([
+                        this.$API.searchProducts( this.$route.query.query, null, 1, null)
+                        ]);
+                        this.i = 1;
+                        if (productsResponse) {
+                            this.products = productsResponse.data.products;
+                            this.sizesFilter = productsResponse.data.sizes;
+                            this.brandFilters = productsResponse.data.brands;
+                            this.colorFilter = productsResponse.data.colors;
+                            this.productsInitial = productsResponse.data.products;
+                            this.accept_product_request = true;
+                            
+                            this.search_result.products = productsResponse.data.products
+                            this.search_result.sizesFilter = productsResponse.data.sizes;
+                            this.search_result.brandFilters = productsResponse.data.brands;
+                            this.search_result.colorFilter = productsResponse.data.colors;
+                            this.search_result.query = this.$route.query.query
+                        } else {
+                            this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
+                        }
                     }
-                    this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
                 } catch (error) {
                     this.status = 'Ошибка поиска. Повторите попытку позднее'
                     console.log(error);
                 }
             } else {
-                try {
-                const [descriptionResponse, productsResponse] = await Promise.all([
-                this.$API.getCatDescription(this.$route.params.id),
-                this.cat_products[this.$route.params.id] || this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570)
-                ]);
-                if (descriptionResponse.data.success) {
-                    this.description = descriptionResponse.data.description;
-                }
-                this.i = 1;
-                if (productsResponse) {
-                    this.products = productsResponse.data.products;
-                    this.productsInitial = productsResponse;
-                    this.sizesFilter = productsResponse.data.sizes;
-                    this.brandFilters = productsResponse.data.brands;
-                    this.colorFilter = productsResponse.data.colors;
-                    this.accept_product_request = true;
-                    if(!this.cat_products[this.$route.params.id]) {
-                        this.cat_products[this.$route.params.id] = productsResponse;
+                if(this.cat_products[this.$route.params.id]) {
+                    const saved = this.cat_products[this.$route.params.id]
+                    this.products = saved.data.products;
+                        this.productsInitial = saved.data.products;
+                        this.sizesFilter = saved.data.sizes;
+                        this.brandFilters = saved.data.brands;
+                        this.colorFilter = saved.data.colors;
+                        this.accept_product_request = true;
+                } else {
+                    try {
+                    const [productsResponse, descriptionResponse ] = await Promise.all([
+                    this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570),
+                    this.$API.getCatDescription(this.$route.params.id)
+                    ])
+                    if (descriptionResponse.data.success) {
+                        this.description = descriptionResponse.data.description;
                     }
+                    this.i = 1;
+                    if (productsResponse) {
+                        this.products = productsResponse.data.products;
+                        this.productsInitial = productsResponse;
+                        this.sizesFilter = productsResponse.data.sizes;
+                        this.brandFilters = productsResponse.data.brands;
+                        this.colorFilter = productsResponse.data.colors;
+                        this.accept_product_request = true;
+                        if(!this.cat_products[this.$route.params.id]) {
+                            this.cat_products[this.$route.params.id] = productsResponse;
+                        }
+                    } else {
+                        this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
+                    }
+                } catch (error) {
+                    this.status = 'Ошибка поиска. Повторите попытку позднее'
+                    console.log(error);
                 }
-                this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
-            } catch (error) {
-                this.status = 'Ошибка поиска. Повторите попытку позднее'
-                console.log(error);
-            }
-            }
+                }
 
+            }
+            
         },
         ...search,
         updateFilter(filter) {
-          window.scrollTo(0,0)
-          if (this.filters.indexOf(filter)>-1) this.filters.splice(this.filters.indexOf(filter),1)
-          else this.filters.push(filter)
+            window.scrollTo(0,0)
+            if (this.filters.indexOf(filter)>-1) {
+                this.filters.splice(this.filters.indexOf(filter),1)
+            } else  {
+                this.filters.push(filter)
+            }
         },
-
     },
     watch: {
         '$route.params.id': function () {
@@ -287,7 +317,7 @@ export default {
             this.update();
             // this.for_created();
         }
-
+        
     },
     mounted() {
         if(this.$route.params.brands || this.$route.params.sizes) {
@@ -296,13 +326,9 @@ export default {
             if(this.$route.params.sizes || this.$route.params.brands) {
                 this.to_search();
             }
-
+            
         }
-        // window.addEventListener("scroll", this.onScroll);
     },
-    // beforeUnmount() {
-    //     window.removeEventListener("scroll", this.onScroll)
-    // },
 }
 </script>
 

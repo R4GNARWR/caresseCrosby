@@ -30,134 +30,132 @@ import EditOrder from '../views/EditOrder.vue'
 import OrderToPay from '../views/OrderToPay.vue'
 import CreateCertificate from '../views/CreateCertificate.vue'
 
+let routes = [
+  {
+    path: '/',
+    component: Home,
+  },
+  {
+    path: '/catalog/:id?/:brands?/:sizes?',
+    component: Catalog,
+    name: 'Catalog'
+  },
+  {
+    path: '/catalogAll',
+    component: CatalogAll,
+  },
+  {
+    path: '/product/:id',
+    name: 'Product',
+    component: Product,
+  },
+  {
+    path: '/cart',
+    component: Cart,
+  },
+  {
+    path: '/order',
+    component: Order,
+  },
+  {
+    path: '/thankPage',
+    component: ThankPage,
+  },
+  {
+    path: '/Favorite',
+    component: Favorite,
+  },
+  {
+    path: '/brands',
+    component: Brands,
+  },
+  {
+    path: '/articles',
+    component: Articles,
+  },
+  {
+    path: '/articles/:id',
+    name: 'ArticlesDetail',
+    component: ArticlesDetail,
+  },
+  {
+    path: '/photoAlbum',
+    component: PhotoAlbum,
+  },
+  {
+    path: '/about',
+    component: About,
+  },
+  {
+    path: '/profileData',
+    component: ProfileData,
+  },
+  {
+    path: '/profileOrders',
+    component: ProfileOrders,
+  },
+  {
+    path: '/contacts',
+    component: Contacts
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    component: NotFound
+  },
+  {
+    path: '/delivery',
+    component: Delivery
+  },
+  {
+    path: '/sizeTable',
+    component: SizeTable
+  },
+  {
+    path: '/giftCard',
+    component: GiftCard
+  },
+  {
+    path: '/admin/',
+    component: Admin
+  },
+  {
+    path: '/admin/EditOrder/:id',
+    component: EditOrder
+  },
+  {
+    path: '/admin/OrderToPay/:id',
+    component: OrderToPay
+  },
+  {
+    path: '/admin/BlogAdd',
+    component: BlogAdd
+  },
+  {
+    path: '/admin/BlogEdit/:id',
+    component: BlogEdit
+  },
+  {
+    path: '/admin/CreateCert',
+    component: CreateCertificate
+  },
+  {
+    path: '/pick-point',
+    component: CDEKpoints
+  }
+]
+
 export default createRouter({
-  history: createWebHistory(),
-  routes: [
-    {
-      path: '/',
-      component: Home,
-    },
-    {
-      path: '/catalog/:id?/:brands?/:sizes?',
-      component: Catalog,
-      name: 'Catalog'
-    },
-    {
-      path: '/catalogAll',
-      component: CatalogAll,
-    },
-    {
-      path: '/product/:id',
-      name: 'Product',
-      component: Product,
-    },
-    {
-      path: '/cart',
-      component: Cart,
-    },
-    {
-      path: '/order',
-      component: Order,
-    },
-    {
-      path: '/thankPage',
-      component: ThankPage,
-    },
-    {
-      path: '/Favorite',
-      component: Favorite,
-    },
-    {
-      path: '/brands',
-      component: Brands,
-    },
-    {
-      path: '/articles',
-      component: Articles,
-    },
-    {
-      path: '/articles/:id',
-      name: 'ArticlesDetail',
-      component: ArticlesDetail,
-    },
-    {
-      path: '/photoAlbum',
-      component: PhotoAlbum,
-    },
-    {
-      path: '/about',
-      component: About,
-    },
-    {
-      path: '/profileData',
-      component: ProfileData,
-    },
-    {
-      path: '/profileOrders',
-      component: ProfileOrders,
-    },
-    {
-      path: '/contacts',
-      component: Contacts
-    },
-    {
-      path: '/:pathMatch(.*)*',
-      component: NotFound
-    },
-    {
-      path: '/delivery',
-      component: Delivery
-    },
-    {
-      path: '/sizeTable',
-      component: SizeTable
-    },
-    {
-      path: '/giftCard',
-      component: GiftCard
-    },
-    {
-      path: '/admin/',
-      component: Admin
-    },
-    {
-      path: '/admin/EditOrder/:id',
-      component: EditOrder
-    },
-    {
-      path: '/admin/OrderToPay/:id',
-      component: OrderToPay
-    },
-    {
-      path: '/admin/BlogAdd',
-      component: BlogAdd
-    },
-    {
-      path: '/admin/BlogEdit/:id',
-      component: BlogEdit
-    },
-    {
-      path: '/admin/CreateCert',
-      component: CreateCertificate
-    },
-    {
-      path: '/pick-point',
-      component: CDEKpoints
-    }
-  ],
-  scrollBehavior(to ,from, savedPosition) {
-    console.log(savedPosition)
-    if(to.name === 'Catalog' && from.name === 'Product' && savedPosition) {
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (to.name === 'Catalog' && from.name === 'Product' && savedPosition) {
       setTimeout(() => {
-        window.scrollTo( {
-          behavior: "smooth",
-          top: savedPosition.top
+        window.scrollTo({
+          top: savedPosition.top,
         });
-      },350)
-      
+      }, 250);
     } else {
-      window.scrollTo(0,0);
+      window.scrollTo(0, 0);
     }
-    
   }
 })

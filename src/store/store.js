@@ -47,7 +47,7 @@ export default new Vuex.Store({
       {'Multi!':['harlequine', 'multi',  'teal/pink', 'tribal pri', 'watercolou', 'леопардовый', 'синий+голубой+айвори',
           'синий+лососевый+айвори', 'тропический принт на белом фоне', 'хаки+терракот+айвори', ]},
     ],
-    brands_search:[], colors_search:[], sizes_search:[], OneSize: null, search_result: [], search_settings:{},
+    brands_search:[], colors_search:[], sizes_search:[], OneSize: null, search_result: {}, search_settings:{},
     addToOrder: null,
   },
   mutations: {
