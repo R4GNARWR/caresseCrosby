@@ -40,6 +40,7 @@ export default createRouter({
     {
       path: '/catalog/:id?/:brands?/:sizes?',
       component: Catalog,
+      name: 'Catalog'
     },
     {
       path: '/catalogAll',
@@ -144,7 +145,19 @@ export default createRouter({
       component: CDEKpoints
     }
   ],
-  scrollBehavior() {
-    window.scrollTo(0,0);
+  scrollBehavior(to ,from, savedPosition) {
+    console.log(savedPosition)
+    if(to.name === 'Catalog' && from.name === 'Product' && savedPosition) {
+      setTimeout(() => {
+        window.scrollTo( {
+          behavior: "smooth",
+          top: savedPosition.top
+        });
+      },350)
+      
+    } else {
+      window.scrollTo(0,0);
+    }
+    
   }
 })
