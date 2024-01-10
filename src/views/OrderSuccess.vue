@@ -1,5 +1,5 @@
 <template>
-    <section class="thank-page" :style="{minHeight: 'calc(100vh - '+ paddingTop + 'px)'}">
+    <section class="thank-page" :style="{minHeight: `calc(100vh - ${headerPadding}px)`}">
         <v-container>
             <div class="thank-page__content">
                 <img src="/svg/logo-heart.svg" alt="">

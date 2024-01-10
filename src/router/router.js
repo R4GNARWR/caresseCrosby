@@ -6,7 +6,8 @@ import Product from '../views/Product.vue'
 import Favorite from '../views/Favorite.vue'
 import Cart from '../views/Cart.vue'
 import Order from '../views/Order.vue'
-import ThankPage from '../views/ThankPage.vue'
+import OrderSuccess from '../views/OrderSuccess.vue'
+import OrderError from '../views/OrderError.vue'
 import Brands from '../views/Brands.vue'
 import Articles from '../views/Articles.vue'
 import ArticlesDetail from '../views/ArticleDetail.vue'
@@ -58,8 +59,12 @@ let routes = [
     component: Order,
   },
   {
-    path: '/thankPage',
-    component: ThankPage,
+    path: '/order/success',
+    component: OrderSuccess,
+  },
+  {
+    path: '/order/error',
+    component: OrderError,
   },
   {
     path: '/Favorite',
