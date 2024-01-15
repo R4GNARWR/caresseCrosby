@@ -2,9 +2,7 @@
     <section class="main-section">
         <v-container class="pa-0">
             <div class="section-head ">
-                <div class="section-label" v-if="name">
-                    {{name}}
-                </div>
+                <div class="section-label" v-if="name">{{name}}</div>
                 <div class="swiper-navigation swiper-cards__navigation">
                     <div class="swiper-button swiper-button-prev swiper-cards__navigation-prev">
                         <img src="/svg/swiper-prev.svg" alt="">
@@ -20,7 +18,6 @@
                 <swiper-container
                 class="swiper"
                 :slidesPerView="1"
-                :loop= "true"
                 :spaceBetween= "28"
                 :navigation="{
                     nextEl: '.swiper-cards__navigation-next',
@@ -38,15 +35,12 @@
                     960: {
                         slidesPerView: 4,
                     }
-                }" 
-                
-                >
-                <swiper-slide class="swiper-slide " v-for="product in slidesArray" v-if="slidesArray">
+                }">
+                <swiper-slide class="swiper-slide " v-for="(product, index) in slidesArray" :key="index">
                     <ProductCard v-if="product"
                     :product="product"
                     ></ProductCard>
                 </swiper-slide>
-                
             </swiper-container>
             <router-link class="swiper-cards__more" :to="'/catalog/'+ catId" v-if="catId">Смотреть все</router-link>
         </div>
@@ -63,26 +57,23 @@ export default {
         ProductCard
     },
     props: {
-        slidesArray: [Array, Object],
+        slidesArray: {
+            type: Array,
+            default: () => []
+        },
         name: String,
-        catId: null,
+        catId: [Number,String],
     },
     computed:{
-        ...mapState(['colors_list',]
+        ...mapState(['colors_list']
         ),
-    },
-    data() {
-        return {
-            swiperParams:  {
-                
-            },
-        }
     },
     beforeCreate() {
         register()
     },
 }
 </script>
+
 <style lang="scss">
 .swiper-cards
 {

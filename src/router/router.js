@@ -35,6 +35,7 @@ let routes = [
   {
     path: '/',
     component: Home,
+    name: 'Home'
   },
   {
     path: '/catalog/:id?/:brands?/:sizes?',
@@ -44,6 +45,7 @@ let routes = [
   {
     path: '/catalogAll',
     component: CatalogAll,
+    name: 'CatalogAll'
   },
   {
     path: '/product/:id',
@@ -149,11 +151,13 @@ let routes = [
   }
 ]
 
+let toArray = ['Catalog', 'CatalogAll', 'Home']
+
 export default createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: routes,
   scrollBehavior(to, from, savedPosition) {
-    if (to.name === 'Catalog' && from.name === 'Product' && savedPosition) {
+    if (toArray.includes(to.name) && from.name === 'Product' && savedPosition) {
       setTimeout(() => {
         window.scrollTo({
           top: savedPosition.top,

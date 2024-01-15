@@ -33,8 +33,7 @@ const vuetify = createVuetify({
   },
   components,
   directives,
-  })
-
+})
 
 API.init();
 app.config.globalProperties.$API = API

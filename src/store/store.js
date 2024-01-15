@@ -25,6 +25,9 @@ export default new Vuex.Store({
     sub_categories:{},
     cat_products:{},
     pop_products:{},
+    popular_products: null,
+    hit_products:null,
+    new_products:null,
     cart: [],
     favorites:[],
     order:null,
@@ -90,6 +93,15 @@ export default new Vuex.Store({
 
     setPopularProducts(state, pp) {
       state.pop_products = pp;
+    },
+    setHitProducts(state, p) {
+      state.hit_products = p;
+    },
+    setNewProducts(state, p) {
+      state.new_products = p;
+    },
+    setHomePopularProducts(state, p) {
+      state.popular_products = p;
     },
 
     setCategoriesTree(state, categoriesArray) {

@@ -8,7 +8,7 @@
             </div>
             <v-row>
                 <v-col cols="12" v-if="products && products.length > 0">
-                    <SwiperCards v-for="(item, index) in products" :key="index" :slidesArray="item.products" :name="item.name" :catId="item.catId"></SwiperCards>
+                    <SwiperCards v-for="(item, index) in products" :key="index" :slidesArray="item.products.slice(0, 12)" :name="item.name" :catId="item.catId"></SwiperCards>
                 </v-col>
             </v-row>
         </v-container>

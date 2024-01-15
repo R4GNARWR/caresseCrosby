@@ -209,8 +209,8 @@ export default {
             this.products = []
             this.productsInitial = []
             this.status = 'Поиск...'
-            if(this.$route.params.id === 'search') {
-                try {
+            try {
+                if(this.$route.params.id === 'search') {
                     if(this.search_result.query === this.$route.query.query && this.search_result) {
                         this.products = this.search_result.products;
                         this.sizesFilter = this.search_result.sizesFilter;
@@ -230,7 +230,7 @@ export default {
                             this.colorFilter = productsResponse.data.colors;
                             this.productsInitial = productsResponse.data.products;
                             this.accept_product_request = true;
-                            
+
                             this.search_result.products = productsResponse.data.products
                             this.search_result.sizesFilter = productsResponse.data.sizes;
                             this.search_result.brandFilters = productsResponse.data.brands;
@@ -240,48 +240,42 @@ export default {
                             this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
                         }
                     }
-                } catch (error) {
-                    this.status = 'Ошибка поиска. Повторите попытку позднее'
-                    console.log(error);
-                }
-            } else {
-                if(this.cat_products[this.$route.params.id]) {
-                    const saved = this.cat_products[this.$route.params.id]
-                    this.products = saved.data.products;
+                } else {
+                    if(this.cat_products[this.$route.params.id]) {
+                        const saved = this.cat_products[this.$route.params.id]
+                        this.products = saved.data.products;
                         this.productsInitial = saved.data.products;
                         this.sizesFilter = saved.data.sizes;
                         this.brandFilters = saved.data.brands;
                         this.colorFilter = saved.data.colors;
                         this.accept_product_request = true;
-                } else {
-                    try {
-                    const [productsResponse, descriptionResponse ] = await Promise.all([
-                    this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570),
-                    this.$API.getCatDescription(this.$route.params.id)
-                    ])
-                    if (descriptionResponse.data.success) {
-                        this.description = descriptionResponse.data.description;
-                    }
-                    this.i = 1;
-                    if (productsResponse) {
-                        this.products = productsResponse.data.products;
-                        this.productsInitial = productsResponse;
-                        this.sizesFilter = productsResponse.data.sizes;
-                        this.brandFilters = productsResponse.data.brands;
-                        this.colorFilter = productsResponse.data.colors;
-                        this.accept_product_request = true;
-                        if(!this.cat_products[this.$route.params.id]) {
-                            this.cat_products[this.$route.params.id] = productsResponse;
-                        }
                     } else {
-                        this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
+                        const [productsResponse, descriptionResponse ] = await Promise.all([
+                        this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570),
+                        this.$API.getCatDescription(this.$route.params.id)
+                        ])
+                        if (descriptionResponse.data.success) {
+                            this.description = descriptionResponse.data.description;
+                        }
+                        this.i = 1;
+                        if (productsResponse) {
+                            this.products = productsResponse.data.products;
+                            this.productsInitial = productsResponse;
+                            this.sizesFilter = productsResponse.data.sizes;
+                            this.brandFilters = productsResponse.data.brands;
+                            this.colorFilter = productsResponse.data.colors;
+                            this.accept_product_request = true;
+                            if(!this.cat_products[this.$route.params.id]) {
+                                this.cat_products[this.$route.params.id] = productsResponse;
+                            }
+                        } else {
+                            this.status = 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.'
+                        }
                     }
-                } catch (error) {
-                    this.status = 'Ошибка поиска. Повторите попытку позднее'
-                    console.log(error);
                 }
-                }
-
+            } catch (error) {
+                this.status = 'Ошибка поиска. Повторите попытку позднее'
+                console.log(error);
             }
             
         },
