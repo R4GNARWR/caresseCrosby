@@ -1,15 +1,37 @@
 <template>
-    <div class="arrow-up" @click="scrollUp">
+    <div class="arrow-up" :class="{'show': showButton}" @click="scrollUp">
         ↑
     </div>
 </template>
 <script>
 export default {
+    data() {
+        return {
+            showButton: false,
+        }
+    },
+    computed: {
+        windowHeight() {
+            return window.innerHeight
+        },
+    },
     methods: {
         scrollUp() {
             window.scrollTo(0,0)
+        },
+        checkHeight() {
+            const currentScroll = window.scrollY
+            if(currentScroll > this.windowHeight) {
+                this.showButton = true
+            } else {
+                this.showButton = false
+            }
         }
+    },
+    created() {
+        window.addEventListener('scroll', this.checkHeight)
     }
+
 }
 </script>
 <style lang="scss">
@@ -17,18 +39,26 @@ export default {
     {
         cursor: pointer;
         position: fixed;
-        left: 6rem;
-        bottom: 4rem;
-        height: 5rem;
-        width: 5rem;
-        background-color: $primary;
+        right: 14rem;
+        bottom: 1.6rem;
+        height: 6rem;
+        width: 6rem;
+        background-color: #867B6E;
         color: #FFFFFF;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 2.8rem;
+        font-size: 3.2rem;
         border: 1px solid #FFFFFF;
         z-index: 10000;
+        opacity: 0;
+        pointer-events: none;
+        transition: .3s;
+        &.show
+        {
+            opacity: 1;
+            pointer-events: all;
+        }
     }
     @media (max-width:960px) {
         .arrow-up

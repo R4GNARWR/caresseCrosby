@@ -85,8 +85,7 @@ export default {
                     input.checked = false;
                 });
             }
-
-        }
+        },
     },
     methods: {
         toggleFilters() {
@@ -116,6 +115,18 @@ export default {
             // }
         },
     },
+    created() {
+        if(this.filterName === 'Бренды' && this.$route.params.brands !== 'sizes') {
+            const routeBrand = Number(this.$route.params.brands)
+            const brand = this.values.find(item => item.attributeValueId === routeBrand)
+            this.currentFilter.push(brand)
+        }
+        if(this.filterName === 'Размеры') {
+            const routeSize = Number(this.$route.params.sizes)
+            const Size = this.values.find(item => item.attributeValueId === routeSize)
+            this.currentFilter.push(Size)
+        }
+    }
 };
 </script>
 

@@ -32,7 +32,9 @@
                     :brands_search="brandFilters"
                     :colors_search="colorFilter"
                     :sizes_search="sizesFilter"
-                    @updateFilter="updateFilter" @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
+                    :activeFilters="filters"
+                    @updateFilter="updateFilter"
+                    @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
                 </v-col>
                 <v-col md="9" cols="12">
                     <CatalogList :productArray="productsComputed" :searchStatus="status"></CatalogList>
@@ -230,7 +232,7 @@ export default {
                             this.colorFilter = productsResponse.data.colors;
                             this.productsInitial = productsResponse.data.products;
                             this.accept_product_request = true;
-
+                            
                             this.search_result.products = productsResponse.data.products
                             this.search_result.sizesFilter = productsResponse.data.sizes;
                             this.search_result.brandFilters = productsResponse.data.brands;
@@ -314,13 +316,27 @@ export default {
         
     },
     mounted() {
-        if(this.$route.params.brands || this.$route.params.sizes) {
-            this.filter.brand.attributeValueId = this.$route.params.brands || '';
-            this.filter.sizes.attributeValueId = this.$route.params.sizes || '';
-            if(this.$route.params.sizes || this.$route.params.brands) {
-                this.to_search();
+        const brands = this.$route.params.brands
+        const sizes = this.$route.params.sizes
+        
+        if(brands && brands !== 'sizes') {
+            this.filter.brand.attributeValueId = brands;
+            if(this.brandFilters) {
+                const brand = this.brandFilters.find((item) => {item.attributeValueId === brands})
+                if(brand)
+                this.filters.push(brand)
             }
-            
+        }
+        if(sizes) {
+            this.filter.sizes.attributeValueId = sizes;
+            if(this.sizesFilter) {
+                const size = this.sizesFilter.find((item) => {item.attributeValueId === sizes})
+                if(size)
+                this.filters.push(size)
+            }
+        }
+        if(sizes || brands) {
+            this.to_search();
         }
     },
 }

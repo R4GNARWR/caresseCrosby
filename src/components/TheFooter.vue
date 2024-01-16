@@ -15,7 +15,7 @@
                                 <a target="_blank" href="/pdf/pers_data.pdf">ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</a>
                             </div>
                             <div class="footer-left__info-offer">
-                                <a href="">ОФЕРТА</a>
+                                <a target="_blank" href="/pdf/oferta.pdf">ОФЕРТА</a>
                             </div>
                             <div class="footer-left__info-copy">
                                 <a href="">© ИП Король {{currentYear}}</a>
@@ -88,7 +88,7 @@
                                 <a target="_blank" href="/pdf/pers_data.pdf">ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</a>
                             </div>
                             <div class="footer-left__info-offer">
-                                <a href="">ОФЕРТА</a>
+                                <a target="_blank" href="/pdf/oferta.pdf">ОФЕРТА</a>
                             </div>
                             <div class="footer-left__info-copy">
                                 <a href="">© ИП Король {{currentYear}}</a>

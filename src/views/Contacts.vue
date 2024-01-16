@@ -29,18 +29,18 @@
                 </div>
             </div>
         </v-container>
-        <div class="contacts-map" @click="to2Gis">
+        <div class="contacts-map" @mousedown="checkMouse" @touchstart="checkMouse">
             <yandex-map :settings="settings"
             :coords="coords"
             :controls="[]"
             :zoom="16">>
-                <ymap-marker 
-                    marker-id="123" 
-                    :coords="coords"
-                    :icon="markerIcon"
-                />
-            </yandex-map>
-
+            <ymap-marker 
+            marker-id="123" 
+            :coords="coords"
+            :icon="markerIcon"
+            />
+        </yandex-map>
+        
     </div>
 </section>
 </template>
@@ -82,8 +82,27 @@ export default {
     methods: {
         to2Gis() {
             window.open('https://go.2gis.com/1xqkl', '_blank').focus()
+        },
+        checkMouse() {
+            let drag = false
+            const mouseDrag = () => {
+                drag = true
+            }
+            const mouseLift = () => {
+                if(!drag) {
+                    this.to2Gis()
+                }
+                window.removeEventListener("mousemove", mouseDrag);
+                window.removeEventListener("touchmove", mouseDrag);
+                window.removeEventListener("mouseup", mouseLift);
+                window.removeEventListener("touchend", mouseLift);
+            }
+            window.addEventListener("mousemove", mouseDrag);
+            window.addEventListener("touchmove", mouseDrag);
+            window.addEventListener("mouseup", mouseLift);
+            window.addEventListener("touchend", mouseLift);
         }
-    }
+    },
 };
 </script>
 
@@ -163,7 +182,7 @@ export default {
         height: 100%;
         overflow: hidden;
     }
-
+    
     
 }
 .placemark

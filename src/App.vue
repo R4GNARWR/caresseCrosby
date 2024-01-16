@@ -48,12 +48,9 @@ export default {
             right: [],
           },
         },
-        
         Thumbs: false,
       }
     };
-  },
-  setup(){
   },
   methods: {
     updateOffsetTop(height) {

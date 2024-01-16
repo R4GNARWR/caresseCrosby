@@ -79,7 +79,7 @@
                     </tbody>
                 </table>
             </div>
-
+            
             <div class="table-size__text">
                 Определить размер трусиков намного проще, чем размер бюстгальтера - сантиметровой лентой измеряем обхват бедер (по наиболее выступающим точкам бедер и ягодиц). При измерении лента должна ложиться параллельно полу и обязательно быть натянутой.
             </div>
@@ -144,7 +144,7 @@
                     </tbody>
                 </table>
             </div>
-
+            
             <div class="table-size_wrapper">
                 <table class="table-size small">
                     <thead>
@@ -406,7 +406,7 @@
                             <td>XXL</td>
                             <td>XXL</td>
                         </tr>
-
+                        
                     </tbody>
                 </table>
             </div>
@@ -415,6 +415,7 @@
 </template>
 
 <script>
+import search from "../api/search";
 import {mapState} from "vuex";
 import MainBtn from '../components/UI/MainBtn.vue';
 import Input from '../components/UI/Input.vue';
@@ -422,11 +423,11 @@ import MainLink from '../components/UI/MainLink.vue';
 
 export default {
     components: {
-    Input,
-    MainBtn,
-    MainLink
-},
-
+        Input,
+        MainBtn,
+        MainLink
+    },
+    
     data() {
         return {
             b1:null,
@@ -453,9 +454,12 @@ export default {
             } else {
                 this.$router.push('/catalog/24402/')
             }
-
-
+            
         },
+        ...search
+    },
+    created() {
+        this.for_created()
     }
 };
 </script>
@@ -523,7 +527,7 @@ table.table-size
         letter-spacing: -0.056px;
         text-wrap: nowrap;
     }
-
+    
     th
     {
         color: $primary;
@@ -556,7 +560,7 @@ table.table-size
             width: 13.3rem;
         }
     }
-
+    
     &__text
     {
         margin-bottom: 6.2rem;
@@ -575,20 +579,20 @@ table.table-size
     letter-spacing: -0.128px;
 }
 .table-size__calc-result
+{
+    display: flex;
+    margin-top: 4rem;
+    text-align: center;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 2.4rem;
+    line-height: 1.33em;
+    .btn
     {
-        display: flex;
-        margin-top: 4rem;
-        text-align: center;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        font-size: 2.4rem;
-        line-height: 1.33em;
-        .btn
-        {
-            width: 45%;
-        }
+        width: 45%;
     }
+}
 @media (max-width: 960px) {
     .table-size-section
     {
