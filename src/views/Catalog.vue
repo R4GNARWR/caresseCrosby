@@ -33,11 +33,15 @@
                     :colors_search="colorFilter"
                     :sizes_search="sizesFilter"
                     :activeFilters="filters"
+                    :catalogListHeight="catalogHeight"
                     @updateFilter="updateFilter"
                     @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
                 </v-col>
                 <v-col md="9" cols="12">
-                    <CatalogList :productArray="productsComputed" :searchStatus="status"></CatalogList>
+                    <CatalogList
+                    @updateCatalogHeight=""
+                    :productArray="productsComputed"
+                    :searchStatus="status"></CatalogList>
                 </v-col>
             </v-row>
         </v-container>
@@ -147,6 +151,7 @@ export default {
             filters:[],
             start_filter:{},
             isLoading: false,
+            catalogHeight: 0,
         }
     },
     computed:{
@@ -203,6 +208,9 @@ export default {
                 this.activeSortString = sortName
                 this.activeSortValue = sortValue
             }
+        },
+        updateCatalogHeight(height) {
+            this.catalogHeight = height
         },
         changeFilterVisibility() {
             this.showFilters = !this.showFilters;

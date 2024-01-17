@@ -1,9 +1,12 @@
 <template>
-    <div class="catalog__filter-wrap"
+    <!-- <div class="catalog__filter-wrap"
     :style="{ paddingTop: catalogOffsetTop + 'px' }"
     :class="{'active': filterStatus}"
+    > -->
+    <div class="catalog__filter-wrap"
+    :class="{'active': filterStatus}"
     >
-    <div class="catalog__filter">
+    <div class="catalog__filter" :style="{height: catalogListHeight+'px'}">
         <div class="catalog__filter-head">
             Фильтры
             <div class="catalog__filter-close" @click="$emit('updateFilterStatus')">
@@ -59,7 +62,8 @@ export default {
         filterStatus: Boolean,
         brands_search: Array,
         sizes_search: Array,
-        colors_search: Array
+        colors_search: Array,
+        catalogListHeight: Number,
     },
     mounted() {
         this.setCatalogPadding()
@@ -76,12 +80,16 @@ export default {
 }
 </script>
 <style lang="scss">
-
+.catalog__filter-wrap
+{
+    position: relative;
+}
 .catalog__filter
 {
     display: flex;
     flex-direction: column;
     row-gap: 4.8rem;
+
     &-close
     {
         display: none;

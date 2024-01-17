@@ -3,7 +3,7 @@
         <v-container class="pa-0">
             <div class="section-head ">
                 <div class="section-label" v-if="name">{{name}}</div>
-                <div class="swiper-navigation swiper-cards__navigation">
+                <div class="swiper-navigation swiper-cards__navigation" v-if="slidesArray && slidesArray.length > 4">
                     <div class="swiper-button swiper-button-prev swiper-cards__navigation-prev">
                         <img src="/svg/swiper-prev.svg" alt="">
                     </div>

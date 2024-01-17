@@ -1,5 +1,5 @@
 <template>
-    <div class="catalog-list__wrap">
+    <div class="catalog-list__wrap" ref="catalogList">
         <div class="catalog-list" v-if="productArray && productArray.length > 0">
             <ProductCard v-for="(item, index) in productArray" :key="index" :product="item"></ProductCard>
         </div>
@@ -31,9 +31,15 @@ export default {
         isLoading: Boolean,
         searchStatus: String,
     },
+    emits: ['updateCatalogHeight'],
     computed: {
 
     },
+    mounted() {
+        const listHeight = this.$refs.catalogList.offsetHeight
+        thie.$emits['updateCatalogHeight', listHeight]
+    }
+
     
 }
 </script>

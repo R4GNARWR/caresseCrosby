@@ -37,11 +37,13 @@ export default {
             const reversedTree = this.categoriesTree;
             for (const element of reversedTree) {
                 const productsById = await this.getProducts(element.id);
-                this.products.push({
-                    products: productsById.data.products,
-                    name: element.name,
-                    catId: element.id,
-                });
+                if(productsById && productsById.data && element) {
+                    this.products.push({
+                        products: productsById.data.products,
+                        name: element.name,
+                        catId: element.id,
+                    });
+                }
             }
         },
         async getProducts(catId) {

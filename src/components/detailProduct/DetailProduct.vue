@@ -249,12 +249,10 @@ export default {
         openFancybox(){
             Fancybox.close();
             Fancybox.show(
-            [
-            {
+            [{
                 src: '#modalToCart',
                 type: 'inline',
-            },
-            ],
+            }],
             {
                 closeButton: false,
             }
@@ -263,12 +261,10 @@ export default {
         openSizeModal() {
             Fancybox.close();
             Fancybox.show(
-            [
-            {
+            [{
                 src: '#modalSizes',
                 type: 'inline',
-            },
-            ],
+            }],
             {
                 closeButton: false,
                 dragToClose: false,
@@ -276,7 +272,6 @@ export default {
             );
         },
         handleAddToCart() {
-
             if(this.addToOrder) {
                 this.addProductToOrder(this.addToOrder)
             } else {
@@ -288,7 +283,7 @@ export default {
         updateProduct(){
             if (this.pop_products[this.$route.params.id]){
                 if(this.pop_products[this.$route.params.id].category.id === 24473) {
-                    this.$router.push('/giftCard')
+                    this.$router.replace({path: '/giftCard'})
                     return
                 }
                 this.product = this.pop_products[this.$route.params.id];
@@ -307,7 +302,7 @@ export default {
                 this.$API.getProductById(this.$route.params.id).then(value =>{
                     if (value.data.status == "OK") {
                         if(value.data.response && value.data.response.category.id && value.data.response.category.id === 24473) {
-                            this.$router.push('/giftCard')
+                            this.$router.replace({path: '/giftCard'})
                             return
                         }
                         this.product = value.data.response.product?value.data.response.product:null;
@@ -357,32 +352,6 @@ export default {
                 this.delFavor(id)
             }
         },
-        // handleSizeChange(value) {
-        //     if(this.cart.length>0) {
-        //         let size = value;
-        //         let hasSize = false;
-        //         for(let item in this.cart) {
-        //             if(item.size === size) {
-        //                 console.log(item.size === size);
-        //                 hasSize = true;
-        //                 break;
-        //             }
-        //         };
-        //         if(!hasSize) {
-        //             this.deleteFromCart(this.product.id)
-        //         }
-                
-        //     }
-        //     if(this.cartHasSize) {
-        //         for(let item in this.cart) {
-        //             if(item.id === this.product.id && item.size === this.product.size) {
-        //                 this.product.quantity = item.q
-        //                 this.product.quantity.m = item.m;
-                        
-        //             }
-        //         }
-        //     }
-        // },
         ...cart, ...productCard,
         ...mapMutations([
         "add2cart",

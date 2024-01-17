@@ -46,10 +46,11 @@
                             <Input :placeholder="'От кого'" v-model="lid.from" ref="firstInput"></Input>
                             <Input :placeholder="'Кому'" v-model="lid.for"></Input>
                             <Input :placeholder="'E-mail*'" input-type="email" v-model="lid.emailToSend" :required="true" validation-type="email"></Input>
+                            <Input :placeholder="'E-mail получателя'" input-type="email" validation-type="email"></Input>
                             <Input :placeholder="'Телефон получателя*'" v-model="lid.phonefor" :required="true" input-type="tel" validation-type="phone"></Input>
                             <Input :placeholder="'Телефон отправителя*'" v-model="lid.phoneFrom" :required="true" input-type="tel" validation-type="phone"></Input>
                             <Input :placeholder="'Номинал в рублях'" v-model="lid.cost" :required="true"></Input>
-                            <Input :placeholder="'Когда отправить сертификат получателю'" class="inline" v-model="lid.when" input-type="date"></Input>
+                            <Input :placeholder="'Когда отправить сертификат получателю'" v-model="lid.when" input-type="date"></Input>
                         </div>
                         <div class="gift-card__execution-content__form-bottom">
                             Если у вас возникнут вопросы, звоните в службу поддержки по телефону: <a href="">+7 (917) 747-15-61</a> <br>
@@ -61,9 +62,9 @@
             </v-row>
         </v-container>
     </section>
-    <section>
+    <section class="cards-list">
         <v-container>
-            <SwiperCards :slidesArray="products" :name="'Сертификаты'" :catId="24473"></SwiperCards>
+            <SwiperCards :slidesArray="products.data.products" :name="'Подарочные сертификаты с доставкой'" :catId="24473" v-if="products && products.data && products.data.products"></SwiperCards>
         </v-container>
     </section>
 </template>
@@ -120,7 +121,7 @@ export default {
                 this.$refs.firstInput.$el.scrollIntoView({ behavior: "smooth" });
                 return;
             }
-
+            
             this.$API.sentLid(this.lid).then(value => {
                 if(value.data.success === true) {
                     for (let key in this.lid) {
@@ -140,7 +141,7 @@ export default {
                     }
                     store.commit('set_snack_message', msg)
                 }
-
+                
             })
         },
         async getProducts() {
@@ -149,8 +150,8 @@ export default {
             } else if(!this.cat_products[24473]){
                 try {
                     const response = await this.$API.getCategoryTopProducts(24473, 380, 570);
-                    this.products = response.data.products;
-                    this.cat_products[24473] = response.data.products;
+                    this.products = response;
+                    this.cat_products[24473] = response;
                 } catch (error) {
                     console.log(error);
                 }
@@ -303,6 +304,23 @@ export default {
         }
     }
 }
+.cards-list {
+    .product-card {
+        .link {
+            pointer-events: none;
+        }
+    }
+    .swiper-cards__more {
+        display: none;
+    }
+    .section-head{
+        margin-bottom: 4rem;
+        .section-label {
+            font-size: 3.6rem;
+        }
+    }
+    
+}
 @media (max-width: 960px) {
     .gift-card
     {
@@ -324,7 +342,7 @@ export default {
                 line-height: 1.2em;
             }
         }
-
+        
     }
     .gift-card__execution
     {
@@ -369,7 +387,7 @@ export default {
                     font-size: 14px;
                 }
             }
-
+            
         }
     }
 }
