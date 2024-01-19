@@ -15,12 +15,16 @@
     
 </template>
 <script>
-
 import ProductCard from '../UI/ProductCard.vue';
 import Pagination from '../UI/Pagination.vue';
 import MainBtn from '../UI/MainBtn.vue';
 
 export default {
+    data() {
+        return {
+            listHeight: 0,
+        }
+    },
     components: {
         ProductCard,
         Pagination,
@@ -31,16 +35,19 @@ export default {
         isLoading: Boolean,
         searchStatus: String,
     },
-    emits: ['updateCatalogHeight'],
-    computed: {
+    emits: ['update-catalog-height'],
+    methods: {
+        updateCatalogHeight() {
+            if(this.$refs.catalogList.offsetHeight !== this.listHeight) {
+                this.listHeight = this.$refs.catalogList.offsetHeight
+                this.$emit('update-catalog-height', this.listHeight);
+            }
 
+        }
     },
     mounted() {
-        const listHeight = this.$refs.catalogList.offsetHeight
-        thie.$emits['updateCatalogHeight', listHeight]
-    }
-
-    
+        window.addEventListener('scroll', this.updateCatalogHeight)
+    },
 }
 </script>
 <style lang="scss">

@@ -39,7 +39,7 @@
                 </v-col>
                 <v-col md="9" cols="12">
                     <CatalogList
-                    @updateCatalogHeight=""
+                    @update-catalog-height="updateCatalogHeight"
                     :productArray="productsComputed"
                     :searchStatus="status"></CatalogList>
                 </v-col>
