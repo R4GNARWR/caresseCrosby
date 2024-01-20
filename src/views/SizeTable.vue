@@ -23,12 +23,12 @@
                                 <Input :placeholder="'Обхват под грудью, см'" v-model="b1"></Input>
                             </div>
                         </div>
-                        <MainBtn class="btn-primary w-100" @click="showSize()">Рассчитать размер</MainBtn>
+                        <MainBtn class="btn-primary w-100" @click="showSize()" :disabled="readyToShow">Рассчитать размер</MainBtn>
                         <div class="table-size__calc-result" v-if="size_b && show">
                             Ваш размер: {{ size_b }}
-                            <MainBtn @click="to_size_models" class="btn btn-white outline">Показать модели</MainBtn>
+                            <MainBtn @click="to_size_models" class="btn btn-white outline" >Показать модели</MainBtn>
                         </div>
-                        <div class="table-size__calc-result" v-else-if="show">
+                        <div class="table-size__calc-result" v-if="!size_b && show">
                             Невозможно расчитать размер, укажите правильные размеры
                         </div>
                     </div>
@@ -36,6 +36,15 @@
                 <v-col md="5" cols="12">
                     <div class="table-size__calc-label">Видео о том как правильно снять мерки</div>
                     <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/D1-iP7rtnIg?si=я" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </v-col>
+                <v-col cols="12" v-if="products && products.length > 0  && showProducts">
+                    <SwiperCards :slidesArray="products" name="Модели" v-if="products && products.length >0"></SwiperCards>
+                </v-col>
+                <v-col cols="12" v-else-if="showProducts">
+                    <div class="table-size__calc-error">
+                        {{status}}
+                    </div>
+
                 </v-col>
             </v-row>
             <div class="table-size_wrapper">
@@ -417,25 +426,54 @@
 <script>
 import search from "../api/search";
 import {mapState} from "vuex";
+
 import MainBtn from '../components/UI/MainBtn.vue';
 import Input from '../components/UI/Input.vue';
 import MainLink from '../components/UI/MainLink.vue';
+import SwiperCards from "../components/SwiperCards.vue";
 
 export default {
     components: {
         Input,
         MainBtn,
-        MainLink
+        MainLink,
+        SwiperCards
     },
-    
     data() {
         return {
             b1:null,
             b2:null,
-            show: false
+            show: false,
+            showProducts: false,
+            products: null,
+            filter:{
+                "brand": {
+                    "attributeId":1,
+                    "attributeValueId":'',
+                    "value":""
+                },
+                "sizes": {
+                    "attributeId":2,
+                    "attributeValueId":'',
+                    "value":""
+                },
+                "colors": {
+                    "attributeId":6,
+                    "attributeValueId":'',
+                    "value":""
+                }
+            },
+            status: 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.',
         };
     },
     computed:{
+        readyToShow() {
+            if(this.b1 && this.b2) {
+                return false
+            } else {
+                return true
+            }
+        },
         size_b(){
             let arr=['A','B','C','D','DD','E','F','FF','G','GG','H','HH','J','JJ','K']
             if (Math.round((this.b1-8)/5)*5 && arr[Math.round((this.b2-this.b1)/2.54)-1]) return (Math.round((this.b1-8)/5)*5).toString()+arr[Math.round((this.b2-this.b1)/2.54)-1].toString();
@@ -448,15 +486,34 @@ export default {
             this.show = true
         },
         to_size_models(){
-            const size = this.sizes_search[0].find(element => element.value === this.size_b)
-            if(size) {
-                this.$router.push('/catalog/24402/sizes/' + size.attributeValueId)
-            } else {
-                this.$router.push('/catalog/24402/')
+            let size = this.sizes_search[0].find(element => element.value === this.size_b)
+            if(!size) {
+                size = this.sizes_search[1].find(element => element.value === this.size_b)
             }
-            
+            if(size) {
+                this.filter["sizes"].attributeValueId = size.attributeValueId;
+                this.filter["sizes"].value = size.value;
+                this.to_search();
+                this.showProducts = true;
+            } else {
+                this.showProducts = true;
+            }
         },
         ...search
+    },
+    watch: {
+        b1: function() {
+            this.show = false;
+            this.showProducts = false;
+            this.products = null
+            this.productsSearched = false
+        },
+        b2: function() {
+            this.show = false;
+            this.showProducts = false;
+            this.products = null
+            this.productsSearched = false
+        },
     },
     created() {
         this.for_created()
@@ -469,10 +526,7 @@ export default {
 {
     padding: 2.4rem 0 15rem 0;
 }
-.table-size__calc-wrap
-{
-    margin-bottom: 9rem;
-}
+
 .table-size__label
 {
     margin-bottom: 3.7rem;
@@ -511,6 +565,16 @@ export default {
         width: 100%;
         height: 35rem;
     }
+}
+.table-size__calc-error
+{
+    padding: 5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.8rem;
+    text-align: center;
+    text-transform: uppercase;
 }
 table.table-size
 {
@@ -662,6 +726,12 @@ table.table-size
     {
         margin-bottom: 48px;
         font-size: 14px;
+    }
+}
+@media (max-width: 960px) {
+    .table-size__calc-error
+    {
+        font-size: 24px;
     }
 }
 </style>

@@ -38,10 +38,10 @@ export default {
             {
                 id: 1,
                 labelText: 'Узнайте свой <span> <br> настоящий </span> размер ♥',
-                labelColor: 'black',
-                yearColor: 'gold',
+                labelColor: 'white',
+                yearColor: 'white',
                 buttonText: 'Узнать размер',
-                buttonColor: 'primary',
+                buttonColor: 'white',
                 buttonDestination: '/sizeTable',
                 backgroundImageSrc: '/img/mainSlider1.jpg',
             },

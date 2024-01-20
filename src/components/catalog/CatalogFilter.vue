@@ -1,10 +1,14 @@
 <template>
     <div class="catalog__filter-wrap"
-    :style="{ paddingTop: catalogOffsetTop + 'px', minHeight: catalogListHeight+'px'}"
+    :style="{ paddingTop: catalogOffsetTop + 'px', minHeight: !isMobile ? catalogListHeight+'px' : 0}"
     :class="{'active': filterStatus}"
     ref="catalogFilterWrap">
     <div class="catalog__filter"
-    :style="{minHeight: filtersComputedHeight+'px', position: filterPosition, top: filterTop !=='auto' ? filterTop+'px': filterTop, bottom: filterBottom}"
+    :style="{
+        minHeight: filtersComputedHeight+'px',
+        position: !isMobile ? filterPosition : 'static' ,
+        top: filterTop !=='auto' ? filterTop+'px': filterTop,
+        bottom: filterBottom}"
     ref="catalogFilter">
     <div class="catalog__filter-head">
         Фильтры
@@ -40,9 +44,9 @@ export default {
             filterPosition: 'static',
             savedTop: 0,
             savedTopOffset: 0,
-            filterTop: 'auto',
+            filterTop: 0,
             filterBottom: 'auto',
-            currentDirection: '',
+            filterScroll: 'unset',
         }
     },
     computed:{
@@ -51,6 +55,13 @@ export default {
                 return this.filtersHeight
             } else {
                 return this.catalogListHeight
+            }
+        },
+        isMobile() {
+            if(window.innerWidth < 960) {
+                return true
+            } else {
+                return false
             }
         },
         ...mapState([
@@ -66,65 +77,99 @@ export default {
     },
     methods: {
         setCatalogPadding() {
-            if(window.innerWidth < 991) {
+            if(window.innerWidth < 960) {
                 this.catalogOffsetTop = this.paddingTop;
             } else {
                 this.catalogOffsetTop = 0;
             }
+            
         },
         updateFilters(filter) {
             this.$emit('updateFilter', filter)
         },
-        // setFilterPositioning() {
-        //     if(this.$refs.catalogFilter) {
-        //         this.filtersBounds = this.$refs.catalogFilter.getBoundingClientRect()
-        //     }
-        //     let newScroll = window.scrollY;
+        setFilterValues() {
+            this.windowHeight = window.innerHeight;
+            this.filtersBounds = this.$refs.catalogFilter.getBoundingClientRect()
+            this.savedTopOffset = this.filtersBounds.x
+            this.filtersHeight = this.$refs.catalogFilter.offsetHeight;
+            window.addEventListener('scroll', this.setFilterPositioning)
+            window.addEventListener('resize', this.setCatalogPadding);
+        },
+        setFilterPositioning() {
+            let newScroll = window.scrollY;
             
-        //     if(this.$refs.catalogFilter && this.filtersHeight !== this.$refs.catalogFilter.offsetHeight) {
-        //         this.filtersHeight = this.$refs.catalogFilter.offsetHeight;
-        //     }
-        //     if(newScroll > this.currentScroll) {
-        //         // листаем вниз
-        //         this.savedTop = newScroll - 40 - (this.filtersHeight - this.windowHeight )
-        //         if (this.filtersBounds.bottom - this.windowHeight + 40 <= 0 ) {
-        //             this.filterPosition = 'fixed'
-        //             this.filterTop = 'auto'
-        //             this.filterBottom = '40px'
-        //         }
-        //         this.currentDirection = 'bottom'
-        //     } else {
-        //         // листаем вверх
-        //         if(this.filterPosition === 'fixed' && this.currentDirection !== 'top') {
-        //             this.filterPosition = 'absolute'
-        //             this.filterTop = this.savedTop
-        //             this.filterBottom = 'auto'
-        //         }
-        //         if (this.filtersBounds.top - 40 - this.headerPadding >= 0) {
-        //             this.filterPosition = 'fixed'
-        //             this.filterTop = this.headerPadding + 40
-        //             this.filterBottom = 'auto'
-        //         }
-        //         this.currentDirection = 'top'
-        //     }
-        //     this.currentScroll = newScroll;
-        // },
+            if(this.$refs.catalogFilter) {
+                this.filtersBounds = this.$refs.catalogFilter.getBoundingClientRect()
+            }
+            if(this.$refs.catalogFilter && this.filtersHeight !== this.$refs.catalogFilter.offsetHeight) {
+                this.filtersHeight = this.$refs.catalogFilter.offsetHeight;
+            }
+            
+            if(newScroll > this.currentScroll) {
+                // листаем вниз
+                if (this.filtersBounds.bottom - this.windowHeight + 40 <= 0 && this.filterScroll === 'unset') {
+                    this.filterPosition = 'fixed'
+                    this.filterTop = 'auto'
+                    this.filterBottom = '40px'
+                    this.filterScroll = 'bottom'
+                }
+                if(this.filterScroll === 'top') {
+                    this.filterPosition = 'absolute'
+                    this.filterTop = this.savedTop
+                    this.filterBottom = 'auto'
+                    this.filterScroll= 'unset'
+                }
+                if(newScroll + this.windowHeight - this.headerPadding + 40 >= this.catalogListHeight + this.savedTopOffset && this.catalogListHeight !== 0) {
+                    this.filterPosition = 'absolute'
+                    this.filterTop = 'auto'
+                    this.filterBottom = '0'
+                    this.filterScroll = 'unset'
+                }
+                if(this.filterScroll === 'bottom') {
+                    this.savedTop = newScroll - this.filtersHeight/2.4 - 40
+                }
+            } else {
+                // листаем вверх
+                if(this.filterScroll === 'bottom') {
+                    this.filterPosition = 'absolute'
+                    this.filterTop = this.savedTop
+                    this.filterBottom = 'auto'
+                    this.filterScroll= 'unset'
+                }
+                if (this.filtersBounds.top - 40 - this.headerPadding >= 0 && this.filterScroll === 'unset') {
+                    this.filterPosition = 'fixed'
+                    this.filterTop = this.headerPadding + 40
+                    this.filterBottom = 'auto'
+                    this.filterScroll = 'top'
+                }
+                if(newScroll + this.headerPadding <= this.savedTopOffset + 40 && this.filterScroll === 'top') {
+                    this.filterPosition = 'absolute'
+                    this.filterTop = 0
+                    this.filterBottom = 'auto'
+                    this.filterScroll = 'unset'
+                }
+                if(this.filterScroll === 'top') {
+                    this.savedTop = newScroll - this.headerPadding 
+                }
+            }
+            this.currentScroll = newScroll;
+        },
         ...search,
     },
     mounted() {
         this.setCatalogPadding()
-        // this.windowHeight = window.innerHeight;
-        // this.filtersBounds = this.$refs.catalogFilter.getBoundingClientRect()
-        // this.savedTopOffset = this.filtersBounds.x
-        // this.filtersHeight = this.$refs.catalogFilter.offsetHeight;
-        // window.addEventListener('scroll', this.setFilterPositioning)
-        // window.addEventListener('resize', this.setCatalogPadding);
+        if(window.innerWidth > 960) {
+            this.setFilterValues()
+        } else {
+            this.filterPosition = 'fixed'
+        }
+
     },
-    // beforeDestroy() {
-    //     // удаляем обработчик события при уничтожении компонента
-    //     window.removeEventListener('scroll', this.setFilterPositioning)
-    //     window.removeEventListener('resize', this.setCatalogPadding);
-    // },
+    beforeDestroy() {
+        // удаляем обработчик события при уничтожении компонента
+        window.removeEventListener('scroll', this.setFilterPositioning)
+        window.removeEventListener('resize', this.setCatalogPadding);
+    },
 }
 </script>
 <style lang="scss">
@@ -137,7 +182,6 @@ export default {
     display: flex;
     flex-direction: column;
     row-gap: 4.8rem;
-    
     &-close
     {
         display: none;
@@ -194,6 +238,7 @@ export default {
         height: calc(100vh);
         width: 100%;
         z-index: 1000;
+        overflow-y: scroll;
         transform: translateX(-150%);
         opacity: 0;
         background: rgb(9, 9, 9,.8);
@@ -206,6 +251,7 @@ export default {
     .catalog__filter
     {
         padding: 32px 20px;
+        width: 100%;
         height: 100%;
         background-color: #FFF;
         &-filters

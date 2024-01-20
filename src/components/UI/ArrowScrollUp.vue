@@ -17,7 +17,10 @@ export default {
     },
     methods: {
         scrollUp() {
-            window.scrollTo(0,0)
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+            })
         },
         checkHeight() {
             const currentScroll = window.scrollY
@@ -53,7 +56,9 @@ export default {
         z-index: 10000;
         opacity: 0;
         pointer-events: none;
+        border-radius: 50%;
         transition: .3s;
+        overflow: hidden;
         &.show
         {
             opacity: 1;

@@ -77,6 +77,9 @@ export default {
                 border: 1px solid $primary !important;
             }
         }
+        &:disabled {
+            opacity: 0.5;
+        }
     }
     &-white
     {
