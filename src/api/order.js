@@ -48,15 +48,15 @@ export default {
     },
     async authCDEK() {
         try {
-            let response = await fetch('https://api.edu.cdek.ru/v2/oauth/token', {
+            let response = await fetch('https://api.cdek.ru/v2/oauth/token', {
                 method: 'POST', 
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json; charset=utf-8',
                 },
                 body: JSON.stringify({
                     'grant_type': 'client_credentials',
-                    'client_id': 'EMscd6r9JnFiQ3bLoyjJY6eM78JrJceI',
-                    'client_secret': 'PjLZkKBHEiLK3YsjtNrt3TGNG0ahs3kG'
+                    'client_id': 'PfkukfUZdSngbbW5Xx6val44l5aumMoQ',
+                    'client_secret': 'h0yUCnejc90j89LuZLJt97HABYdmt2NO'
                 }),
             });
             let data = await response.json();

@@ -526,7 +526,10 @@ export default {
 {
     padding: 2.4rem 0 15rem 0;
 }
-
+.table-size__calc-wrap
+{
+    margin-bottom: 3rem;
+}
 .table-size__label
 {
     margin-bottom: 3.7rem;

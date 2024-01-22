@@ -17,14 +17,14 @@ export default {
     z-index: 1;
     .swiper-pagination-bullet
     {
-        width: 1rem;
-        height: 2px;
-        background: #D9D9D9;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        background: #FFFFFF;
+        border: 1px solid $primary;
         transition: .3s;
         &-active
         {
-            width: 3rem;
-            height: 2px;
             background: $primary;
         }
     }
@@ -36,13 +36,11 @@ export default {
         left: 0;
         right: 0;
         justify-content: center;
+        column-gap: 8px;
         .swiper-pagination-bullet
         {
-            width: 10px;
-            &-active
-            {
-                width: 30px;
-            }
+            width: 12px;
+            height: 12px;
         }
     }
 }

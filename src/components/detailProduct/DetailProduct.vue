@@ -23,6 +23,10 @@
                         <swiper-container
                         class="swiper product-detail__swiper"
                         slides-per-view="1"
+                        :pagination="{
+                            clickable: true,
+                            el: '.product-swiper__pagination'
+                        }"
                         loop= "true">
                             <swiper-slide class="swiper-slide" v-if="!photosLoaded">
                                     <img src="/img/loading.gif" alt="">
@@ -31,7 +35,7 @@
                                     <img v-lazy="item" alt="" data-fancybox="gallery-product-mobile">
                             </swiper-slide>
                         </swiper-container>
-                    <!-- <SwiperPagination class="product-swiper__pagination"></SwiperPagination> -->
+                    <SwiperPagination class="product-swiper__pagination"></SwiperPagination>
                 </div>
             </v-col>
             <v-col md="4" cols="12">
@@ -167,7 +171,6 @@ import ModalToCart from "../modals/ModalToCart.vue";
 import MainLink from "../UI/MainLink.vue";
 import ModalSizes from "../modals/ModalSizes.vue";
 
-
 export default {
     data() {
         return {
@@ -255,8 +258,7 @@ export default {
             }],
             {
                 closeButton: false,
-            }
-            );
+            });
         },
         openSizeModal() {
             Fancybox.close();
@@ -268,8 +270,7 @@ export default {
             {
                 closeButton: false,
                 dragToClose: false,
-            }
-            );
+            });
         },
         handleAddToCart() {
             if(this.addToOrder) {
@@ -278,7 +279,6 @@ export default {
                 this.addProductToCart()
                 this.openFancybox()
             }
-
         },
         updateProduct(){
             if (this.pop_products[this.$route.params.id]){
@@ -294,8 +294,7 @@ export default {
                 this.similar_products = this.pop_products[this.$route.params.id]['similar_products'];
                 if(this.full_photos) {
                     this.photosLoaded = true
-                }
-                
+                }   
             }
             else{
                 this.attributes=[];
@@ -320,15 +319,13 @@ export default {
                                 this.pop_products[this.$route.params.id].full_photos = this.full_photos;
                                 //similar products
                                 this.search_sim_products(this.brand ? this.brand[0]: null, this.colors?this.colors[0]:null, this.product.name)
-                                
                             } else this.$API.getFullPhoto(this.$route.params.id).then(value => {
-                                if (value.status && value.data){
+                                if (value.status && value.data) {
                                     this.product.photo = value.data
                                     this.full_photos = [value.data]
                                     this.pop_products[this.$route.params.id].full_photos = [value.data];
                                     //similar products
                                     this.search_sim_products(this.brand?this.brand[0]:null, this.colors?this.colors[0]:null, this.product.name)
-                                    
                                 }
                             })
                         })

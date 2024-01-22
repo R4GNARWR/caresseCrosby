@@ -38,11 +38,10 @@ export default {
     emits: ['update-catalog-height'],
     methods: {
         updateCatalogHeight() {
-            if(this.$refs.catalogList.offsetHeight !== this.listHeight) {
+            if(this.$refs.catalogList && this.$refs.catalogList.offsetHeight !== this.listHeight) {
                 this.listHeight = this.$refs.catalogList.offsetHeight
                 this.$emit('update-catalog-height', this.listHeight);
             }
-
         }
     },
     mounted() {

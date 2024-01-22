@@ -2,22 +2,30 @@
     <div class="form-control__wrap" :class="{'error': v$.$errors.length > 0}">
         <label class="form-control__label">{{ placeholder }}</label>
         <input class="form-control"
-        :type="inputType ?? 'text'"
+        :type="inputType"
         :name="name"
         :value="modelValue"
-        :required="required ? 'true' : null"
+        :required="required"
         :id="inputId"
-        v-if="inputType !== 'tel'"
+        v-if="inputType !== 'tel' && inputType !== 'date'"
         @input="$emit('update:modelValue', $event.target.value)">
         <input class="form-control"
-        :type="inputType ?? 'text'"
+        :type="inputType"
         :name="name"
         :value="modelValue"
-        :required="required ? 'true' : null"
+        :required="required"
         :id="inputId"
         v-maska data-maska="# (###) ###-##-##"
         v-if="inputType === 'tel'"
         @input="$emit('update:modelValue', $event.target.value)">
+        <input class="form-control"
+        :type="inputType"
+        :name="name"
+        :value="modelValue"
+        :required="required"
+        :id="inputId"
+        @focus="this.showPicker($event.target)"
+        v-if="inputType === 'date'">
         <div class="form-control__errors" v-for="error of v$.$errors" :key="error.$uid">
             <div class="form-control__errors-item">{{ error.$message }}</div>
         </div>
@@ -115,6 +123,9 @@ export default {
         onChange(event) {
             this.$emit('change', event.target.value);
         },
+        showPicker(item) {
+            item.showPicker()
+        }
     },
 }   
 </script>
