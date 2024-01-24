@@ -1,4 +1,5 @@
 import store from "../store/store";
+import api from "./api";
 
 export default {
     make_the_order(){
@@ -46,50 +47,13 @@ export default {
             return false
         }
     },
-    async authCDEK() {
-        try {
-            let response = await fetch('https://api.cdek.ru/v2/oauth/token', {
-                method: 'POST', 
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8',
-                },
-                body: JSON.stringify({
-                    'grant_type': 'client_credentials',
-                    'client_id': 'PfkukfUZdSngbbW5Xx6val44l5aumMoQ',
-                    'client_secret': 'h0yUCnejc90j89LuZLJt97HABYdmt2NO'
-                }),
-            });
-            let data = await response.json();
-            localStorage.setItem('cdek', JSON.stringify(data));
-        } catch (error) {
-            console.log(error);
-        }
-    },
     async getDeliveryPoints(code) {
-        try {
-            let response = await fetch('https://api.edu.cdek.ru/v2/deliverypoints?city_code='+code, {
-                method: 'get', 
-                headers: new Headers({
-                    'Authorization': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6WyJvcmRlcjphbGwiLCJwYXltZW50OmFsbCJdLCJleHAiOjE3MDM3OTMwNjgsImF1dGhvcml0aWVzIjpbInNoYXJkLWlkOnJ1LTAxIiwiY2xpZW50LWNpdHk60J3QvtCy0L7RgdC40LHQuNGA0YHQuiwg0J3QvtCy0L7RgdC40LHQuNGA0YHQutCw0Y8g0L7QsdC70LDRgdGC0YwiLCJhY2NvdW50LWxhbmc6cnVzIiwiY29udHJhY3Q60JjQnC3QoNCkLdCT0JvQky0yMiIsImFwaS12ZXJzaW9uOjEuMSIsImFjY291bnQtdXVpZDplOTI1YmQwZi0wNWE2LTRjNTYtYjczNy00Yjk5YzE0ZjY2OWEiLCJjbGllbnQtaWQtZWM1OmVkNzVlY2Y0LTMwZWQtNDE1My1hZmU5LWViODBiYjUxMmYyMiIsImNvbnRyYWN0LWlkOmRlNDJjYjcxLTZjOGMtNGNmNS04MjIyLWNmYjY2MDQ0ZThkZiIsImNsaWVudC1pZC1lYzQ6MTQzNDgyMzEiLCJzb2xpZC1hZGRyZXNzOmZhbHNlIiwiY29udHJhZ2VudC11dWlkOmVkNzVlY2Y0LTMwZWQtNDE1My1hZmU5LWViODBiYjUxMmYyMiIsImZ1bGwtbmFtZTrQotC10YHRgtC40YDQvtCy0LDQvdC40LUg0JjQvdGC0LXQs9GA0LDRhtC40Lgg0JjQnCJdLCJqdGkiOiJaVjBreEExU2NFakIwQko1LUhYdW0tblFiQjAiLCJjbGllbnRfaWQiOiJFTXNjZDZyOUpuRmlRM2JMb3lqSlk2ZU03OEpySmNlSSJ9.Q9WEfKj1HGCBdATJXVv4nXIC8Z_c8tJBo-TQ0Z05dPvcQOfZO7CpHnJPV8D1vHEf7dkPfnMGC1v5T_Q4tGa53HMPIdhaQ_s9RLyzLfLyeA7FTihpbDPFvO9KjGgNbCEQFOy7oWHI7yxMIzb-Hn1rfF6HlwKAyuqXvg9N46Rgyfg5ZnE4gcUBPYqvjWEmqVYMpCCXrYRQbTgPXnIAqSHxQAqhZf7vKhh_poZc7RoNIBOitXKpXkLANbjipkFA_c3LTFAWDTzzshtU-VmPpdCeZz8TBVLIPNQezty3jSxvuZnAiVG-9QK0oIAxU_SNkJbGhJZ8V2t_5qfV2IKtFnZnBA',
-                }),
-            });
-            this.points = response
-        } catch (error) {
-            console.log(error)
-        }
+
     },
     async getCitiesList() {
-        try {
-            let response = await fetch('https://api.edu.cdek.ru/v2/location/cities', {
-                method: 'get', 
-                headers: new Headers({
-                    'Authorization': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6WyJvcmRlcjphbGwiLCJwYXltZW50OmFsbCJdLCJleHAiOjE3MDM3OTMwNjgsImF1dGhvcml0aWVzIjpbInNoYXJkLWlkOnJ1LTAxIiwiY2xpZW50LWNpdHk60J3QvtCy0L7RgdC40LHQuNGA0YHQuiwg0J3QvtCy0L7RgdC40LHQuNGA0YHQutCw0Y8g0L7QsdC70LDRgdGC0YwiLCJhY2NvdW50LWxhbmc6cnVzIiwiY29udHJhY3Q60JjQnC3QoNCkLdCT0JvQky0yMiIsImFwaS12ZXJzaW9uOjEuMSIsImFjY291bnQtdXVpZDplOTI1YmQwZi0wNWE2LTRjNTYtYjczNy00Yjk5YzE0ZjY2OWEiLCJjbGllbnQtaWQtZWM1OmVkNzVlY2Y0LTMwZWQtNDE1My1hZmU5LWViODBiYjUxMmYyMiIsImNvbnRyYWN0LWlkOmRlNDJjYjcxLTZjOGMtNGNmNS04MjIyLWNmYjY2MDQ0ZThkZiIsImNsaWVudC1pZC1lYzQ6MTQzNDgyMzEiLCJzb2xpZC1hZGRyZXNzOmZhbHNlIiwiY29udHJhZ2VudC11dWlkOmVkNzVlY2Y0LTMwZWQtNDE1My1hZmU5LWViODBiYjUxMmYyMiIsImZ1bGwtbmFtZTrQotC10YHRgtC40YDQvtCy0LDQvdC40LUg0JjQvdGC0LXQs9GA0LDRhtC40Lgg0JjQnCJdLCJqdGkiOiJaVjBreEExU2NFakIwQko1LUhYdW0tblFiQjAiLCJjbGllbnRfaWQiOiJFTXNjZDZyOUpuRmlRM2JMb3lqSlk2ZU03OEpySmNlSSJ9.Q9WEfKj1HGCBdATJXVv4nXIC8Z_c8tJBo-TQ0Z05dPvcQOfZO7CpHnJPV8D1vHEf7dkPfnMGC1v5T_Q4tGa53HMPIdhaQ_s9RLyzLfLyeA7FTihpbDPFvO9KjGgNbCEQFOy7oWHI7yxMIzb-Hn1rfF6HlwKAyuqXvg9N46Rgyfg5ZnE4gcUBPYqvjWEmqVYMpCCXrYRQbTgPXnIAqSHxQAqhZf7vKhh_poZc7RoNIBOitXKpXkLANbjipkFA_c3LTFAWDTzzshtU-VmPpdCeZz8TBVLIPNQezty3jSxvuZnAiVG-9QK0oIAxU_SNkJbGhJZ8V2t_5qfV2IKtFnZnBA',
-                }),
-            });
-            this.cities = response
-        } catch (error) {
-            console.log(error)
-        }
+        this.$API.getCdekSettings().then(response => {
+            console.log(response)
+        })
     }
 
 }

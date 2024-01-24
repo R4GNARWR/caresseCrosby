@@ -239,4 +239,16 @@ export default  {
 
     deleteProductFromOrder(orderId, productId){return this.axios.delete("admin/orders/"+orderId+"/products/"+productId)},
     addProductToOrder(orderId, productId, notice){return this.axios.post("admin/orders/"+orderId+"/products", {productId:productId, notice: notice})},
+    
+    // CDEK
+
+    getCdekSettings(){
+        return this.axios.get('get-cdek-settings')
+    },
+    getCdekCityPoints(cityCode){
+        return this.axios.get('get-cdek-city-points',{params:{cityCode:cityCode}})
+    },
+    getCdekDeliveryPrice(tariff, toLocation){
+        return this.axios.get('get-cdek-delivery-cost',{params:{tariff:tariff, toLoaction:toLocation}})
+    }
 }

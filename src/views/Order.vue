@@ -203,6 +203,7 @@ export default {
     },
     
     created() {
+        this.getCitiesList
         const script = document.createElement('script')
         
         script.onload = () => {
