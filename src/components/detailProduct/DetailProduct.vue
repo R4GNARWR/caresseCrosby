@@ -27,7 +27,7 @@
                             clickable: true,
                             el: '.product-swiper__pagination'
                         }"
-                        loop= "true">
+                        loop="false">
                             <swiper-slide class="swiper-slide" v-if="!photosLoaded">
                                     <img src="/img/loading.gif" alt="">
                             </swiper-slide>
@@ -35,7 +35,7 @@
                                     <img v-lazy="item" alt="" data-fancybox="gallery-product-mobile">
                             </swiper-slide>
                         </swiper-container>
-                    <SwiperPagination class="product-swiper__pagination"></SwiperPagination>
+                    <SwiperPagination class="product-swiper__pagination" ></SwiperPagination>
                 </div>
             </v-col>
             <v-col md="4" cols="12">
@@ -367,7 +367,7 @@ export default {
             }
         },
     },
-    mounted() {
+    beforeMount() {
         register()
         this.updateProduct()
     },

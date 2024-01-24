@@ -10,7 +10,8 @@ export default {
 .custom-pagination
 {
     position: absolute;
-    right: 6.6rem;
+    width: 100%;
+    justify-content: center;
     bottom: 6rem;
     display: flex;
     column-gap: .8rem;
@@ -21,10 +22,11 @@ export default {
         height: 2rem;
         border-radius: 50%;
         background: #FFFFFF;
-        border: 1px solid $primary;
+        border: 1px solid #867B6E;
         transition: .3s;
         &-active
         {
+            border: $primary;
             background: $primary;
         }
     }
@@ -32,10 +34,6 @@ export default {
 @media (max-width: 600px) {
     .custom-pagination
     {
-        width: 100%;
-        left: 0;
-        right: 0;
-        justify-content: center;
         column-gap: 8px;
         .swiper-pagination-bullet
         {

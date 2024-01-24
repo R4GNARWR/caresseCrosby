@@ -44,7 +44,7 @@
                     <div class="table-size__calc-error">
                         {{status}}
                     </div>
-
+                    
                 </v-col>
             </v-row>
             <div class="table-size_wrapper">
@@ -444,6 +444,7 @@ export default {
             b1:null,
             b2:null,
             show: false,
+            size: null,
             showProducts: false,
             products: null,
             filter:{
@@ -482,21 +483,29 @@ export default {
         ...mapState(['sizes_search'])
     },
     methods: {
+        searchSize() {
+            this.size = this.sizes_search[0].find(element => element.value === this.size_b)
+            if(!this.size) {
+                this.size = this.sizes_search[1].find(element => element.value === this.size_b)
+            }
+            
+        },
         showSize() {
             this.show = true
+            this.searchSize()
+            if(this.size) {
+                this.filter["sizes"].attributeValueId = this.size.attributeValueId;
+                this.filter["sizes"].value = this.size.value;
+                this.to_search();
+            }
+            this.showProducts = true;
         },
         to_size_models(){
-            let size = this.sizes_search[0].find(element => element.value === this.size_b)
-            if(!size) {
-                size = this.sizes_search[1].find(element => element.value === this.size_b)
+            if(!this.size) {
+                searchSize()
             }
-            if(size) {
-                this.filter["sizes"].attributeValueId = size.attributeValueId;
-                this.filter["sizes"].value = size.value;
-                this.to_search();
-                this.showProducts = true;
-            } else {
-                this.showProducts = true;
+            if(this.size) {
+                this.$router.push('/catalog/24402/sizes/' + this.size.attributeValueId)
             }
         },
         ...search

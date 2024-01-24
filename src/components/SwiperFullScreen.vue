@@ -12,9 +12,9 @@
                 <swiper-slide class="swiper-slide" v-for="slide in slidesArray" >
                     <v-container>
                         <div class="swiper-fullscreen__content">
-                            <div :class="'current-year ' + slide.yearColor" >
+                            <!-- <div :class="'current-year ' + slide.yearColor" >
                                 {{ year }}
-                            </div>
+                            </div> -->
                             <div class="swiper-fullscreen__content-bottom">
                                 <div :class="'label ' + slide.labelColor" v-html="slide.labelText"></div>
                                 <MainLink :destination="slide.buttonDestination" :class="'w-ft btn-' + slide.buttonColor">{{slide.buttonText}}</MainLink>
