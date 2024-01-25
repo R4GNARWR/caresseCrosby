@@ -10,6 +10,23 @@
         <section class="product-detail">
             <v-row>
                 <v-col md="8" cols="12">
+                    <div class="d-lg-none d-block" style="position: relative;">
+                        <img src="/img/loading.gif" alt="" v-if="!photosLoaded" class="product-image__single">
+                        <swiper-container
+                        class="swiper product-detail__swiper"
+                        slides-per-view="1"
+                        :pagination="{
+                            clickable: true,
+                            el: '.product-swiper__pagination'}"
+                            loop="false"
+                            :class="{'d-none': full_photos && full_photos.length === 1}">
+                            <swiper-slide class="swiper-slide" v-for="(item, index) in full_photos" :key="index" v-if="photosLoaded && full_photos && full_photos.length > 1">
+                                <img v-lazy="item" alt="" data-fancybox="gallery-product-mobile">
+                            </swiper-slide>
+                        </swiper-container>
+                        <img v-lazy="full_photos[0]" alt="" v-if="photosLoaded && full_photos && full_photos.length === 1" class="product-image__single" data-fancybox="gallery-product">
+                        <SwiperPagination class="product-swiper__pagination" ></SwiperPagination>
+                    </div>
                     <div class="product-detail__images d-lg-grid d-none" v-if="!photosLoaded">
                         <img src="/img/loading.gif" v-for="(item, index) in 4" :key="index" alt="" >
                     </div>
@@ -19,140 +36,122 @@
                     <div class="no-photo" v-if="photosLoaded && !full_photos">
                         Вышлем фото по запросу
                     </div>
-                    <div class="d-lg-none d-block" style="position: relative;">
-                        <swiper-container
-                        class="swiper product-detail__swiper"
-                        slides-per-view="1"
-                        :pagination="{
-                            clickable: true,
-                            el: '.product-swiper__pagination'
-                        }"
-                        loop="false">
-                            <swiper-slide class="swiper-slide" v-if="!photosLoaded">
-                                    <img src="/img/loading.gif" alt="">
-                            </swiper-slide>
-                            <swiper-slide class="swiper-slide" v-for="(item, index) in full_photos" :key="index" v-if="photosLoaded && full_photos">
-                                    <img v-lazy="item" alt="" data-fancybox="gallery-product-mobile">
-                            </swiper-slide>
-                        </swiper-container>
-                    <SwiperPagination class="product-swiper__pagination" ></SwiperPagination>
-                </div>
-            </v-col>
-            <v-col md="4" cols="12">
-                <div class="product-detail__info">
-                    <div class="product-detail__info-top">
-                        <div class="product-detail__info-label">
-                            {{product.name}}
-                        </div>
-                        <div class="product-detail__info-type">
-                            {{category.name}}
-                        </div>
-                        <div class="product-detail__info-price" v-if="product.lowerPrice">
-                            {{computed_price_string(product.lowerPrice.value)}} ₽
-                        </div>
-                    </div>
-                    <div class="product-detail__info-color">
-                        <div class="product-detail__info-color__name" v-if="colors">
-                            Цвет: <span>{{colors[0].attributeValueText}}</span>
-                        </div>
-                    </div>
-                    <div class="product-detail__info-sizes">
-                        <div class="product-detail__info-sizes__item">
-                            <div class="label">
-                                Выберите размер
-                                <a @click="openSizeModal()">Таблица размеров</a>
+                </v-col>
+                <v-col md="4" cols="12">
+                    <div class="product-detail__info">
+                        <div class="product-detail__info-top">
+                            <div class="product-detail__info-label">
+                                {{product.name}}
                             </div>
-                            <div class="buttons">
-                                <div class="buttons-item" v-for="item in sizes">
-                                    <input type="radio" name="size" :value="item" v-model="product.size" >
-                                    <label>{{item}}</label>
+                            <div class="product-detail__info-type">
+                                {{category.name}}
+                            </div>
+                            <div class="product-detail__info-price" v-if="product.lowerPrice">
+                                {{computed_price_string(product.lowerPrice.value)}} ₽
+                            </div>
+                        </div>
+                        <div class="product-detail__info-color">
+                            <div class="product-detail__info-color__name" v-if="colors">
+                                Цвет: <span>{{colors[0].attributeValueText}}</span>
+                            </div>
+                        </div>
+                        <div class="product-detail__info-sizes">
+                            <div class="product-detail__info-sizes__item">
+                                <div class="label">
+                                    Выберите размер
+                                    <a @click="openSizeModal()">Таблица размеров</a>
+                                </div>
+                                <div class="buttons">
+                                    <div class="buttons-item" v-for="item in sizes">
+                                        <input type="radio" name="size" :value="item" v-model="product.size" >
+                                        <label>{{item}}</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="product-detail__info-buttons" v-if="!addToOrder">
-                        <MainBtn v-if="!cartQuantity || cartQuantity===0" :disabled="!product.size" class-name="btn-primary" @click="handleAddToCart()">Добавить в корзину</MainBtn>
-                        <div v-else class="product-detail__info-buttons-counter">
-                            <button class="eq-minus" @click.prevent="changeQ(product, -1);">-</button>
-                            {{cartQuantity}}
-                            <button class="eq-plus" @click.prevent="changeQ(product, +1)">+</button>
+                        <div class="product-detail__info-buttons" v-if="!addToOrder">
+                            <MainBtn v-if="!cartQuantity || cartQuantity===0" :disabled="!product.size" class-name="btn-primary" @click="handleAddToCart()">Добавить в корзину</MainBtn>
+                            <div v-else class="product-detail__info-buttons-counter">
+                                <button class="eq-minus" @click.prevent="changeQ(product, -1);">-</button>
+                                {{cartQuantity}}
+                                <button class="eq-plus" @click.prevent="changeQ(product, +1)">+</button>
+                            </div>
+                            <MainBtn class-name="btn-danger btn-icon" @click="delete_prod()" v-if="user_info.role === 3">
+                                <v-icon icon="mdi-trash-can-outline" color="#FF7171">
+                                </v-icon>
+                            </MainBtn>
+                            <MainBtn class-name="btn-primary heart btn-icon" @click="addFavorite(product.id)" :class="{'active': the_heart}">
+                                <v-icon icon="mdi-heart-outline" color="#FFF" v-if="!the_heart">
+                                </v-icon>
+                                <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart"></v-icon>
+                                <div class="tooltip" v-if="!the_heart">Добавить в избранное</div>
+                                <div class="tooltip" v-if="the_heart">Убрать из изранного</div>
+                            </MainBtn>
                         </div>
-                        <MainBtn class-name="btn-danger btn-icon" @click="delete_prod()" v-if="user_info.role === 3">
-                            <v-icon icon="mdi-trash-can-outline" color="#FF7171">
-                            </v-icon>
-                        </MainBtn>
-                        <MainBtn class-name="btn-primary heart btn-icon" @click="addFavorite(product.id)" :class="{'active': the_heart}">
-                            <v-icon icon="mdi-heart-outline" color="#FFF" v-if="!the_heart">
-                            </v-icon>
-                            <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart"></v-icon>
-                            <div class="tooltip" v-if="!the_heart">Добавить в избранное</div>
-                            <div class="tooltip" v-if="the_heart">Убрать из изранного</div>
-                        </MainBtn>
-                    </div>
-                    <div class="product-detail__info-buttons" v-else>
-                        <MainBtn :disabled="!product.size" class-name="btn-primary" @click="handleAddToCart()">Добавить в заказ</MainBtn>
-                        <MainBtn class-name="btn-danger btn-icon" @click="delete_prod()" v-if="user_info.role === 3">
-                            <v-icon icon="mdi-trash-can-outline" color="#FF7171">
-                            </v-icon>
-                        </MainBtn>
-                        <MainBtn class-name="btn-primary heart btn-icon" @click="addFavorite(product.id)" :class="{'active': the_heart}">
-                            <v-icon icon="mdi-heart-outline" color="#FFF" v-if="!the_heart">
-                            </v-icon>
-                            <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart"></v-icon>
-                            <div class="tooltip" v-if="!the_heart">Добавить в избранное</div>
-                            <div class="tooltip" v-if="the_heart">Убрать из изранного</div>
-                        </MainBtn>
-                    </div>
-                    <div class="product-detail__info-props">
-                        <div class="product-detail__info-props__item">
-                            <div class="name">
-                                Бренд:
+                        <div class="product-detail__info-buttons" v-else>
+                            <MainBtn :disabled="!product.size" class-name="btn-primary" @click="handleAddToCart()">Добавить в заказ</MainBtn>
+                            <MainBtn class-name="btn-danger btn-icon" @click="delete_prod()" v-if="user_info.role === 3">
+                                <v-icon icon="mdi-trash-can-outline" color="#FF7171">
+                                </v-icon>
+                            </MainBtn>
+                            <MainBtn class-name="btn-primary heart btn-icon" @click="addFavorite(product.id)" :class="{'active': the_heart}">
+                                <v-icon icon="mdi-heart-outline" color="#FFF" v-if="!the_heart">
+                                </v-icon>
+                                <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart"></v-icon>
+                                <div class="tooltip" v-if="!the_heart">Добавить в избранное</div>
+                                <div class="tooltip" v-if="the_heart">Убрать из изранного</div>
+                            </MainBtn>
+                        </div>
+                        <div class="product-detail__info-props">
+                            <div class="product-detail__info-props__item">
+                                <div class="name">
+                                    Бренд:
+                                </div>
+                                <div class="desc" v-for="attr of brand.slice(0,1)" :key="attr.attributeValueText" v-if="brand">
+                                    {{attr.attributeValueText}}
+                                </div>
+                                <div class="desc" v-else>
+                                    Данные отсутствует
+                                </div>
                             </div>
-                            <div class="desc" v-for="attr of brand.slice(0,1)" :key="attr.attributeValueText" v-if="brand">
-                                {{attr.attributeValueText}}
+                            <div class="product-detail__info-props__item" >
+                                <div class="name">
+                                    Состав:
+                                </div>
+                                <div class="desc" v-for="attr of structure" :key="attr.attributeValueText" v-if="structure">
+                                    {{attr}},
+                                </div>
+                                <div class="desc" v-else>
+                                    Данные отсутствует
+                                </div>
                             </div>
-                            <div class="desc" v-else>
-                                Данные отсутствует
+                            <div class="product-detail__info-props__item">
+                                <div class="name">
+                                    Описание:
+                                </div>
+                                <div class="desc" v-if="product.description">
+                                    {{product.description}}
+                                </div>
+                                <div class="desc" v-else>
+                                    Описание отсутствует
+                                </div>
                             </div>
                         </div>
-                        <div class="product-detail__info-props__item" >
-                            <div class="name">
-                                Состав:
-                            </div>
-                            <div class="desc" v-for="attr of structure" :key="attr.attributeValueText" v-if="structure">
-                                {{attr}},
-                            </div>
-                            <div class="desc" v-else>
-                                Данные отсутствует
-                            </div>
-                        </div>
-                        <div class="product-detail__info-props__item">
-                            <div class="name">
-                                Описание:
-                            </div>
-                            <div class="desc" v-if="product.description">
-                                {{product.description}}
-                            </div>
-                            <div class="desc" v-else>
-                                Описание отсутствует
-                            </div>
+                        <div class="product-detail__info-whatsapp">
+                            <a target="_blank" class="btn btn-gold outline" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:">
+                                <img src="/svg/whatsapp-gold.svg" alt="">
+                                Консультация в Whats App
+                            </a>
                         </div>
                     </div>
-                    <div class="product-detail__info-whatsapp">
-                        <a target="_blank" class="btn btn-gold outline" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:">
-                            <img src="/svg/whatsapp-gold.svg" alt="">
-                            Консультация в Whats App
-                        </a>
-                    </div>
-                </div>
-            </v-col>
-        </v-row>
-    </section>
-    <ModalSizes id="modalSizes"></ModalSizes>
-    <ModalToCart id="modalToCart" :product="product"></ModalToCart>
-    <SwiperCards class="product-detail__section" name="Вам понравится" v-if="similar_products" :slidesArray="similar_products"></SwiperCards>
-    <!--    <SwiperCards class="product-detail__section" name="С этим товаром покупают" v-if="similar_products" :slidesArray="products"></SwiperCards>-->
-</v-container>
+                </v-col>
+            </v-row>
+        </section>
+        <ModalSizes id="modalSizes"></ModalSizes>
+        <ModalToCart id="modalToCart" :product="product"></ModalToCart>
+        <SwiperCards class="product-detail__section" name="Вам понравится" v-if="similar_products" :slidesArray="similar_products"></SwiperCards>
+        <!--    <SwiperCards class="product-detail__section" name="С этим товаром покупают" v-if="similar_products" :slidesArray="products"></SwiperCards>-->
+    </v-container>
 </template>
 
 <script>
@@ -293,7 +292,9 @@ export default {
                 this.full_photos = this.pop_products[this.$route.params.id].full_photos;
                 this.similar_products = this.pop_products[this.$route.params.id]['similar_products'];
                 if(this.full_photos) {
-                    this.photosLoaded = true
+                    setTimeout(() => {
+                        this.photosLoaded = true
+                    }, 200)
                 }   
             }
             else{
@@ -313,7 +314,9 @@ export default {
                         this.pop_products[this.$route.params.id].category = this.category;
                         
                         this.$API.getFullPhotos(this.$route.params.id).then(value => {
-                            this.photosLoaded = true
+                            setTimeout(() => {
+                                this.photosLoaded = true
+                            }, 200)
                             if(value.status ===200 && value.data.length>1) {
                                 this.full_photos = value.data;
                                 this.pop_products[this.$route.params.id].full_photos = this.full_photos;
@@ -669,6 +672,12 @@ export default {
     .product-detail__section
     {
         padding: 16px 0 !important;
+    }
+    .product-image__single
+    {
+        width: 100%;
+        height: 580px;
+        object-fit: cover;
     }
     .product-detail__swiper
     {

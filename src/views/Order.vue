@@ -27,7 +27,7 @@
                         <div class="order-delivery__label">
                             Данные для доставки
                         </div>
-                        <div class="order-type">
+                        <!-- <div class="order-type">
                             <div class="order-type__item" :class="{'active': deliveryType === 'courier'}">
                                 <input type="radio" name="delivery-type" value="courier" id="" v-model="deliveryType">
                                 <img :src="deliveryType === 'courier' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
@@ -38,10 +38,10 @@
                                 <img :src="deliveryType === 'pickup' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
                                 Самовывоз
                             </div>
-                        </div>
-                        <button class="order-pickup" v-if="deliveryType === 'pickup'">
+                        </div> -->
+                        <router-link to="/pick-point" class="order-pickup" v-if="deliveryType === 'pickup'">
                             Выбрать пункт самовывоза
-                        </button>
+                        </router-link>
                         <div class="order-delivery__form" v-if="user_info">
                             <Input class="inline" placeholder="Адрес доставки*" v-model="city" required="true" inputId="suggest" v-if="deliveryType === 'courier'"></Input>
                             <Input class="" placeholder="Имя*" v-model="name" required="true"></Input>
@@ -385,6 +385,7 @@ export default {
     margin-bottom: 3.2rem;
     width: 100%;
     padding: 2rem;
+    display: block;
     border: 1px solid #867B6E;
     color: #867B6E;
     font-size: 1.7rem;
@@ -392,6 +393,7 @@ export default {
     line-height: 1.4em;
     letter-spacing: -0.204px;
     text-align: center;
+    text-decoration: none;
 }
 @media (max-width: 1280px) {
     .order-products__wrap

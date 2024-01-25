@@ -8,6 +8,10 @@
                     clickable: true,
                     el: '.swiper-fullscreen__pagination'
                 }"
+                :autoplay="{
+                    delay: 5000,
+                    disableOnInteraction: false
+                }"
                 >
                 <swiper-slide class="swiper-slide" v-for="slide in slidesArray" >
                     <v-container>
@@ -180,7 +184,7 @@ export default {
             align-items: flex-start;
         }
     }
-
+    
     .swiper-fullscreen
     {
         &__content
