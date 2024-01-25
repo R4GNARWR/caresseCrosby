@@ -47,13 +47,11 @@ export default {
             return false
         }
     },
-    async getDeliveryPoints(code) {
-
+    async getDeliveryPoints(city) {
+        api.getCdekCityPoints(city)
     },
     async getCitiesList() {
-        this.$API.getCdekSettings().then(response => {
-            console.log(response)
-        })
+        api.getCdekSettings()
     }
 
 }

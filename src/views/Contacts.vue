@@ -33,8 +33,8 @@
             <yandex-map :settings="settings"
             :coords="coords"
             :controls="[]"
-            :zoom="16">>
-            <ymap-marker 
+            :zoom="16">
+            <ymap-marker
             marker-id="123" 
             :coords="coords"
             :icon="markerIcon"
@@ -48,7 +48,7 @@
 <script>
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
-import { yandexMap, ymapMarker } from 'vue-yandex-maps';
+import { yandexMap, ymapMarker, } from 'vue-yandex-maps';
 
 export default {
     components: {
@@ -59,6 +59,7 @@ export default {
     },
     data() {
         return {
+            map: null,
             settings: {
                 apiKey: '453f5758-6290-4de4-bae1-d645fb102e5c',
                 lang: 'ru_RU',

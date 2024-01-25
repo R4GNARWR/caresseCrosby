@@ -27,7 +27,7 @@
                         <div class="order-delivery__label">
                             Данные для доставки
                         </div>
-                        <!-- <div class="order-type">
+                        <div class="order-type">
                             <div class="order-type__item" :class="{'active': deliveryType === 'courier'}">
                                 <input type="radio" name="delivery-type" value="courier" id="" v-model="deliveryType">
                                 <img :src="deliveryType === 'courier' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
@@ -38,7 +38,7 @@
                                 <img :src="deliveryType === 'pickup' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
                                 Самовывоз
                             </div>
-                        </div> -->
+                        </div>
                         <button class="order-pickup" v-if="deliveryType === 'pickup'">
                             Выбрать пункт самовывоза
                         </button>
@@ -199,11 +199,10 @@ export default {
             this.make_the_order()
         },
         ...order, ...cart, ...productCard,
-        ...mapMutations(['clearCart', 'cartItemChangeQ', 'cartItemSetQ', 'removeFromCart']),
+        ...mapMutations(['clearCart', 'cartItemChangeQ', 'cartItemSetQ', 'removeFromCart','cdek_cities','cdek_pvz']),
     },
     
     created() {
-        this.getCitiesList
         const script = document.createElement('script')
         
         script.onload = () => {
@@ -233,6 +232,9 @@ export default {
         //         this.errored = true;
         //     });
         // }
+        if(!this.cdek_cities) {
+            this.getCitiesList()
+        }
     },
     mounted() {
         this.email = this.user_info.email || ''

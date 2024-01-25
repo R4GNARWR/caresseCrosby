@@ -33,7 +33,7 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col md="5" cols="12">
+                <v-col md="5" cols="12" class="d-md-block d-none">
                     <div class="table-size__calc-label">Видео о том как правильно снять мерки</div>
                     <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/D1-iP7rtnIg?si=я" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                 </v-col>
@@ -44,7 +44,10 @@
                     <div class="table-size__calc-error">
                         {{status}}
                     </div>
-                    
+                </v-col>
+                <v-col cols="12" class="d-md-none d-block">
+                    <div class="table-size__calc-label">Видео о том как правильно снять мерки</div>
+                    <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/D1-iP7rtnIg?si=я" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                 </v-col>
             </v-row>
             <div class="table-size_wrapper">
@@ -425,6 +428,7 @@
 
 <script>
 import search from "../api/search";
+import store from '../store/store'
 import {mapState} from "vuex";
 
 import MainBtn from '../components/UI/MainBtn.vue';
@@ -488,7 +492,6 @@ export default {
             if(!this.size) {
                 this.size = this.sizes_search[1].find(element => element.value === this.size_b)
             }
-            
         },
         showSize() {
             this.show = true
@@ -502,10 +505,14 @@ export default {
         },
         to_size_models(){
             if(!this.size) {
-                searchSize()
+                this.searchSize()
             }
             if(this.size) {
                 this.$router.push('/catalog/24402/sizes/' + this.size.attributeValueId)
+            } else {
+                let msg = {}
+                msg.msg = 'Не найдено товаров с указанным размером!'
+                store.commit('set_snack_message', msg)
             }
         },
         ...search
@@ -534,6 +541,10 @@ export default {
 .table-size-section
 {
     padding: 2.4rem 0 15rem 0;
+    .main-section
+    {
+        padding: 0 0 6rem 0
+    }
 }
 .table-size__calc-wrap
 {
@@ -744,6 +755,13 @@ table.table-size
     .table-size__calc-error
     {
         font-size: 24px;
+    }
+}
+@media (max-width: 650px) {
+    .table-size__calc-result
+    {
+        font-size: 20px;
+        text-align: center;
     }
 }
 </style>

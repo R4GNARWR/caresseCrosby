@@ -243,10 +243,14 @@ export default  {
     // CDEK
 
     getCdekSettings(){
-        return this.axios.get('get-cdek-settings')
+        return this.axios.get('get-cdek-settings').then(response => {
+            store.commit('setCdekCities', response);
+        })
     },
     getCdekCityPoints(cityCode){
-        return this.axios.get('get-cdek-city-points',{params:{cityCode:cityCode}})
+        return this.axios.get('get-cdek-city-points',{params:{cityCode:cityCode}}).then(response => {
+            store.commit('setCdekPvz', response);
+        })
     },
     getCdekDeliveryPrice(tariff, toLocation){
         return this.axios.get('get-cdek-delivery-cost',{params:{tariff:tariff, toLoaction:toLocation}})

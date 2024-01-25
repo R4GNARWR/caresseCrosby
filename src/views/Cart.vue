@@ -128,9 +128,11 @@ export default {
         },
         ...mapState(['cart','project_params','user_info','loggedIn','favorites' ])
     },
-
-    
+    methods: {
+        ...order
+    },
     created() {
+        this.getCitiesList()
         if (this.user_info.phone) this.phone = this.user_info.phone;
         if (this.user_info.apartment) this.address.apartment = this.user_info.apartment;
         if (this.user_info.email) this.email = this.user_info.email;
