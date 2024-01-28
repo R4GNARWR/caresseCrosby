@@ -16,6 +16,8 @@ import VueLazyload from 'vue-lazyload'
 
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
+// Yandex Maps
+import { createYmaps } from 'vue-yandex-maps';
 
 // Styles
 
@@ -43,6 +45,10 @@ app.use(VueLazyload, {
   loading: '/img/loading.gif',
   attempt: 1,
 })
+app.use(createYmaps({
+  apikey: '453f5758-6290-4de4-bae1-d645fb102e5c',
+  initializeOn: 'onComponentMount',
+}));
 app.use(vuetify)
 app.use(router)
 app.mount('#app')

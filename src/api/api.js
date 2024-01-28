@@ -244,12 +244,12 @@ export default  {
 
     getCdekSettings(){
         return this.axios.get('get-cdek-settings').then(response => {
-            store.commit('setCdekCities', response);
+            store.commit('setCdekCities', response.data.cities);
         })
     },
     getCdekCityPoints(cityCode){
         return this.axios.get('get-cdek-city-points',{params:{cityCode:cityCode}}).then(response => {
-            store.commit('setCdekPvz', response);
+            store.commit('setCdekPvz', response.data.points);
         })
     },
     getCdekDeliveryPrice(tariff, toLocation){

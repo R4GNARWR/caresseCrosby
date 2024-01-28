@@ -27,7 +27,7 @@
                         <div class="order-delivery__label">
                             Данные для доставки
                         </div>
-                        <!-- <div class="order-type">
+                        <div class="order-type">
                             <div class="order-type__item" :class="{'active': deliveryType === 'courier'}">
                                 <input type="radio" name="delivery-type" value="courier" id="" v-model="deliveryType">
                                 <img :src="deliveryType === 'courier' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
@@ -38,7 +38,7 @@
                                 <img :src="deliveryType === 'pickup' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
                                 Самовывоз
                             </div>
-                        </div> -->
+                        </div>
                         <router-link to="/pick-point" class="order-pickup" v-if="deliveryType === 'pickup'">
                             Выбрать пункт самовывоза
                         </router-link>

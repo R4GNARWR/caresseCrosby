@@ -30,82 +30,83 @@
             </div>
         </v-container>
         <div class="contacts-map" @mousedown="checkMouse" @touchstart="checkMouse">
-            <yandex-map :settings="settings"
-            :coords="coords"
-            :controls="[]"
-            :zoom="16">
-            <ymap-marker
-            marker-id="123" 
-            :coords="coords"
-            :icon="markerIcon"
+            <yandex-map
+            v-model="mapEl"
+            :settings="{
+                location: {
+                    center: [56.022775, 54.722379],
+                    zoom: 16,
+                    controls: [],
+                },
+            }">
+            <yandex-map-default-scheme-layer />
+            <yandex-map-default-features-layer />
+            
+            <yandex-map-marker
+            :settings="{coordinates: [56.022775, 54.722379]}"
+            :position="`left-center top`"
+            >
+            <img
+            class="map-marker"
+            alt=""
+            :src="'/svg/map-placemark.svg'"
             />
-        </yandex-map>
-        
-    </div>
+        </yandex-map-marker>
+    </yandex-map>
+    
+</div>
 </section>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, shallowRef } from 'vue';
+import type { YMap } from '@yandex/ymaps3-types'
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
-import { yandexMap, ymapMarker, } from 'vue-yandex-maps';
+import {
+    YandexMap,
+    YandexMapDefaultFeaturesLayer,
+    YandexMapDefaultSchemeLayer,
+    YandexMapMarker,
+} from 'vue-yandex-maps';
 
-export default {
-    components: {
-        Breadcrumbs,
-        MainBtn,
-        yandexMap,
-        ymapMarker
-    },
-    data() {
-        return {
-            map: null,
-            settings: {
-                apiKey: '453f5758-6290-4de4-bae1-d645fb102e5c',
-                lang: 'ru_RU',
-                coordorder: 'latlong',
-                enterprise: false,
-                debug: false,
-                version: '2.1'
-            },
-            coords: [54.722170,56.022624],
-            markerIcon: {
-                layout: 'default#imageWithContent',
-                imageHref: '',
-                imageSize: [56, 62],
-                imageOffset: [0, 0],
-                content: 'г. Уфа, ул. Менделеева 156/1',
-                contentOffset: [-28, -31],  
-                contentLayout: '<div class="placemark"><img src="/svg/map-placemark.svg"><div class="placemark-content">$[properties.iconContent]</div></div>'
-            }
-        };
-    },
-    methods: {
-        to2Gis() {
-            window.open('https://go.2gis.com/1xqkl', '_blank').focus()
-        },
-        checkMouse() {
-            let drag = false
-            const mouseDrag = () => {
-                drag = true
-            }
-            const mouseLift = () => {
-                if(!drag) {
-                    this.to2Gis()
-                }
-                window.removeEventListener("mousemove", mouseDrag);
-                window.removeEventListener("touchmove", mouseDrag);
-                window.removeEventListener("mouseup", mouseLift);
-                window.removeEventListener("touchend", mouseLift);
-            }
-            window.addEventListener("mousemove", mouseDrag);
-            window.addEventListener("touchmove", mouseDrag);
-            window.addEventListener("mouseup", mouseLift);
-            window.addEventListener("touchend", mouseLift);
-        }
-    },
+const components = {
+    Breadcrumbs,
+    MainBtn,
 };
+
+const map = ref(null);
+const mapEl = shallowRef<null | YMap>(null);
+
+const coords = [54.736637, 55.958040]
+const markerIcon = {
+    
+};
+
+const to2Gis = () => {
+    window.open('https://go.2gis.com/1xqkl', '_blank')?.focus();
+};
+const checkMouse = () => {
+    let drag = false;
+    const mouseDrag = () => {
+        drag = true;
+    };
+    const mouseLift = () => {
+        if(!drag) {
+            to2Gis();
+        }
+        window.removeEventListener("mousemove", mouseDrag);
+        window.removeEventListener("touchmove", mouseDrag);
+        window.removeEventListener("mouseup", mouseLift);
+        window.removeEventListener("touchend", mouseLift);
+    };
+    window.addEventListener("mousemove", mouseDrag);
+    window.addEventListener("touchmove", mouseDrag);
+    window.addEventListener("mouseup", mouseLift);
+    window.addEventListener("touchend", mouseLift);
+}
 </script>
+
 
 
 <style lang="scss">
@@ -166,12 +167,9 @@ export default {
         }
     }
 }
-.ymaps-2-1-79-ground-pane {
+.ymaps3x0--main-engine-container {
     -webkit-filter: grayscale(100%);
-}
-.ymaps-2-1-79-copyrights-pane
-{
-    display: none;
+    filter: grayscale(100%);
 }
 .contacts-map
 {
@@ -183,37 +181,13 @@ export default {
         height: 100%;
         overflow: hidden;
     }
-    
-    
 }
-.placemark
-{
-    width: 56px;
-    height: 62px;
-    position: relative;
-    img
-    {
-        width: 125%;
-        height: 125%;
-        object-fit: contain;
-    }
-    .placemark-content
-    {
-        position: absolute;
-        top: 50%;
-        left: calc(100% + 8px);
-        transform: translateY(-50%);
-        border: 1px solid #E9E9E9;
-        background: #FFFEFD;
-        box-shadow: 0px 6px 16px 0px rgba(120, 123, 156, 0.08);
-        padding: 10px;
-        color: #000;
-        font-size: 16px;
-        font-weight: 600;
-        letter-spacing: -0.16px;
-        white-space: nowrap;
-    }
+.map-marker {
+    width: 5.6rem;
+    height: 7.1rem;
+    object-fit: contain;
 }
+
 @media (max-width: 960px)
 {
     .contacts

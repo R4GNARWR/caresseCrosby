@@ -1,5 +1,5 @@
 <template>
-    <section class="catalog">
+    <section class="catalog catalogAll">
         <v-container>
             <div class="breadcrumbs text-page__breadcrumbs">
                 <router-link class="breadcrumbs-item" to="/">Главная</router-link>
@@ -7,6 +7,10 @@
                 <a class="breadcrumbs-item active">Каталог</a>
             </div>
             <v-row>
+                <v-col cols="12" v-if="!products || (products && products.length === 0)">
+                    <div class="catalog-all__empty" :style="{height: 'calc(100vh - 8.8rem - '+headerPadding+'px)'}" v-html="status">
+                    </div>
+                </v-col>
                 <v-col cols="12" v-if="products && products.length > 0">
                     <SwiperCards v-for="(item, index) in products" :key="index" :slidesArray="item.products.slice(0, 12)" :name="item.name" :catId="item.catId"></SwiperCards>
                 </v-col>
@@ -25,11 +29,12 @@ export default {
         SwiperCards,
     },
     computed: {
-        ...mapState(["categoriesTree", "market_group", "sub_categories", "cat_products"]),
+        ...mapState(["categoriesTree", "market_group", "sub_categories", "cat_products", "headerPadding"]),
     },
     data() {
         return {
             products: [],
+            status: 'Загрузка...'
         };
     },
     methods: {
@@ -43,6 +48,9 @@ export default {
                         name: element.name,
                         catId: element.id,
                     });
+                }
+                if(this.products.length === 0) {
+                    this.status = 'Товаров не найдено!'
                 }
             }
         },
@@ -59,6 +67,7 @@ export default {
                     return products;
                 } catch (error) {
                     console.log(error);
+                    this.status = 'Произошла ошибка! <br> Попробуйте позднее или <br> свяяжитесь с администрацией'
                 }
             }
         },
@@ -79,5 +88,28 @@ export default {
 </script>
 
 <style lang="scss">
-
+.catalog-all__empty
+{
+    height: 80vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.6rem;
+    font-weight: 600;
+    text-align: center;
+}
+@media (max-width: 960px) {
+    .catalog-all__empty {
+        font-size: 24px;
+    }
+}
+@media (max-width: 600px) {
+    .catalog.catalogAll {
+        .v-container {
+            padding: 0 20px;
+            max-width: 100%;
+        }
+    }
+}
 </style>

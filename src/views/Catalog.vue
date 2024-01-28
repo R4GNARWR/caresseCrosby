@@ -357,7 +357,7 @@ export default {
     padding-bottom: 15rem;
     .breadcrumbs
     {
-        margin-bottom: 40px;
+        margin-bottom: 4rem;
     }
 }
 .catalog__head
