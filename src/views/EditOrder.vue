@@ -11,20 +11,20 @@
         <v-text-field class="order_input" v-model= order.street label="Адрес:"></v-text-field>
         <!-- <v-text-field class="order_input" v-model= order.status title="Адрес:" /> -->
       </div>
-      
+
       <div class="in_row" v-if="order">
         <v-text-field class="order_input" v-model="order.comment" label="Примечание"></v-text-field>
       </div>
-      
+
       <v-text-field class="order_input" v-model="order.commission" label="Стоимость доставки" type="number"></v-text-field>
-      
+
       <v-btn color="success" style="margin-bottom: 20px" @click="addToOrderSearch(orderId)">+ добавить товар в заказ</v-btn>
       <OrderedProducts
       v-if="products && products.length>0"
       :slides-array="products"
       name="Товары в заказе"
       @updateProduct="changeProduct"></OrderedProducts>
-      
+
       <v-btn color="success" style="margin-right: 20px; margin-bottom: 20px;" v-if="products && products.length>0" @click="to_pay">
         Сохранить и на оплату!
       </v-btn>
@@ -74,18 +74,14 @@ export default {
   created() {
     setTimeout(() => {
       if (this.user_info.role !== 3) {
-        store.commit("set_snack_message", { msg: "Нужен пользователь с правами администратора!", color: "red" });
-        store.commit('loader');
-        setTimeout(() => {
-          store.commit('loader');
-          this.$router.push('/');
-        }, 2500);
+        store.commit("set_snack_message", { msg: "Нужен пользователь с правами администратора!", type:'error' });
+        setTimeout(() => {this.$router.push('/');}, 2500);
       }
     }, 1000);
     if (this.$route.params.id) {
       this.orderId = this.$route.params.id;
     }
-    
+
     if (this.orderId) {
       this.$API.getOrderInfo(this.orderId).then(value => {
         this.order = value.data.order;
@@ -117,7 +113,6 @@ export default {
       this.$router.push('/Admin/OrderToPay/' + this.orderId);
     },
   },
-  
 }
 </script>
 

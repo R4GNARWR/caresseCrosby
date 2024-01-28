@@ -2,7 +2,7 @@
     <section class="create-certificate">
         <v-container>
             <div class="create-certificate__label">Заявка на сертификат</div>
-            
+
             <div class="create-certificate__form">
                 <Input
                 label="Имя (от кого)"
@@ -23,7 +23,7 @@
                 placeholder="Телефон (кому)" aria-required="true"/>
                 <Input v-model="cost" type="number"
                 @click="message=''"
-                
+
                 label="Номинал (руб.)"
                 placeholder="Номинал (руб.)" aria-required="true"/>
                 <Input v-model="whenSend" type="text" label="Когда отправить сертификат получателю" aria-required="true"/>
@@ -36,7 +36,7 @@
                 <div class="create-certificate__message">
                     <p v-if="message">
                         {{message}} <br>
-                        <b v-if="message!='Номинал сертификата не соответствует политики компании.'">Сертификат необходимо отправить получателю в оговаренное время.</b>
+                        <b v-if="message!=='Номинал сертификата не соответствует политики компании.'">Сертификат необходимо отправить получателю в оговаренное время.</b>
                     </p>
                 </div>
                 <div class="create-certificate__buttons">
@@ -58,7 +58,6 @@
             Скачать сертификат
         </a>
     </div>
-    
 </div>
 </v-container>
 
@@ -105,17 +104,17 @@ export default {
             });
         },
         startPayment(amount, orderID, code) {
-            store.commit('loader');
+            store.commit('loader','start');
             this.$API.payment(amount, orderID, code, this.phoneFrom).then(value => {
                 if (value.data.success && value.data.location.length > 10) {
-                    store.commit('loader');
+                    store.commit('loader','finish');
                     this.message = "Ссылка на оплату успешно сформированна и отправлена заказчику по смс. В случае необходимости, отправьте ее любым удобным способом: " + value.data.location;
                 }
                 else {
                     if (value.data.errors.sberError)
                         this.att_message = value.data.errors.sberError;
                     this.attention = true;
-                    store.commit('loader');
+                    store.commit('loader','finish');
                 }
             });
         }
@@ -123,12 +122,8 @@ export default {
     created() {
         setTimeout(() => {
             if (this.user_info.role !== 3) {
-                store.commit("set_snack_message", { msg: "Нужен пользователь с правами администратора!", color: "red" });
-                store.commit('loader');
-                setTimeout(() => {
-                    store.commit('loader');
-                    this.$router.push('/');
-                }, 2500);
+                store.commit("set_snack_message", { msg: "Нужен пользователь с правами администратора!", type:'error' });
+                setTimeout(() => {this.$router.push('/');}, 2500);
             }
         }, 1000);
         this.theFrom = this.$route.query.from;

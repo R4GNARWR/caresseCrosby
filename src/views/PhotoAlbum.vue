@@ -9,7 +9,7 @@
             <div class="photo-album__label">
                 Фотоальбомы
             </div>
-            
+
             <v-row class="photo-album__row">
                 <v-col md="4" sm="6" cols="12" v-for="(item, index) in Object.keys(galleries)" :key="index" v-if="galleries && Object.keys(galleries).length > 0">
                     <div class="photo-album__item">
@@ -70,18 +70,17 @@ export default {
     },
     methods: {
         saveNew() {
-            store.commit('loader');
+            store.commit('loader','start');
             if (this.$route.params.albumName && !this.name) this.name = this.$route.params.albumName
-            
+
             if (this.photos && this.photos.length > 0) {
                 let fd = new FormData, i = 0;
                 for (let p of this.photos) {
-                    
                     let file_name = 'gal.' + Date.now()
                     if (i > 0) file_name += "_" + i;
                     i++;
                     fd.append(file_name, p);
-                    
+
                     let new_banner = {}
                     new_banner.file = file_name + p.name.substr(p.name.lastIndexOf('.'))
                     new_banner.name = this.name
@@ -103,13 +102,13 @@ export default {
                         msg: "Произошла ошибка при загрузке изображения. Попробуйте использовать другое изображение.",
                         color: 'red'
                     })
-                    store.commit('loader');
+                    store.commit('loader','finish');
                 });
             } else {
-                store.commit('loader');
+                store.commit('loader','finish');
                 store.commit('set_snack_message', {
                     msg: "Изображений не найдено. Произошла ошибка при загрузке изображения. Попробуйте использовать другое изображение.",
-                    color: 'red'
+                    type: 'error'
                 })
             }
             this.photos = null;
@@ -145,7 +144,6 @@ export default {
                 this.$API.delGalleryPhoto(path);
                 setTimeout(()=>this.get_galleries(),500);
             },
-            
         },
         computed:{
             ...mapState(['user_info',]),

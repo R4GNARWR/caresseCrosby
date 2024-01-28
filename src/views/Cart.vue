@@ -17,7 +17,6 @@
                         <div class="cart-item__wrap last" v-for="(item, index) in cart" :key="index" >
                             <cartProduct :product="item"></cartProduct>
                         </div>
-                        
                     </div>
                 </v-col>
                 <v-col md="4" cols=12 offset-md="1">
@@ -28,7 +27,6 @@
                                 {{cartQuantity + ' ' + productsComputedText}} на сумму
                                 <span>{{cartSum}} ₽</span>
                             </div>
-                            
                         </div>
                         <div class="cart-summary__input">
                             <Input placeholder="Промокод"></Input>
@@ -72,18 +70,13 @@ export default {
         full_address(){return (this.address.index?this.address.index + ' ':'')+ (this.address.city?this.address.city+ ' ':'')+ (this.address.street?this.address.street + ' ':'')+ (this.address.building?this.address.building:'')},
         delivery_date(){return new Date()},
         cartSum() {
-            
             let vm = this
             let sum = 0
             if(vm.cart){
                 for (let cartPosition of vm.cart)
                 sum += cartPosition.price * cartPosition.q;
                 return Math.ceil(sum);
-            } else 
-            {
-                return 0
-            }
-            
+            } else return 0
         },
         the_sum(){return this.cartSum+this.commission},
         cartQuantity() {
@@ -128,15 +121,12 @@ export default {
         },
         ...mapState(['cart','project_params','user_info','loggedIn','favorites' ])
     },
-    methods: {
-        ...order
-    },
+    methods: {...order},
     created() {
         this.getCitiesList()
         if (this.user_info.phone) this.phone = this.user_info.phone;
         if (this.user_info.apartment) this.address.apartment = this.user_info.apartment;
         if (this.user_info.email) this.email = this.user_info.email;
-        
     },
     components: { MainBtn, Input, MainLink, cartProduct }
 };
@@ -193,7 +183,6 @@ section.cart
         display: flex;
         flex-direction: column;
         row-gap: 1.2rem;
-        
     }
     &__item
     {
@@ -272,7 +261,7 @@ section.cart
             font-size: 14px;
         }
     }
-    
+
     .cart-summary
     {
         &__label

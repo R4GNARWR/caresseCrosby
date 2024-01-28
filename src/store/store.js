@@ -12,7 +12,7 @@ export default new Vuex.Store({
       time:["Пн-Пт: 11.00 - 20.00","Вс, Сб: 11.00 - 19.00"],
       address:"г.Уфа ул.Менделеева 156/1"
     },
-    
+
     snack_message:{},
     headerPadding: 0,
     loader: 0,
@@ -63,9 +63,9 @@ mutations: {
   addToOrder(state, orderId){
     state.addToOrder = orderId
   },
-  set_snack_message(state, msg, type) {
+  set_snack_message(state, msg) {
     state.snack_message.message = msg;
-    state.snack_message.type = type?type:''
+    state.snack_message.type = msg.type?msg.type:''
     setTimeout(()=> state.snack_message = {}, 5000);
   },
   errors_snack_message(state, errors){
@@ -92,7 +92,6 @@ mutations: {
     state.user_info.user_token = '';
     localStorage.user_token = '';
   },
-  
   setPopularProducts(state, pp) {
     state.pop_products = pp;
   },
@@ -105,14 +104,12 @@ mutations: {
   setHomePopularProducts(state, p) {
     state.popular_products = p;
   },
-  
   setCategoriesTree(state, categoriesArray) {
     state.categoriesTree = categoriesArray;
   },
   addSubCategories(state, params){
     state.sub_categories[params.parent_id]= params.sub_cats;
   },
-  
   setCart(state, cart) {
     state.cart = cart;
   },
@@ -125,7 +122,6 @@ mutations: {
   add2cart(state, params) { // { productID, marketID, name, photo, price, quantity, unit }
     let	hasInCart = false;
     params.quantity = params.quantity || 1;
-    
     for (let cartPosition of state.cart) {
       if (cartPosition.id === parseInt(params.productID)) {
         cartPosition.m = params.marketID;
@@ -154,7 +150,6 @@ mutations: {
       });
     }
   },
-  
   cartItemSetQ(state, params) {
     params.quantity = params.quantity || 1;
     for (let cartPosition of state.cart) {
@@ -186,15 +181,15 @@ mutations: {
       state.cart.splice(removeIdx, 1);
     }
   },
-  
+
   setOrder(state, order) {
     state.order = order;
   },
-  
+
   setUserPosition(state, position){
     state.user_position = position;
   },
-  
+
   setBrands(state, brands){
     state.brands_search=[]
     state.brands_search.push({"attributeId" : 1, "attributeValueId" : 14435, "value" : "Умные купальники"}) //костыль про умные купальники

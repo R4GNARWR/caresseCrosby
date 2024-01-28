@@ -13,10 +13,10 @@ export default {
             if(value.data.success && value.data.product) {
                 store.commit("addToOrder", null);
                 this.$router.push('/Admin/EditOrder/' + orderId); }
-            if(!value.data.success && value.data.errors.ah) store.commit('set_snack_message',{msg:"Товар уже есть в заказе.", color:'red'})
+            if(!value.data.success && value.data.errors.ah) store.commit('set_snack_message',{msg:"Товар уже есть в заказе.", type:'error'})
         }).catch(error => {
             console.log(error);
-            store.commit('set_snack_message',{msg:"Что то пошло не так!", color:'red'})
+            store.commit('set_snack_message',{msg:"Что то пошло не так!", type:'error'})
             }
         )
     },
