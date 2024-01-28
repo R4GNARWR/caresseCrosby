@@ -5,10 +5,10 @@ import { error } from "jquery";
 export default  {
     Api_ready: false,
     axios: axios.create({baseURL: "https://api.ccrosby.ru/api/"}),
+    //axios: axios.create({baseURL: "http://127.0.0.1:9080/api/"}),
     init(){
         this.axios.interceptors.request.use(
             config => {
-                store.commit('loader', 'start');
                 config.headers.xProjectId = '2';
                 if(localStorage.user_token) {
                     config.headers.xUserToken = localStorage.user_token;
@@ -21,7 +21,6 @@ export default  {
         );
         this.axios.interceptors.response.use(
             response => {
-                store.commit('loader', 'finish');
                 if (response) {
                     if(response.headers.xusertoken && !store.state.user_info.user_token)
                         store.commit('user_token', response.headers.xusertoken);
@@ -34,9 +33,8 @@ export default  {
     getPopularProducts(){return this.axios.get('popular-products')},
     getHitsProducts(){return this.axios.get('hits-products')},
     getNewProducts(){return this.axios.get('new-products')},
-    getParentsCategories(){store.commit('loader');  this.axios.get('categories/parents').then(response=>{
+    getParentsCategories(){this.axios.get('categories/parents').then(response=>{
                 if(response.data && response.data.response.categories){
-                    store.commit('loader');
                     store.commit('setCategoriesTree', response.data.response.categories)
                 }
             }).catch(error => {console.log(error); this.errored = true;});},
@@ -51,7 +49,7 @@ export default  {
             }).catch(error => {console.log(error); this.errored = true;});},
     getCatDescription(catID){return this.axios.get('categories/'+catID+'/description')},
 
-    getProductById(id){ store.commit('loader'); return this.axios.get('products/'+id).then(value => { store.commit('loader'); return value;})},
+    getProductById(id){return this.axios.get('products/'+id).then(value => {  return value;})},
     getFullPhoto(id){return this.axios.get('full-photo/'+id);},
     getFullPhotos(id){return this.axios.get('products/'+id+'/full-photos');},
 
@@ -115,7 +113,6 @@ export default  {
     },
     logout() {return this.axios.post('auth/logout')},
     saveUserData(to_send) {
-        store.commit('loader');
         this.axios.put("account", to_send, {headers: {'Content-Type': 'application/json'}})
             .then(value => {
                 console.log(value)
@@ -130,7 +127,6 @@ export default  {
                     msg.msg +=" Не удалось сохранить изменения!"
                     store.commit('set_snack_message', msg)
                 }
-                store.commit('loader');
             }).catch(error => {
                 {
                     console.log(error)
@@ -142,7 +138,6 @@ export default  {
     get_user_orders(){return this.axios.get('account/orders')},
     get_order_info(id){return this.axios.get('account/orders/' + id + '/products')},
 
-    getOrderInfo(id){return this.axios.get("sms-payment/order-info",{params:{id:id}})},
     payment(amount, orderId, promocode, phone){ return this.axios.post("account/billing", {sum:Number(amount), orderId:orderId, promocode:promocode, phone:phone})},
 
     getGallery(){
@@ -207,9 +202,20 @@ export default  {
         return this.axios.post('admin/create-product', new_product,{})
     },
     uploadPhoto(fd){return this.axios.post('admin/photos', fd, {})},
-    deleteProduct(id) {
-        return this.axios.delete("admin/products/"+id+"/delete")
+    addPhotosToProduct(pId,fileList){
+        store.commit('loader','start');
+        this.axios.post('admin/photos/' + pId + '/add-images', fileList, {})
+            .then(value => {
+                store.commit('loader','finish');
+            })
+            .catch(error=> {
+                store.commit('loader', 'finish');
+                store.commit('set_snack_message',{ msg: error.message, type:'error'})
+            })
     },
+
+    delProductImg(pId,path){return this.axios.delete('admin/products/img/'+pId, {data:path})},
+    deleteProduct(id) {return this.axios.delete("admin/products/"+id+"/delete")},
 
     getAttributeValues(group_id){
         return this.axios.get("attributes/"+ group_id + "/values")
@@ -239,9 +245,9 @@ export default  {
 
     deleteProductFromOrder(orderId, productId){return this.axios.delete("admin/orders/"+orderId+"/products/"+productId)},
     addProductToOrder(orderId, productId, notice){return this.axios.post("admin/orders/"+orderId+"/products", {productId:productId, notice: notice})},
-    
-    // CDEK
 
+
+    // CDEK
     getCdekSettings(){
         return this.axios.get('get-cdek-settings').then(response => {
             store.commit('setCdekCities', response);

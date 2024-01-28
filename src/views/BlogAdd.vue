@@ -34,7 +34,6 @@
         <button class="btn btn-primary" @click.prevent="newTxt">Добавить абзац текста</button>
         <button class="btn btn-primary ml-auto" v-if="ready" @click.prevent="saveIt()">Сохранить статью</button>
       </div>
-      
     </v-container>
   </section>
 </template>
@@ -111,12 +110,8 @@ export default {
   },
   created() {
     if (this.user_info.role !== 3) {
-      store.commit("set_snack_message", { msg: "Нужен пользователь с правами администратора!", color: "red" });
-      store.commit('loader');
-      setTimeout(() => {
-        store.commit('loader');
-        this.$router.push('/');
-      }, 2500);
+      store.commit("set_snack_message", { msg: "Нужен пользователь с правами администратора!", type: "error" });
+      setTimeout(() => {this.$router.push('/');}, 2500);
     }
   }
 }

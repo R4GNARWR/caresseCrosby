@@ -16,7 +16,7 @@
           <v-text-field class="text_input" v-model="blog.title" regular label="Заголовок статьи"></v-text-field>
         </v-col>
       </v-row>
-      
+
       <div>
         <div class="blog-edit__label">Добавьте и заполните разделы статьи</div>
         <div v-for="(i,index) in json_string" :key="index">
@@ -31,7 +31,7 @@
               >
             </swiper-slide>
           </swiper-container>
-          
+
           <!-- <v-file-input
             class="text_input"
             v-model="json_string[index].content"
@@ -54,16 +54,16 @@
           <button class="btn btn-primary" @click.prevent="newTxt">Добавить абзац текста</button>
           <button class="btn btn-primary ml-auto" v-if="ready" @click.prevent="saveIt()">Сохранить статью</button>
         </div>
-        
+
       </v-container>
     </section>
   </template>
-  
+
   <script>
   import { register } from 'swiper/element/bundle';
   import store from "../store/store";
   import {mapState} from "vuex";
-  
+
   export default {
     name: "BlogEdit",
     data(){
@@ -131,14 +131,9 @@
     },
     created() {
       if (Number(this.user_info.role) !== 3) {
-        store.commit("set_snack_message", { msg: "Нужен пользователь с правами администратора!", color: "red" });
-        store.commit('loader');
-        setTimeout(() => {
-          store.commit('loader');
-          this.$router.push('/');
-        }, 2500);
+        store.commit("set_snack_message", { msg: "Нужен пользователь с правами администратора!", type:'error' });
+        setTimeout(() => {this.$router.push('/');}, 2500);
       }
-      
       if (this.$route.params.id) {
         if (this.blogs && this.blogs.length>0) {
           this.blog=this.blogs[this.$route.params.id];
@@ -150,7 +145,6 @@
             this.json_string = JSON.parse(this.blog.json_string)
             register()
           }
-          
         })
       }
     }

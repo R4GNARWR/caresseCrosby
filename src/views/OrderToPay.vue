@@ -33,12 +33,12 @@ export default {
   },
   created() {
     if (this.user_info.role !== 3) {
-      store.commit("set_snack_message", { msg: "Нужен пользователь с правами администратора!", color: "red" });
-      store.commit('loader');
+      store.commit("set_snack_message", { msg: "Нужен пользователь с правами администратора!", type:'error' });
+      store.commit('loader','start')
       setTimeout(() => {
-        store.commit('loader');
+        store.commit('loader','finish')
         this.$router.push('/');
-      }, 2500);
+        }, 2500);
     }
     if (this.$route.params.id) {
       this.orderId = this.$route.params.id;
@@ -49,10 +49,8 @@ export default {
         this.products = value.data.products;
       });
     }
-    
     // this.$API.orderToPay(this.orderId);
   },
-  
 }
 </script>
 

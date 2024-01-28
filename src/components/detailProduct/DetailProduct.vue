@@ -31,11 +31,32 @@
                         <img src="/img/loading.gif" v-for="(item, index) in 4" :key="index" alt="" >
                     </div>
                     <div class="product-detail__images d-lg-grid d-none" v-if="photosLoaded && full_photos">
-                        <img v-lazy="item" v-for="(item, index) in full_photos.slice(0,4)" :key="index" alt="" data-fancybox="gallery-product" >
+                      <div v-for="(item, index) in full_photos.slice(0,4)" :key="index">
+                        <img v-lazy="item" alt="" data-fancybox="gallery-product" >
+                        <MainBtn class-name="btn-danger btn-icon" style="z-index: 10; position: relative; bottom: 6rem; left: calc(100% - 10rem); border-radius: 40px"
+                                 @click="delImg(item)" v-if="user_info.role === 3">
+                          <v-icon icon="mdi-trash-can-outline" color="#FF7171"></v-icon>
+                        </MainBtn>
+                      </div>
                     </div>
                     <div class="no-photo" v-if="photosLoaded && !full_photos">
                         Вышлем фото по запросу
                     </div>
+
+                  <div v-if="user_info.role === 3" style="display:flex;">
+                    <div style="font-size: 18px">Добавить фото товара:</div>
+                    <input type="file" multiple
+                           class="btn"
+                           accept="image/jpeg, image/png, image/jpg"
+                           @change="setImgsToAdd"
+                    />
+                    <MainBtn class-name="btn-gold btn-icon" v-if="imgsToAdd.length" @click="addImgs(imgsToAdd)">Сохранить</MainBtn>
+                  </div>
+
+
+
+
+
                 </v-col>
                 <v-col md="4" cols="12">
                     <div class="product-detail__info">
@@ -156,6 +177,8 @@
 
 <script>
 let sortOrder={'36':26,'38':35,'40':48,'42':58,'44':67,'46':69,'48':71,'50':73,'70':101,'75':127,'80':153,"1(S-M)":0,"100C":1,"100D":2,"100DD":3,"100E":4,"100F":5,"100FF":6,"100G":7,"100GG":8,"100H":9,"100HH":10,"100I":11,"105D":12,"105DD":13,"105E":14,"105F":15,"105FF":16,"105G":17,"105GG":18,"105H":19,"105HH":20,"2 (M)":21,"2XL":22,"3 (L)":23,"3 (M-L)":24,"35-38":25,"36-38":27,"36-41":28,"36F":29,"36G":30,"36H":31,"36I":32,"36J":33,"37-38":34,"38C":36,"38D":37,"38E":38,"38F":39,"38G":40,"38H":41,"38I":42,"38J":43,"39-40":44,"39-41":45,"39-42":46,"3XL":47,"40-42":49,"40C":50,"40D":51,"40E":52,"40F":53,"40G":54,"40H":55,"40I":56,"40J":57,"42-44":59,"42D":60,"42E":61,"42F":62,"42G":63,"42H":64,"42I":65,"42J":66,"44-46":68,"46-48":70,"4XL":72,"50-52":74,"5XL":75,"60DD":76,"60E":77,"60F":78,"60FF":79,"60G":80,"60GG":81,"60H":82,"60HH":83,"60J":84,"60JJ":85,"60K":86,"65B":87,"65D":88,"65DD":89,"65E":90,"65F":91,"65FF":92,"65G":93,"65GG":94,"65H":95,"65HH":96,"65I":97,"65J":98,"65JJ":99,"65K":100,"70 D":102,"70 DD":103,"70 E":104,"70 F":105,"70 FF":106,"70A":107,"70B":108,"70C":109,"70D":110,"70DD":111,"70E":112,"70F":113,"70FF":114,"70G":115,"70GG":116,"70H":117,"70HH":118,"70I":119,"70J":120,"70JJ":121,"70K":122,"70L":123,"70M":124,"70N":125,"70С":126,"75 E":128,"75 F":129,"75 FF":130,"75 H":131,"75A":132,"75B":133,"75C":134,"75D":135,"75DD":136,"75E":137,"75F":138,"75FF":139,"75G":140,"75GG":141,"75H":142,"75HH":143,"75I":144,"75J":145,"75JJ":146,"75K":147,"75L":148,"75M":149,"75N":150,"75O":151,"75С":152,"80A":154,"80B":155,"80C":156,"80D":157,"80DD":158,"80E":159,"80F":160,"80FF":161,"80G":162,"80GG":163,"80H":164,"80HH":165,"80I":166,"80J":167,"80JJ":168,"80K":169,"80L":170,"80M":171,"80N":172,"80O":173,"85A":174,"85B":175,"85C":176,"85D":177,"85DD":178,"85E":179,"85F":180,"85FF":181,"85G":182,"85GG":183,"85H":184,"85HH":185,"85I":186,"85J":187,"85JJ":188,"85K":189,"85L":190,"85M":191,"85N":192,"85С":193,"90A":194,"90B":195,"90C":196,"90D":197,"90DD":198,"90E":199,"90F":200,"90FF":201,"90G":202,"90GG":203,"90H":204,"90HH":205,"90I":206,"90J":207,"90JJ":208,"90K":209,"90L":210,"90M":211,"90N":212,"90O":213,"90С":214,"95B":215,"95C":216,"95D":217,"95DD":218,"95E":219,"95F":220,"95FF":221,"95G":222,"95GG":223,"95H":224,"95HH":225,"95I":226,"95J":227,"95K":228,"95L":229,"denim melange) (L":230,"denim melange) (M":231,"denim melange) (S":232,"denim melange) (XL":233,L:234,"L Plus":235,"L tall":236,"L-XL":237,M:238,"M Plus":239,"M tall":240,"M-L":241,OneSize:242,OS:243,"quietgrey melange) (L":244,"quietgrey melange) (M":245,"quietgrey melange) (S":246,"quietgrey melange) (XL":247,S:248,"S Plus":249,"S tall":250,"S-M":251,XL:252,"XL Plus":253,"XL-2XL":254,XS:255,"XS-M":256,"XS-S":257,XXL:258,"Черный-Белый-Телесный (trio) (L":259,"Черный-Белый-Телесный (trio) (M":260,"Черный-Белый-Телесный (trio) (S":261,"Черный-Белый-Телесный (trio) (XL":262};
+//ToDo: настройки сортировки размеров вынести в store
+
 import {mapMutations, mapState} from "vuex";
 import { register } from 'swiper/element/bundle';
 
@@ -179,6 +202,7 @@ export default {
             full_photos:null,
             photosLoaded: false,
             similar_products:[],
+            imgsToAdd:[],
         };
     },
     props: {},
@@ -248,7 +272,15 @@ export default {
         ...mapState(['headerPadding','user_info','cart','colors_list','favorites', 'pop_products','cat_products', 'addToOrder'])
     },
     methods: {
-        openFancybox(){
+      addFavorite(id) {
+        if(!this.the_heart){
+          this.addFavor(id)
+          store.commit("set_snack_message", {msg:"Товар добавлен в избранные"});
+        } else {
+          this.delFavor(id)
+        }
+      },
+      openFancybox(){
             Fancybox.close();
             Fancybox.show(
             [{
@@ -259,7 +291,7 @@ export default {
                 closeButton: false,
             });
         },
-        openSizeModal() {
+      openSizeModal() {
             Fancybox.close();
             Fancybox.show(
             [{
@@ -271,7 +303,7 @@ export default {
                 dragToClose: false,
             });
         },
-        handleAddToCart() {
+      handleAddToCart() {
             if(this.addToOrder) {
                 this.addProductToOrder(this.addToOrder)
             } else {
@@ -279,7 +311,7 @@ export default {
                 this.openFancybox()
             }
         },
-        updateProduct(){
+      updateProduct(){
             if (this.pop_products[this.$route.params.id]){
                 if(this.pop_products[this.$route.params.id].category.id === 24473) {
                     this.$router.replace({path: '/giftCard'})
@@ -295,12 +327,12 @@ export default {
                     setTimeout(() => {
                         this.photosLoaded = true
                     }, 200)
-                }   
+                }
             }
             else{
                 this.attributes=[];
                 this.$API.getProductById(this.$route.params.id).then(value =>{
-                    if (value.data.status == "OK") {
+                    if (value.data.status === "OK") {
                         if(value.data.response && value.data.response.category.id && value.data.response.category.id === 24473) {
                             this.$router.replace({path: '/giftCard'})
                             return
@@ -312,7 +344,7 @@ export default {
                         this.pop_products[this.$route.params.id] = this.product;
                         this.pop_products[this.$route.params.id].attributes = this.attributes;
                         this.pop_products[this.$route.params.id].category = this.category;
-                        
+
                         this.$API.getFullPhotos(this.$route.params.id).then(value => {
                             setTimeout(() => {
                                 this.photosLoaded = true
@@ -336,7 +368,7 @@ export default {
                 })
             }
         },
-        delete_prod(){
+      delete_prod(){
             this.$API.deleteProduct(this.$route.params.id).then(response => {
                 if(response) {
                     this.cat_products[this.product.category_id] = null;
@@ -344,14 +376,10 @@ export default {
                 }
             });
         },
-        addFavorite(id) {
-            if(!this.the_heart){
-                this.addFavor(id)
-                store.commit("set_snack_message", {msg:"Товар добавлен в избранные"});
-            } else {
-                this.delFavor(id)
-            }
-        },
+      delImg(path){this.$API.delProductImg(this.product.id, path)},
+      setImgsToAdd(event){this.imgsToAdd = event.target.files},
+      addImgs(fd){this.$API.addPhotosToProduct(this.product.id, fd)},
+
         ...cart, ...productCard,
         ...mapMutations([
         "add2cart",
@@ -452,7 +480,6 @@ export default {
 }
 .product-detail__info-color
 {
-    
     &__name
     {
         margin-bottom: 1.8rem;
@@ -746,7 +773,6 @@ export default {
             {
                 column-gap: 8px;
                 row-gap: 8px;
-                
                 &-item
                 {
                     label
@@ -786,7 +812,6 @@ export default {
     {
         display: none;
     }
-    
     .product-detail__info
     {
         max-width: 320px;

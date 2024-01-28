@@ -24,7 +24,6 @@
                 </div>
                 <div class="admin-right__side">
                     <!-- todo заголовок категории   <h3 v-if="active_cat">{{active_cat}}</h3> <br>-->
-                    
                     <div class="admin-right__top">
                         <div class="admin-right__top-label">
                             Товары
@@ -43,8 +42,6 @@
                 </div>
             </div>
         </v-container>
-        
-        
     </section>
     <v-dialog class="cat-modal" v-model="edit_cat" width="90%" max-width="700px">
         <v-card>
@@ -79,13 +76,11 @@
             <v-checkbox v-model="the_cat.use_multiplier=true" regular label="Делать наценку на товары"></v-checkbox>
         </div> -->
         <div v-if="the_cat_photo" style="color: red">Фотография обновится на сайте в течении 5 минут.</div>
-        
         <div class="cat-modal__buttons">
             <button v-if="!new_cat" class="btn btn-danger mr-auto" @click="delete_cat"><v-icon>mdi-delete-outline</v-icon> Удалить категорию</button>
             <button class="btn btn-white" @click="edit_cat=false; new_cat = false;">Отмена</button>
             <button class="btn btn-primary" @click="update_category">Сохранить</button>
         </div>
-        
     </v-card>
 </v-dialog>
 
@@ -122,7 +117,6 @@
             <v-text-field v-model="the_product.price" regular placeholder="5 789.99" label="Цена"></v-text-field>
             <v-text-field v-model="the_product.old_price" regular placeholder="5 789.99" label="Старая Цена (для товаров по скидке)"></v-text-field>
         </div>
-        
         <div style="margin: 20px; display: flex; flex-direction: row; justify-content: space-around; align-items: center">
             <v-radio-group column multiple v-model="labels" v-if="product_labels">
                 <v-radio v-for="label in Object.entries(product_labels)" :key="label[0]" :value="label[0]">
@@ -133,7 +127,6 @@
                 <div class="grey_button" @click="labels=[]" style="width: 100px">Очистить</div>
             </v-radio-group>
         </div>
-        
         <div class="product-modal__color-pick">
             <div class="product-modal__color-pick__left">
                 <v-menu>
@@ -183,7 +176,6 @@
                 </v-menu>
             </div> -->
         </div>
-        
         <v-textarea
         outlined
         label="Состав"
@@ -194,7 +186,6 @@
         label="Описание товара"
         v-model="the_product.description"
         style="border-radius: 20px"></v-textarea>
-        
         <div class="product-modal__modals">
             <button class="btn btn-white" @click="create_product=false;">Отмена</button>
             <button class="btn btn-primary" @click="createProduct">Сохранить</button>
@@ -222,7 +213,6 @@ export default {
             the_cat:{}, the_cat_photo: null,
             the_product:{}, create_product: false, new_product_photo: null, add_color:null, the_colors:[],
             active_cat: null,
-            
             swatches: [
             ['#FFFFFF', '#BEBEBE', '#000000'],
             ['#FFFF00', '#fc7208', '#f10909'],
@@ -239,7 +229,6 @@ export default {
         this.$API.getProjectCategories().then(value => {
             if (value.data.success){
                 this.categories = value.data.response.categories;
-                
                 let b={}; b.id = 0; b.name = "Главная категория"
                 this.parents_categories.push(b);
                 for (let i of this.categories) if (i.parentId == 0) {
@@ -267,17 +256,14 @@ export default {
             this.$API.delete_category(this.the_cat.id)
             .then(setTimeout(()=> window.location.reload(true),1000));
         },
-        
         get_cat_products(id){
-            store.commit('loader');
             this.products =[];
             this.loader = !this.loader;
             this.active_cat = id;
             this.$API.getCategoryTopProducts(id, 188, 285).then(value => {
                 if (value) {
                     this.products = value.data
-                } 
-                store.commit('loader');
+                }
             })
             this.the_product.categoryId=this.active_cat;
             window.scrollTo(0,0);
@@ -296,7 +282,7 @@ export default {
             if (this.the_product && this.the_product.categoryId && this.the_product.categoryId.id) this.the_product.categoryId=this.the_product.categoryId.id
             if (this.the_colors && this.the_colors.length>0) this.the_product.colors = this.the_colors;
             if (this.labels && this.labels.length>0) this.the_product.labels = this.labels;
-            store.commit('loader');
+            store.commit('loader','start');
             this.$API.createProduct(this.the_product)
             .then(value => {
                 if (value.data.success && value.data.new_product_id){
@@ -310,14 +296,14 @@ export default {
                         }
                         this.$API.uploadPhoto(fd).then(value => {
                             if (value.data.success)this.get_cat_products(this.the_product.categoryId);
-                            else store.commit('set_snack_message', {msg:"Произошла ошибка при загрузке изображения. Попробуйте использовать другое изображение. Если ошибка повторяеться, пишите на адрес 89373000011@yandex.ru", color:'red'})
+                            else store.commit('set_snack_message', {msg:"Произошла ошибка при загрузке изображения. Попробуйте использовать другое изображение. Если ошибка повторяеться, пишите на адрес 89373000011@yandex.ru", type:'error'})
                             this.the_product={}; this.labels=[]; this.add_color=null; this.new_product_photo=null; this.the_colors=[];
-                            store.commit('loader');
+                            store.commit('loader','finish');
                         });
                     } else {
                         this.get_cat_products(this.the_product.categoryId);
                         this.the_product={}; this.labels=[]; this.add_color=null; this.new_product_photo=null; this.the_colors=[];
-                        store.commit('loader');
+                        store.commit('loader','finish');
                     }
                 }
                 else {
@@ -325,9 +311,8 @@ export default {
                     msg.color = 'red'
                     msg.msg = "! "
                     for (let e in value.data.errors) msg.msg+= value.data.errors[e]+ ' ';
-                    store.commit('loader');
+                    store.commit('loader','finish');
                     store.commit('set_snack_message', msg);
-                    
                 }
             }
             )
@@ -407,7 +392,6 @@ export default {
             }
         }
     }
-    
 }
 .admin-right__side
 {
@@ -462,7 +446,7 @@ export default {
 .product-modal__modals
 {
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
 }
 .select_button
 {

@@ -13,10 +13,23 @@
     :message="snack_message.message"
     :type="snack_message.type?snack_message.type:''"/>
   </main>
+  <v-dialog v-model="loader" width="300">
+    <v-card color="#867B6E">
+      <v-card-text style="color: white">
+        Идет загрузка
+        <v-progress-linear
+            indeterminate="true"
+            color="white"
+            class="mb-0"
+            background-opacity="0.01"
+        ></v-progress-linear>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
-import {mapState} from "vuex"; 
+import {mapState} from "vuex";
 import { Fancybox } from "@fancyapps/ui";
 
 
@@ -69,7 +82,6 @@ export default {
     this.setFancyboxCloseButton();
     window.addEventListener('resize', this.setFancyboxCloseButton);
   },
-  
   updated() {
     Fancybox.unbind(this.$refs.wrapper);
     this.setFancyboxCloseButton();
@@ -84,7 +96,7 @@ export default {
 
 </script>
 
-<style lang="scss"> 
+<style lang="scss">
 .fancybox__content > .f-button.is-close-btn
 {
   right: 5% !important;
