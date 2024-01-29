@@ -52,6 +52,6 @@ export default {
     },
     async getCitiesList() {
         api.getCdekSettings()
-    }
+    },
 
 }

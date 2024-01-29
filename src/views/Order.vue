@@ -39,15 +39,24 @@
                                 Самовывоз
                             </div>
                         </div>
-                        <router-link to="/pick-point" class="order-pickup" v-if="deliveryType === 'pickup'">
-                            Выбрать пункт самовывоза
-                        </router-link>
+                        <div class="order-pickup__wrap" v-if="deliveryType === 'pickup'">
+                            <div class="order-pickup__address" v-if="cdek_chozen_pvz && cdek_chozen_pvz.location">
+                                {{ cdek_chozen_pvz.location.address }}
+                            </div>
+                            <router-link to="/pick-point" class="order-pickup">
+                                Выбрать пункт самовывоза
+                            </router-link>
+                        </div>
+                        
                         <div class="order-delivery__form" v-if="user_info">
-                            <Input class="inline" placeholder="Адрес доставки*" v-model="city" required="true" inputId="suggest" v-if="deliveryType === 'courier'"></Input>
-                            <Input class="" placeholder="Имя*" v-model="name" required="true"></Input>
+                            <div class="split inline" v-if="deliveryType === 'courier'">
+                                <Input class="inline" placeholder="Адрес доставки*" v-model="address" :required="true" inputId="suggest"></Input>
+                                <MainBtn class-name="btn-primary" :disabled="address.length<1" @click="getDeliveryPrice">Подтвердить</MainBtn>
+                            </div>
+                            <Input class="" placeholder="Имя*" v-model="name" :required="true"></Input>
                             <Input class="" placeholder="Фамилия"></Input>
-                            <Input class="" placeholder="Телефон*" validationType="phone" input-type="tel" v-model="phone" required="true"></Input>
-                            <Input class="" placeholder="E-mail*" validationType="email" input-type="email" v-model="email" required="true"></Input>
+                            <Input class="" placeholder="Телефон*" validationType="phone" input-type="tel" v-model="phone" :required="true"></Input>
+                            <Input class="" placeholder="E-mail*" validationType="email" input-type="email" v-model="email" :required="true"></Input>
                         </div>
                     </div>
                 </v-col>
@@ -59,9 +68,10 @@
                                 {{cartQuantity + ' ' + productsComputedText}} на сумму
                                 <span>{{the_sum}} ₽</span>
                             </div>
-                            <div class="cart-summary__item" v-if="deliveryPrice">
+                            <div class="cart-summary__item">
                                 Доставка
-                                <span class="waiting">Рассчитывается</span>
+                                <span v-if="cdek_delivery_price">{{cdek_delivery_price}}</span>
+                                <span class="waiting" v-else>Рассчитывается</span>
                             </div>
                             <div class="cart-summary__item" v-if="promocode">
                                 Промокод: SALE20
@@ -91,30 +101,32 @@
 </template>
 
 <script>
-import Input from '../components/UI/Input.vue';
-import MainBtn from '../components/UI/MainBtn.vue';
+import store from '../store/store';
+import api from '../api/api';
 
+import Input from '../components/UI/Input.vue';
 import cart from '../api/cart';
 import order from '../api/order';
 import productCard from "../api/productCard";
-import store from '../store/store';
 import {mapMutations, mapState} from "vuex";
 
 import useVuelidate from "@vuelidate/core";
+import MainBtn from '../components/UI/MainBtn.vue';
 
 export default {
     components: {
         Input,
-        MainBtn
+        MainBtn,
     },
     data(){return{
         p_e:false, s_e:false, t_e:false, w_e:false,
         c_p:true, c_s:false, c_t:false, c_w:false,
-        city: '', phone:'', name: '', surname: '', address: {}, email: '',
+        phone:'', name: '', surname: '', address: '', email: '',
         comment:'',
+        promocode: '',
         commission: 0, dates_available:[], hours:{},
         the_error: '',
-        deliveryType: 'courier'
+        deliveryType: null
     }},
     setup() {
         return {
@@ -122,20 +134,20 @@ export default {
         };
     },
     computed:{
-        // full_address(){return (this.address.index?this.address.index + ' ':'')+ (this.address.city?this.address.city+ ' ':'')+ (this.address.street?this.address.street + ' ':'')+ (this.address.building?this.address.building:'')},
-        full_address(){return (this.city)},
+        full_address(){return (this.address)},
         delivery_date(){return new Date()},
         cartSum() {
             let vm = this, sum = 0;
             for (let cartPosition of vm.cart) sum += cartPosition.price * cartPosition.q;
             return Math.ceil(sum);
         },
-        the_sum(){return this.cartSum+this.commission},
+        the_sum(){return this.cartSum+this.commission+this.cdek_delivery_price},
         order_is_ready()
         {
-            if(this.cart.length>0
-            && this.delivery_date
-            && this.full_address)
+            if(this.cart.length>0 &&
+            this.delivery_date &&
+            this.full_address &&
+            this.cdek_delivery_price)
             return true
             else
             return false
@@ -172,7 +184,7 @@ export default {
                 return 'товаров'
             }
         },
-        ...mapState(['cart','project_params','user_info','loggedIn','favorites' ])
+        ...mapState(['cart','project_params','user_info','loggedIn','favorites','cdek_delivery_price', 'cdek_cities','cdek_pvz','cdek_chozen_pvz'])
     },
     methods:{
         addFavorite(id) {
@@ -189,6 +201,9 @@ export default {
             }
             return false;
         },
+        getDeliveryPrice() {
+            api.getCdekDeliveryPrice(139,{address: this.address})
+        },
         async handleOrder() {
             var validationResult = await this.v$.$validate();
             
@@ -199,9 +214,20 @@ export default {
             this.make_the_order()
         },
         ...order, ...cart, ...productCard,
-        ...mapMutations(['clearCart', 'cartItemChangeQ', 'cartItemSetQ', 'removeFromCart','cdek_cities','cdek_pvz']),
+        ...mapMutations(['clearCart', 'cartItemChangeQ', 'cartItemSetQ', 'removeFromCart']),
     },
-    
+    watch: {
+        address: function () {
+            if(!this.cdek_chozen_pvz) {
+                store.commit('setCdekDeliveryPrice', null)
+            }
+        },
+        deliveryType: function () {
+            if(!this.cdek_chozen_pvz) {
+                store.commit('setCdekDeliveryPrice', null)
+            }
+        },
+    },
     created() {
         const script = document.createElement('script')
         
@@ -217,21 +243,6 @@ export default {
         script.src = "https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=453f5758-6290-4de4-bae1-d645fb102e5c&suggest_apikey=6d832aa2-715a-4c2f-bac8-daf07218d006"
         document.head.append(script);
         
-        // if (this.user_info.city) {this.address.city = this.user_info.city; this.geocode_address()}
-        // if (this.user_info.phone) this.phone = this.user_info.phone;
-        // if (this.user_info.apartment) this.address.apartment = this.user_info.apartment;
-        // if (this.user_info.street) {this.address.street = this.user_info.street; this.geocode_address()}
-        // if (this.user_info.email) this.email = this.user_info.email;
-        // if (!this.address && store.state.user_position.length > 0) {
-        //     setTimeout(() => this.address = this.get_point_location(store.state.user_position), 1200);
-        // } else if (!this.address) {
-        //     this.$getLocation().then(value => {
-        //         setTimeout(() => this.address = this.get_point_location(value), 1200);
-        //     }).catch(error => {
-        //         console.log(error);
-        //         this.errored = true;
-        //     });
-        // }
         if(!this.cdek_cities) {
             this.getCitiesList()
         }
@@ -241,7 +252,13 @@ export default {
         this.phone = this.user_info.phone || ''
         this.name = this.user_info.name || ''
         this.surname = this.user_info.surname || ''
-        this.city = this.user_info.city || ''
+        this.address = this.user_info.city || ''
+        if(this.$route.query && this.$route.query.deliveryType) {
+            this.deliveryType = this.$route.query.deliveryType
+            console.log(this.deliveryType)
+        } else {
+            this.deliveryType = 'courier'
+        }
     },
     destroyed() {
         document.head.querySelector('script#ymaps').remove()
@@ -338,7 +355,12 @@ export default {
         grid-template-columns: repeat(2, 1fr);
         column-gap: 3.2rem;
         row-gap: 3.2rem;
-        .form-control__wrap.inline
+        .split {
+            display: flex;
+            align-items: center;
+            column-gap: 1.6rem;
+        }
+        *.inline
         {
             grid-column: span 2;
         }
@@ -380,9 +402,24 @@ export default {
     line-height: 1.5em;
     letter-spacing: -0.128px;
 }
+.order-pickup__wrap
+{
+    border-bottom: 1px solid #E9E9E9;
+    border-top: 1px solid #E9E9E9;
+    padding: 3.2rem 0;
+    margin-bottom: 3.2rem;
+    display: flex;
+    align-items: center;
+    column-gap: 1.6rem;
+}
+.order-pickup__address
+{
+    flex-basis: 60%;
+    font-size: 2.8rem;
+    line-height: 1.5em;
+}
 .order-pickup
 {
-    margin-bottom: 3.2rem;
     width: 100%;
     padding: 2rem;
     display: block;

@@ -54,6 +54,9 @@ export default new Vuex.Store({
   addToOrder: null,
   cdek_cities:null,
   cdek_pvz: null,
+  cdek_min_time: null,
+  cdek_delivery_price: null,
+  cdek_chozen_pvz: null,
 },
 mutations: {
   setHeaderPadding(state,value)
@@ -202,5 +205,8 @@ mutations: {
   setSearchSettings(state, sr){state.search_settings = sr},
   setCdekCities(state,sr) {state.cdek_cities = sr},
   setCdekPvz(state,sr) {state.cdek_pvz = sr},
+  setCdekMinTime(state,sr) {state.cdek_min_time = sr},
+  setCdekDeliveryPrice(state,sr) {state.cdek_delivery_price = sr},
+  setCdekChosenPvz(state,sr) {state.cdek_chozen_pvz = sr},
 },
 })

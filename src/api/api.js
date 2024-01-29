@@ -259,6 +259,11 @@ export default  {
         })
     },
     getCdekDeliveryPrice(tariff, toLocation){
-        return this.axios.get('get-cdek-delivery-cost',{params:{tariff:tariff, toLoaction:toLocation}})
+        return this.axios.get('get-cdek-delivery-cost',{params:{tariff:tariff, toLoaction:toLocation}}).then(response => {
+            if(response && response.status && response.data) {
+                store.commit('setCdekMinTime', response.data.period_min)
+                store.commit('setCdekDeliveryPrice', response.data.total_sum)
+            }
+        })
     }
 }
