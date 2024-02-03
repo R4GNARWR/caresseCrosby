@@ -43,14 +43,14 @@
                             Оформить сертификат
                         </div>
                         <div class="gift-card__execution-content__form">
-                            <Input :placeholder="'От кого'" v-model="lid.from" ref="firstInput"></Input>
-                            <Input :placeholder="'Кому'" v-model="lid.for"></Input>
-                            <Input :placeholder="'E-mail*'" input-type="email" v-model="lid.emailToSend" :required="true" validation-type="email"></Input>
-                            <Input :placeholder="'E-mail получателя'" input-type="email" validation-type="email"></Input>
-                            <Input :placeholder="'Телефон получателя*'" v-model="lid.phonefor" :required="true" input-type="tel" validation-type="phone"></Input>
-                            <Input :placeholder="'Телефон отправителя*'" v-model="lid.phoneFrom" :required="true" input-type="tel" validation-type="phone"></Input>
-                            <Input :placeholder="'Номинал в рублях'" v-model="lid.cost" :required="true"></Input>
-                            <Input :placeholder="'Когда отправить сертификат получателю'" v-model="lid.when" input-type="date"></Input>
+                            <MainInput :placeholder="'От кого'" v-model="lid.from" ref="firstInput"></MainInput>
+                            <MainInput :placeholder="'Кому'" v-model="lid.for"></MainInput>
+                            <MainInput :placeholder="'E-mail*'" input-type="email" v-model="lid.emailToSend" :required="true" validation-type="email"></MainInput>
+                            <MainInput :placeholder="'E-mail получателя'" input-type="email" validation-type="email"></MainInput>
+                            <MainInput :placeholder="'Телефон получателя*'" v-model="lid.phonefor" :required="true" input-type="tel" validation-type="phone"></MainInput>
+                            <MainInput :placeholder="'Телефон отправителя*'" v-model="lid.phoneFrom" :required="true" input-type="tel" validation-type="phone"></MainInput>
+                            <MainInput :placeholder="'Номинал в рублях'" v-model="lid.cost" :required="true"></MainInput>
+                            <MainInput :placeholder="'Когда отправить сертификат получателю'" v-model="lid.when" input-type="date"></MainInput>
                         </div>
                         <div class="gift-card__execution-content__form-bottom">
                             Если у вас возникнут вопросы, звоните в службу поддержки по телефону: <a href="">+7 (917) 747-15-61</a> <br>
@@ -74,7 +74,7 @@ import { mapState } from "vuex";
 import store from "../store/store";
 
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
-import Input from '../components/UI/Input.vue';
+import MainInput from '../components/UI/MainInput.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
 import MainLink from '../components/UI/MainLink.vue';
 import SwiperCards from '../components/SwiperCards.vue'
@@ -84,7 +84,7 @@ export default {
         Breadcrumbs,
         MainBtn,
         MainLink,
-        Input,
+        MainInput,
         SwiperCards
     },
     data() {

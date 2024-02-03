@@ -16,11 +16,11 @@
                         <div class="table-size__calc">
                             <div class="table-size__calc-item">
                                 <img src="/img/calc1.png" alt="">
-                                <Input :placeholder="'Обхват груди, см'" v-model="b2" ></Input>
+                                <MainInput :placeholder="'Обхват груди, см'" v-model="b2" ></MainInput>
                             </div>
                             <div class="table-size__calc-item">
                                 <img src="/img/calc2.png" alt="" class="d-lg-block d-none">
-                                <Input :placeholder="'Обхват под грудью, см'" v-model="b1"></Input>
+                                <MainInput :placeholder="'Обхват под грудью, см'" v-model="b1"></MainInput>
                             </div>
                         </div>
                         <MainBtn class="btn-primary w-100" @click="showSize()" :disabled="readyToShow">Рассчитать размер</MainBtn>
@@ -432,13 +432,13 @@ import store from '../store/store'
 import {mapState} from "vuex";
 
 import MainBtn from '../components/UI/MainBtn.vue';
-import Input from '../components/UI/Input.vue';
+import MainInput from '../components/UI/MainInput.vue';
 import MainLink from '../components/UI/MainLink.vue';
 import SwiperCards from "../components/SwiperCards.vue";
 
 export default {
     components: {
-        Input,
+        MainInput,
         MainBtn,
         MainLink,
         SwiperCards

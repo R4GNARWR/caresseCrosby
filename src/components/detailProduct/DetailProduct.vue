@@ -181,6 +181,7 @@ let sortOrder={'36':26,'38':35,'40':48,'42':58,'44':67,'46':69,'48':71,'50':73,'
 
 import {mapMutations, mapState} from "vuex";
 import { register } from 'swiper/element/bundle';
+import { Fancybox } from "@fancyapps/ui";
 
 import cart from "../../api/cart";
 import productCard from "../../api/productCard";
@@ -349,7 +350,7 @@ export default {
                             setTimeout(() => {
                                 this.photosLoaded = true
                             }, 200)
-                            if(value.status ===200 && value.data.length>1) {
+                            if(value.status ===200 && value.data && value.data.length>1) {
                                 this.full_photos = value.data;
                                 this.pop_products[this.$route.params.id].full_photos = this.full_photos;
                                 //similar products

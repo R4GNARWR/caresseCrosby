@@ -23,12 +23,12 @@
 import {mapState, mapMutations} from "vuex";
 import { Fancybox } from '@fancyapps/ui';
 
-import Input from '../UI/Input.vue';
+import MainInput from '../UI/MainInput.vue';
 import MainBtn from '../UI/MainBtn.vue';
 import MainLink from '../UI/MainLink.vue';
 
 export default {
-    components: { Input, MainBtn, MainLink },
+    components: { MainInput, MainBtn, MainLink },
     props: {
         product: null,
     },

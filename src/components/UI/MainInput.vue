@@ -2,13 +2,15 @@
     <div class="form-control__wrap" :class="{'error': v$.$errors.length > 0}">
         <label class="form-control__label">{{ placeholder }}</label>
         <input class="form-control"
-        :type="inputType"
+        :type="inputType"   
         :name="name"
         :value="modelValue"
         :required="required"
         :id="inputId"
+        :autocomplete="inputType === 'email' ? 'email': ''"
         v-if="inputType !== 'tel' && inputType !== 'date'"
-        @input="$emit('update:modelValue', $event.target.value)">
+        @input="$emit('update:modelValue', $event.target.value)"
+        @blur="$emit('blurEvent')">
         <input class="form-control"
         :type="inputType"
         :name="name"
@@ -16,6 +18,7 @@
         :required="required"
         :id="inputId"
         v-maska data-maska="# (###) ###-##-##"
+        autocomplete="tel"
         v-if="inputType === 'tel'"
         @input="$emit('update:modelValue', $event.target.value)">
         <input class="form-control"

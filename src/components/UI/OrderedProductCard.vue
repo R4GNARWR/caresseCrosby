@@ -17,11 +17,11 @@
                 <div class="product-card__info-edit__inputs">
                     <div>
                         <label>Цена</label>
-                        <Input v-model="newPrice"></Input>
+                        <MainInput v-model="newPrice"></MainInput>
                     </div>
                     <div>
                         <label>Количество</label>
-                        <Input v-model="newCount"></Input>
+                        <MainInput v-model="newCount"></MainInput>
                     </div>
                 </div>
                 <button class="btn btn-primary" @click="updateOrderProduct">Сохранить</button>
@@ -30,9 +30,9 @@
     </div>
 </template>
 <script>
-import Input from './Input.vue';
+import MainInput from './MainInput.vue';
 export default {
-    components: { Input },
+    components: { MainInput },
     data() {
         return {
             newPrice: this.product.price || 0,

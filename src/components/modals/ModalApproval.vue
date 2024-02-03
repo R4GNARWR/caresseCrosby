@@ -7,7 +7,7 @@
         <div class="modal-approval__text" v-html="subText ?? '' +' '+ destination ?? ''"></div>
         <div class="modal-approval__input">
             <div class="modal-approval__input-text">{{ inputLabel ?? ''}}</div>
-            <Input :placeholder="inputPlaceholder"></Input>
+            <MainInput :placeholder="inputPlaceholder"></MainInput>
         </div>
         <MainBtn class-name="btn-primary w-100" @click="modalEvent">{{buttonText ?? ''}}</MainBtn>
     </div>
@@ -16,11 +16,11 @@
 import {mapState, mapMutations} from "vuex";
 import { Fancybox } from '@fancyapps/ui';
 
-import Input from '../UI/Input.vue';
+import MainInput from '../UI/MainInput.vue';
 import MainBtn from '../UI/MainBtn.vue';
 
 export default {
-    components: { Input, MainBtn },
+    components: { MainInput, MainBtn },
     props: {
         label: String,
         subText: String,

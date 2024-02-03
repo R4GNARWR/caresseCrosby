@@ -4,29 +4,29 @@
             <div class="create-certificate__label">Заявка на сертификат</div>
 
             <div class="create-certificate__form">
-                <Input
+                <MainInput
                 label="Имя (от кого)"
                 v-model="theFrom"
                 placeholder="Имя (от кого)"
                 aria-required="true"/>
-                <Input v-model="forWho" type="text" label="Имя получателя" placeholder="Имя получателя" aria-required="true"/>
-                <Input v-model="emailToSend" type="text"
+                <MainInput v-model="forWho" type="text" label="Имя получателя" placeholder="Имя получателя" aria-required="true"/>
+                <MainInput v-model="emailToSend" type="text"
                 label="Эл. почта (кому)"
                 placeholder="Эл. почта (кому)" aria-required="true"/>
-                <Input v-model="phoneFrom" type="text"
+                <MainInput v-model="phoneFrom" type="text"
                 label="Телефон (от кого)"
                 input-type="tel" validation-type="phone"
                 placeholder="Телефон (от кого)" aria-required="true"/>
-                <Input v-model="phoneFor" type="text"
+                <MainInput v-model="phoneFor" type="text"
                 label="Телефон (кому)"
                 input-type="tel" validation-type="phone"
                 placeholder="Телефон (кому)" aria-required="true"/>
-                <Input v-model="cost" type="number"
+                <MainInput v-model="cost" type="number"
                 @click="message=''"
 
                 label="Номинал (руб.)"
                 placeholder="Номинал (руб.)" aria-required="true"/>
-                <Input v-model="whenSend" type="text" label="Когда отправить сертификат получателю" aria-required="true"/>
+                <MainInput v-model="whenSend" type="text" label="Когда отправить сертификат получателю" aria-required="true"/>
                 <v-textarea v-model="theText"
                 variant="outlined"
                 label="Сопроводительный текст"
@@ -68,7 +68,7 @@
 import store from "../store/store";
 import {mapState} from "vuex";
 import cart_methods from "../api/cart";
-import Input from "../components/UI/Input.vue";
+import MainInput from "../components/UI/MainInput.vue";
 
 export default {
     name: "CreateCert",
@@ -135,7 +135,7 @@ export default {
         this.whenSend = this.$route.query.ws;
         this.theText = this.$route.query.text;
     },
-    components: { Input }
+    components: { MainInput }
 }
 </script>
 

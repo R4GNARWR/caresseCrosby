@@ -75,13 +75,8 @@ const components = {
     MainBtn,
 };
 
-const map = ref(null);
 const mapEl = shallowRef<null | YMap>(null);
-
 const coords = [54.736637, 55.958040]
-const markerIcon = {
-    
-};
 
 const to2Gis = () => {
     window.open('https://go.2gis.com/1xqkl', '_blank')?.focus();
@@ -224,6 +219,10 @@ const checkMouse = () => {
                 }
             }
         }
+    }
+    .map-marker {
+        width: 56px;
+        height: 70px;
     }
 }
 @media (max-width: 600px) {

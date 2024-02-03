@@ -5,7 +5,6 @@
     ref="catalogFilterWrap">
     <div class="catalog__filter"
     :style="{
-        minHeight: filtersComputedHeight+'px',
         position: !isMobile ? filterPosition : 'static' ,
         top: filterTop !=='auto' ? filterTop+'px': filterTop,
         bottom: filterBottom}"
@@ -39,24 +38,17 @@ export default {
             catalogOffsetTop: 0,
             currentScroll: 0,
             windowHeight: 0,
-            filtersHeight: 0,
+            filtersHeight: null,
             filtersBounds: null,
             filterPosition: 'static',
             savedTop: 0,
             savedTopOffset: 0,
             filterTop: 0,
             filterBottom: 'auto',
-            filterScroll: 'unset',
+            filterScroll: 'top',
         }
     },
     computed:{
-        filtersComputedHeight() {
-            if(this.catalogListHeight > this.filtersHeight) {
-                return this.filtersHeight
-            } else {
-                return this.catalogListHeight
-            }
-        },
         isMobile() {
             if(window.innerWidth < 960) {
                 return true
@@ -82,7 +74,9 @@ export default {
             } else {
                 this.catalogOffsetTop = 0;
             }
-            
+            this.removeListeners()
+            this.setFilterValues()
+            this.setFilterPositioning()
         },
         updateFilters(filter) {
             this.$emit('updateFilter', filter)
@@ -90,12 +84,20 @@ export default {
         setFilterValues() {
             this.windowHeight = window.innerHeight;
             this.filtersBounds = this.$refs.catalogFilter.getBoundingClientRect()
-            this.savedTopOffset = this.filtersBounds.x
+            this.savedTopOffset = this.filtersBounds.top;
             this.filtersHeight = this.$refs.catalogFilter.offsetHeight;
             window.addEventListener('scroll', this.setFilterPositioning)
             window.addEventListener('resize', this.setCatalogPadding);
         },
+        removeListeners() {
+            window.removeEventListener('scroll', this.setFilterPositioning)
+            window.removeEventListener('resize', this.setCatalogPadding);
+        },
         setFilterPositioning() {
+            if(this.catalogListHeight < this.filtersHeight) {
+                this.filterPosition = 'static'
+                return false
+            }
             let newScroll = window.scrollY;
             
             if(this.$refs.catalogFilter) {
@@ -142,7 +144,7 @@ export default {
                     this.filterBottom = 'auto'
                     this.filterScroll = 'top'
                 }
-                if(newScroll + this.headerPadding <= this.savedTopOffset + 40 && this.filterScroll === 'top') {
+                if(newScroll + this.headerPadding <= this.savedTopOffset && this.filterScroll === 'top') {
                     this.filterPosition = 'absolute'
                     this.filterTop = 0
                     this.filterBottom = 'auto'
@@ -165,10 +167,9 @@ export default {
         }
 
     },
-    beforeDestroy() {
+    beforeUnmount() {
         // удаляем обработчик события при уничтожении компонента
-        window.removeEventListener('scroll', this.setFilterPositioning)
-        window.removeEventListener('resize', this.setCatalogPadding);
+        this.removeListeners()
     },
 }
 </script>
@@ -182,6 +183,7 @@ export default {
     display: flex;
     flex-direction: column;
     row-gap: 4.8rem;
+    transition: 0s;
     &-close
     {
         display: none;

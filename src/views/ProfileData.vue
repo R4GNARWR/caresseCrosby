@@ -18,18 +18,16 @@
                 <v-col md="7" cols="12">
                     <form action="" class="profile-data__form" v-if="user">
                         <div class="profile-data__form-line">
-                            <Input placeholder="Адрес доставки*" validation-type="adress" v-model="user.city" :required="true"></Input>
+                            <MainInput placeholder="Адрес доставки*" validation-type="adress" v-model="user.city" :required="true"></MainInput>
                         </div>
-                        <Input placeholder="Имя*"  validation-type="name" v-model="user.name" :required="true"></Input>
-                        <!-- <Input placeholder="Фамилия*" validation-type="surname" v-model="surname" :required="true"></Input>
-                        <Input placeholder="Отчество" v-model="lastName" ></Input> -->
-                        <!-- <Input placeholder="Дата рождения*" validation-type="date" v-model="dateOfBirth" inputType="date" :required="true"></Input> -->
+                        <MainInput placeholder="Имя*"  validation-type="name" v-model="user.name" :required="true"></MainInput>
+    
                         <div class="input-confirm">
-                            <Input placeholder="Телефон*" validation-type="phone" v-model="user.phone" inputType="tel" :required="true"></Input>
+                            <MainInput placeholder="Телефон*" validation-type="phone" v-model="user.phone" inputType="tel" :required="true"></MainInput>
                             <!-- <MainBtn v-show="!phoneConfirmed" class-name="btn-primary" data-fancybox data-src="#phoneAprovalModal">Подтвердить</MainBtn> -->
                         </div>
                         <div class="input-confirm">
-                            <Input placeholder="Email" name="emailInput" validation-type="email" inputType="email" v-model="user.email" :required="true"></Input>
+                            <MainInput placeholder="Email" name="emailInput" validation-type="email" inputType="email" v-model="user.email" :required="true"></MainInput>
                             <!-- <MainBtn v-show="!emailConfirmed" class-name="btn-primary" data-fancybox data-src="#emailAprovalModal">Подтвердить</MainBtn> -->
                         </div>
                         <div class="profile-data__form-line" :key="index" v-if="sizes_search">
@@ -62,7 +60,7 @@
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
 import DetailLinks from '../components/UI/DetailLinks.vue';
-import Input from '../components/UI/Input.vue';
+import MainInput from '../components/UI/MainInput.vue';
 import InputsDropdown from '../components/UI/InputsDropdown.vue';
 
 import users from '../api/users'
@@ -80,7 +78,7 @@ export default {
         Breadcrumbs,
         MainBtn,
         DetailLinks,
-        Input,
+        MainInput,
         InputsDropdown,
         ModalApproval
     },

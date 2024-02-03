@@ -29,7 +29,7 @@
                             </div>
                         </div>
                         <div class="cart-summary__input">
-                            <Input placeholder="Промокод"></Input>
+                            <MainInput placeholder="Промокод"></MainInput>
                         </div>
                         <div class="cart-summary__total">
                             Итого
@@ -48,7 +48,7 @@
 
 <script>
 import MainBtn from '../components/UI/MainBtn.vue';
-import Input from '../components/UI/Input.vue';
+import MainInput from '../components/UI/MainInput.vue';
 import MainLink from '../components/UI/MainLink.vue';
 
 import cart from '../api/cart';
@@ -128,7 +128,7 @@ export default {
         if (this.user_info.apartment) this.address.apartment = this.user_info.apartment;
         if (this.user_info.email) this.email = this.user_info.email;
     },
-    components: { MainBtn, Input, MainLink, cartProduct }
+    components: { MainBtn, MainInput, MainLink, cartProduct }
 };
 </script>
 

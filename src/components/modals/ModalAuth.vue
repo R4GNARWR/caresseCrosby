@@ -1,22 +1,22 @@
 <template>
-    <form class="modal-auth" ref="modalEl" >
-        <button class="close-modal" @click="closeFancybox">
+    <form class="modal-auth" ref="modalEl" @keyup.enter.prevent="handleFormSubmit">
+        <button class="close-modal" @click="closeFancybox" type="button">
             <img src="/svg/close.svg" alt="">
         </button>
         <div class="modal-approval__label">Вход в аккаунт</div>
         <div class="modal-approval__text" >Мы отправим код для авторизации</div>
         <div class="modal-approval__input" v-if="!smsSended">
             <div class="modal-approval__input-text"></div>
-            <Input placeholder="Телефон" input-type="tel" validation-type="phone" v-model="phone"></Input>
+            <MainInput placeholder="Телефон" input-type="tel" :validation-type="phone.length > 0 ? 'phone' : ''" v-model="phone"></MainInput>
         </div>
         <div class="modal-approval__divide modal-approval__text" v-if="!smsSended">или</div>
         <div class="modal-approval__input" v-if="!smsSended">
             <div class="modal-approval__input-text"></div>
-            <Input placeholder="E-mail" v-model="email" input-type="email" validation-type="email" :required="true"></Input>
+            <MainInput placeholder="E-mail" v-model="email" input-type="email" :validation-type="email.length > 0 ? 'email' : ''" :required="phone.length === 0"></MainInput>
         </div>
         <div class="modal-approval__input" v-if="smsSended">
             <div class="modal-approval__input-text"></div>
-            <Input placeholder="Пароль" v-model="password"></Input>
+            <MainInput placeholder="Пароль" v-model="password"></MainInput>
         </div>
         <MainBtn class-name="btn-primary w-100" type="submit" @click.prevent="login()" v-if="smsSended">Войти</MainBtn>
         <MainBtn class-name="btn-primary w-100" type="submit" @click.prevent="handleSubmit()" v-else>Отправить код</MainBtn>
@@ -29,11 +29,11 @@ import { Fancybox } from '@fancyapps/ui';
 import useVuelidate from "@vuelidate/core";
 import store from "../../store/store";
 
-import Input from '../UI/Input.vue';
 import MainBtn from '../UI/MainBtn.vue';
+import MainInput from "../UI/MainInput.vue";
 
 export default {
-    components: { Input, MainBtn },
+    components: { MainBtn, MainInput },
     props: {
     },
     data() {
@@ -67,6 +67,13 @@ export default {
                 return;
             }
             this.sendSms()
+        },
+        handleFormSubmit() {
+            if(this.smsSended) {
+                this.login()
+            } else {
+                this.handleSubmit()
+            }
         },
         login(){
             this.$API.tryLogin(this.phone, this.email, this.password)
@@ -103,7 +110,7 @@ export default {
                     msg.msg = "Пароль отправлен! <br> Если вы не видите пароль на вашей почте, проверьте папку спам."
                     msg.color = "green";
                     store.commit('set_snack_message', msg);
-
+                    
                 } else {
                     if (value.data.errors) {
                         this.smsSended = false;
@@ -144,7 +151,7 @@ export default {
     {
         padding: 3.2rem !important;
     }
-
+    
 }
 .modal-approval__divide
 {

@@ -250,19 +250,45 @@ export default  {
     // CDEK
     getCdekSettings(){
         return this.axios.get('get-cdek-settings').then(response => {
-            store.commit('setCdekCities', response.data.cities);
+            if(response && response.status === 200 && response.data) {
+                store.commit('setCdekCities', response.data.cities);
+                if(store.state.cdek_has_errors === true) {
+                    store.commit('setCdekError', true)
+                }
+            } else if(response && response.status > 299) {
+                if(store.state.cdek_has_errors !== true) {
+                    store.commit('setCdekError', true)
+                }
+            }
         })
     },
     getCdekCityPoints(cityCode){
         return this.axios.get('get-cdek-city-points',{params:{cityCode:cityCode}}).then(response => {
-            store.commit('setCdekPvz', response.data.points);
+            if(response && response.status === 200 && response.data) {
+                store.commit('setCdekPvz', response.data.points);
+                if(store.state.cdek_has_errors === true) {
+                    store.commit('setCdekError', true)
+                }
+            } else if(response && response.status > 299) {
+                if(store.state.cdek_has_errors !== true) {
+                    store.commit('setCdekError', true)
+                }
+            }
+
         })
     },
     getCdekDeliveryPrice(tariff, toLocation){
         return this.axios.get('get-cdek-delivery-cost',{params:{tariff:tariff, toLoaction:toLocation}}).then(response => {
-            if(response && response.status && response.data) {
+            if(response && response.status === 200 && response.data) {
                 store.commit('setCdekMinTime', response.data.period_min)
                 store.commit('setCdekDeliveryPrice', response.data.total_sum)
+                if(store.state.cdek_has_errors === true) {
+                    store.commit('setCdekError', true)
+                }
+            } else if(response && response.status > 299) {
+                if(store.state.cdek_has_errors !== true) {
+                    store.commit('setCdekError', true)
+                }
             }
         })
     }

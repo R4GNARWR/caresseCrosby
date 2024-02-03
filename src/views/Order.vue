@@ -49,14 +49,11 @@
                         </div>
                         
                         <div class="order-delivery__form" v-if="user_info">
-                            <div class="split inline" v-if="deliveryType === 'courier'">
-                                <Input class="inline" placeholder="Адрес доставки*" v-model="address" :required="true" inputId="suggest"></Input>
-                                <MainBtn class-name="btn-primary" :disabled="address.length<1" @click="getDeliveryPrice">Подтвердить</MainBtn>
-                            </div>
-                            <Input class="" placeholder="Имя*" v-model="name" :required="true"></Input>
-                            <Input class="" placeholder="Фамилия"></Input>
-                            <Input class="" placeholder="Телефон*" validationType="phone" input-type="tel" v-model="phone" :required="true"></Input>
-                            <Input class="" placeholder="E-mail*" validationType="email" input-type="email" v-model="email" :required="true"></Input>
+                            <MainInput v-if="deliveryType === 'courier'" class="inline" placeholder="Адрес доставки*" v-model="address" :required="true" inputId="suggest" @blurEvent="getDeliveryPrice"></MainInput>
+                            <MainInput class="" placeholder="Имя*" v-model="name" :required="true"></MainInput>
+                            <MainInput class="" placeholder="Фамилия"></MainInput>
+                            <MainInput class="" placeholder="Телефон*" validationType="phone" input-type="tel" v-model="phone" :required="true"></MainInput>
+                            <MainInput class="" placeholder="E-mail*" validationType="email" input-type="email" v-model="email" :required="true"></MainInput>
                         </div>
                     </div>
                 </v-col>
@@ -79,7 +76,7 @@
                             </div>
                         </div>
                         <div class="cart-summary__input">
-                            <Input placeholder="Промокод"></Input>
+                            <MainInput placeholder="Промокод"></MainInput>
                         </div>
                         <div class="cart-summary__total">
                             Итого
@@ -104,7 +101,7 @@
 import store from '../store/store';
 import api from '../api/api';
 
-import Input from '../components/UI/Input.vue';
+import MainInput from '../components/UI/MainInput.vue';
 import cart from '../api/cart';
 import order from '../api/order';
 import productCard from "../api/productCard";
@@ -115,7 +112,7 @@ import MainBtn from '../components/UI/MainBtn.vue';
 
 export default {
     components: {
-        Input,
+        MainInput,
         MainBtn,
     },
     data(){return{
@@ -126,7 +123,8 @@ export default {
         promocode: '',
         commission: 0, dates_available:[], hours:{},
         the_error: '',
-        deliveryType: null
+        deliveryType: null,
+        suggestView: null
     }},
     setup() {
         return {
@@ -134,7 +132,13 @@ export default {
         };
     },
     computed:{
-        full_address(){return (this.address)},
+        full_address(){
+            if(this.deliveryType === 'courier') {
+                return this.address
+            } else if(this.cdek_chozen_pvz) {
+                return 'Код пункта CDEK:' + this.cdek_chozen_pvz
+            }
+        },
         delivery_date(){return new Date()},
         cartSum() {
             let vm = this, sum = 0;
@@ -202,7 +206,9 @@ export default {
             return false;
         },
         getDeliveryPrice() {
-            api.getCdekDeliveryPrice(139,{address: this.address})
+            if(this.address.length > 0) {
+                api.getCdekDeliveryPrice(139,{address: this.address})
+            }
         },
         async handleOrder() {
             var validationResult = await this.v$.$validate();
@@ -213,6 +219,9 @@ export default {
             }
             this.make_the_order()
         },
+        init() {
+            this.suggestView = new ymaps.SuggestView('suggest');
+        },
         ...order, ...cart, ...productCard,
         ...mapMutations(['clearCart', 'cartItemChangeQ', 'cartItemSetQ', 'removeFromCart']),
     },
@@ -222,27 +231,30 @@ export default {
                 store.commit('setCdekDeliveryPrice', null)
             }
         },
-        deliveryType: function () {
-            if(!this.cdek_chozen_pvz) {
+        deliveryType: {
+            handler: function (newVal) {
                 store.commit('setCdekDeliveryPrice', null)
-            }
-        },
+                if(newVal === 'courier') {
+                    store.commit('setCdekChosenPvz', null)
+                } else {
+                    this.address = this.user_info.city || ''
+                }
+            },
+            immediate: true
+        }
     },
     created() {
-        const script = document.createElement('script')
-        
-        script.onload = () => {
-            ymaps.ready(init);
-        };
-        
-        function init() {
-            var suggestView1 = new ymaps.SuggestView('suggest');
+        if (!document.getElementById('ymaps')) {
+            const script = document.createElement('script');
+            
+            script.onload = () => {
+                ymaps.ready(this.init);
+            };
+            
+            script.id = 'ymaps';
+            script.src = "https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=453f5758-6290-4de4-bae1-d645fb102e5c&suggest_apikey=6d832aa2-715a-4c2f-bac8-daf07218d006";
+            document.head.append(script);
         }
-        
-        script.id = 'ymaps'
-        script.src = "https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=453f5758-6290-4de4-bae1-d645fb102e5c&suggest_apikey=6d832aa2-715a-4c2f-bac8-daf07218d006"
-        document.head.append(script);
-        
         if(!this.cdek_cities) {
             this.getCitiesList()
         }
@@ -260,8 +272,11 @@ export default {
             this.deliveryType = 'courier'
         }
     },
-    destroyed() {
+    beforeUnmount() {
         document.head.querySelector('script#ymaps').remove()
+        if (this.suggestView) {
+            this.suggestView.destroy();
+        }
     }
 };
 </script>
@@ -271,6 +286,10 @@ export default {
 {
     padding: 4rem 0 14rem 0;
 }
+.v-list-item-title {
+    font-size: 1.6rem !important;
+}
+
 .order-label
 {
     margin-bottom: 4rem;
@@ -443,8 +462,11 @@ export default {
     {
         padding: 32px 0 60px 0;
     }
-    .order-label
-    {
+    .v-list-item-title {
+        font-size: 16px !important;
+        line-height: 120% !important;
+    }
+    .order-label {
         display: flex;
         flex-direction: column;
         margin-bottom: 32px;
@@ -459,58 +481,75 @@ export default {
             letter-spacing: -0.056px;
         }
     }
-    .order-products
-    {
+    .order-products {
         order: 1;
         border-bottom: 0;
         padding-bottom: 0;
         margin-bottom: 8px;
     }
-    .order-products__wrap
-    {
-        &-item
-        {
-            img
-            {
+    .order-pickup {
+        padding: 12px;
+        font-size: 14px;
+    }
+    .order-type__item {
+        padding: 14px;
+        column-gap: 8px;
+        font-size: 14px;
+    }
+    .order-type {
+        margin-bottom: 24px;
+    }
+    .order-pickup__wrap{
+        padding: 24px 0;
+        margin-bottom: 16px;
+        column-gap: 12px;
+    }
+    .order-products__wrap {
+        &-item {
+            img {
                 margin-bottom: 16px;
                 height: 165px;
             }
-            &-name
-            {
+            &-name {
                 margin-bottom: 4px;
                 font-size: 12px;
             }
-            &-props
-            {
+            &-props {
                 margin-bottom: 0;
                 row-gap: 4px;
-                li
-                {
+                li {
                     font-size: 12px;
                 }
             }
-            &-price
-            {
+            &-price {
                 display: none;
             }
         }
     }
-    .order-delivery
-    {
+    .order-delivery {
         margin-bottom: 48px;
         order: 0;
-        &__label
-        {
+        &__label {
             margin-bottom: 32px;
             font-size: 32px;
         }
-        &__form
-        {
+        &__form {
             grid-template-columns: repeat(1, 1fr);
             row-gap: 24px;
-            .form-control__wrap.inline
-            {
-                grid-column: initial;
+            .split {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                column-gap: initial;
+                row-gap: 12px;
+                .btn
+                {
+                    padding: 14px;
+                    width: 100%;
+                }
+            }
+            .form-control__wrap {
+                grid-column: 2 span;
             }
         }
     }
@@ -521,6 +560,7 @@ export default {
             display: none;
         }
     }
+    
 }
 @media (max-width: 600px) {
     .order-products__wrap
