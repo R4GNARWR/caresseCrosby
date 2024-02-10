@@ -47,7 +47,7 @@
         </v-container>
         <ArrowScrollUp></ArrowScrollUp>
     </section>
-    
+
 </template>
 <script>
 const objectsEqual = (o1, o2) =>
@@ -59,21 +59,21 @@ typeof o1 === 'object' && Object.keys(o1).length > 0
 const filterSuccess = (a, b) => {
     a=Array.from(a)
     b=Array.from(b)
-    
+
     let groupedFilter = {};
     for (var i=0; i<a.length; i++) {
         let p = a[i]["attributeId"];
         if (!groupedFilter[p]) { groupedFilter[p] = []; }
         groupedFilter[p].push(a[i]);
     }
-    
+
     let groupedProductAttr = {};
     for (var i=0; i<b.length; i++) {
         let p = b[i]["attributeId"];
         if (!groupedProductAttr[p]) { groupedProductAttr[p] = []; }
         groupedProductAttr[p].push(b[i]);
     }
-    
+
     let result = {}
     for (let k in groupedFilter){
         result[k]=false
@@ -85,7 +85,7 @@ const filterSuccess = (a, b) => {
         })
         if (!result[k]) break
     }
-    
+
     let final=true
     for (let r in result) final=final * result[r]
     return final
@@ -157,14 +157,25 @@ export default {
     computed:{
         productsComputed() {
             let productsFiltered = []
+            let upatedFilters={"brands":[],"colors":[],"sizes":[]}
             if (this.filters && this.filters.length>0){
                 for (let p of this.products) {
                     if (p.attributes) {
                         if (filterSuccess(this.filters, p.attributes)) {
                             productsFiltered.push(p)
-                        } 
+                            for (let attr of p.attributes){
+                              switch (attr.attributeId){
+                                case 1: if (!upatedFilters.brands.some(item => item.attributeValueId === attr.attributeValueId)) upatedFilters.brands.push(attr); break;
+                                case 2: if (!upatedFilters.sizes.some(item => item.attributeValueId === attr.attributeValueId)) upatedFilters.sizes.push(attr); break;
+                                case 6: if (!upatedFilters.colors.some(item => item.attributeValueId === attr.attributeValueId)) upatedFilters.colors.push(attr); break;
+                              }
+                            }
+                        }
                     }
                 }
+              this.brandFilters = upatedFilters.brands
+              this.sizesFilter = upatedFilters.sizes
+              this.colorFilter = upatedFilters.colors
             } else {
                 productsFiltered=this.products
             }
@@ -240,7 +251,7 @@ export default {
                             this.colorFilter = productsResponse.data.colors;
                             this.productsInitial = productsResponse.data.products;
                             this.accept_product_request = true;
-                            
+
                             this.search_result.products = productsResponse.data.products
                             this.search_result.sizesFilter = productsResponse.data.sizes;
                             this.search_result.brandFilters = productsResponse.data.brands;
@@ -287,7 +298,7 @@ export default {
                 this.status = 'Ошибка поиска. Повторите попытку позднее'
                 console.log(error);
             }
-            
+
         },
         ...search,
         updateFilter(filter) {
@@ -321,12 +332,12 @@ export default {
             this.update();
             // this.for_created();
         }
-        
+
     },
     mounted() {
         const brands = this.$route.params.brands
         const sizes = this.$route.params.sizes
-        
+
         if(brands && brands !== 'sizes') {
             this.filter.brand.attributeValueId = brands;
             if(this.brandFilters) {
