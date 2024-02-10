@@ -1,6 +1,5 @@
 import axios from "axios";
 import store from "../store/store";
-import { error } from "jquery";
 
 export default  {
     Api_ready: false,

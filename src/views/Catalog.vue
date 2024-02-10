@@ -1,53 +1,54 @@
 <template>
-    <section class="catalog">
-        <v-container>
-            <div class="breadcrumbs text-page__breadcrumbs">
-                <router-link class="breadcrumbs-item" to="/">Главная</router-link>
-                <div class="breadcrumbs-divider">/</div>
-                <a class="breadcrumbs-item active">Каталог</a>
-            </div>
-            <v-row>
-                <v-col cols="12">
-                    <div class="catalog__head">
-                        <div class="catalog__head-left">
-                            <div class="catalog__head-label" v-if="headerName">{{headerName}}</div>
-                            <div class="catalog__head-count">{{totalAmount}} товара</div>
-                        </div>
-                        <div class="catalog__head-bottom">
-                            <div class="catalog__head__filter-btn d-lg-none d-flex" @click="changeFilterVisibility()">
-                                <img src="/svg/filter.svg" alt="">
-                                Фильтры
+    <keep-alive>
+        <section class="catalog">
+            <v-container>
+                <div class="breadcrumbs text-page__breadcrumbs">
+                    <router-link class="breadcrumbs-item" to="/">Главная</router-link>
+                    <div class="breadcrumbs-divider">/</div>
+                    <a class="breadcrumbs-item active">Каталог</a>
+                </div>
+                <v-row>
+                    <v-col cols="12">
+                        <div class="catalog__head">
+                            <div class="catalog__head-left">
+                                <div class="catalog__head-label" v-if="headerName">{{headerName}}</div>
+                                <div class="catalog__head-count">{{totalAmount}} товара</div>
                             </div>
-                            <div class="catalog__head-select">
-                                <Dropdown :listItems = "sortTypes" @items-action="sortCatalog">{{ activeSortString }}</Dropdown>
+                            <div class="catalog__head-bottom">
+                                <div class="catalog__head__filter-btn d-lg-none d-flex" @click="changeFilterVisibility()">
+                                    <img src="/svg/filter.svg" alt="">
+                                    Фильтры
+                                </div>
+                                <div class="catalog__head-select">
+                                    <Dropdown :listItems = "sortTypes" @items-action="sortCatalog">{{ activeSortString }}</Dropdown>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col md="3" cols="12">
-                    <CatalogFilter
-                    :filterStatus="showFilters"
-                    :brands_search="brandFilters"
-                    :colors_search="colorFilter"
-                    :sizes_search="sizesFilter"
-                    :activeFilters="filters"
-                    :catalogListHeight="catalogHeight"
-                    @updateFilter="updateFilter"
-                    @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
-                </v-col>
-                <v-col md="9" cols="12">
-                    <CatalogList
-                    @update-catalog-height="updateCatalogHeight"
-                    :productArray="productsComputed"
-                    :searchStatus="status"></CatalogList>
-                </v-col>
-            </v-row>
-        </v-container>
-        <ArrowScrollUp></ArrowScrollUp>
-    </section>
-    
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col md="3" cols="12">
+                        <CatalogFilter
+                        :filterStatus="showFilters"
+                        :brands_search="brandFilters"
+                        :colors_search="colorFilter"
+                        :sizes_search="sizesFilter"
+                        :activeFilters="filters"
+                        :catalogListHeight="catalogHeight"
+                        @updateFilter="updateFilter"
+                        @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
+                    </v-col>
+                    <v-col md="9" cols="12">
+                        <CatalogList
+                        @update-catalog-height="updateCatalogHeight"
+                        :productArray="productsComputed"
+                        :searchStatus="status"></CatalogList>
+                    </v-col>
+                </v-row>
+            </v-container>
+            <ArrowScrollUp></ArrowScrollUp>
+        </section>
+    </keep-alive>
 </template>
 <script>
 const objectsEqual = (o1, o2) =>
@@ -91,13 +92,14 @@ const filterSuccess = (a, b) => {
     return final
 }
 
-import { mapState } from "vuex";
+import { mapState, } from "vuex";
 import CatalogFilter from "../components/catalog/CatalogFilter.vue";
 import CatalogList from "../components/catalog/CatalogList.vue";
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue'
 import Dropdown from "../components/UI/Dropdown.vue";
 import search from './../api/search'
 import ArrowScrollUp from "../components/UI/ArrowScrollUp.vue";
+import store from "../store/store";
 
 export default {
     components: {
@@ -183,7 +185,7 @@ export default {
             }
             return productsFiltered
         },
-        ...mapState(['headerPadding', 'categoriesTree', 'cat_products','brands_search', 'search_result' ]),
+        ...mapState(['headerPadding', 'categoriesTree', 'cat_products','brands_search', 'search_result', 'saved_search_filters', 'saved_search_path' ]),
         totalAmount() {
             return this.productsComputed.length
         },
@@ -297,22 +299,28 @@ export default {
             } else  {
                 this.filters.push(filter)
             }
+            this.saved_search_filters = this.filters
         },
     },
     watch: {
-        '$route.params.id': function () {
+        '$route.params': function () {
             this.update();
-            this.filter.brand = ''
-            this.filter.sizes = ''
-            this.filter.colors = ''
-            this.i = 1
+            this.filter.brand = '';
+            this.filter.sizes = '';
+            this.filter.colors = '';
+            this.i = 1;
+            this.filters = [];
+            store.commit('setFilter', []);
+            store.commit('setSearchPath', this.$route.fullPath)
         },
         '$route.query.query': function () {
             this.update();
-            this.filter.brand = ''
-            this.filter.sizes = ''
-            this.filter.colors = ''
-            this.i = 1
+            this.filter.brand = '';
+            this.filter.sizes = '';
+            this.filter.colors = '';
+            this.i = 1;
+            this.filters = [];
+            store.commit('setFilter', []);
         },
     },
     created() {
@@ -321,26 +329,35 @@ export default {
             this.update();
             // this.for_created();
         }
-        
+        store.commit('setSearchPath', this.$route.fullPath)
     },
     mounted() {
         const brands = this.$route.params.brands
         const sizes = this.$route.params.sizes
         
+        if(this.saved_search_filters && this.$route.fullPath === this.saved_search_path) {
+            this.filters = this.saved_search_filters
+        } else {
+            store.commit('setFilter', []);
+        }
+        
         if(brands && brands !== 'sizes') {
             this.filter.brand.attributeValueId = brands;
             if(this.brandFilters) {
                 const brand = this.brandFilters.find((item) => {item.attributeValueId === brands})
-                if(brand)
-                this.filters.push(brand)
+                if(brand && !this.filters.includes(brand)) {
+                    this.filters.push(brand)
+                }
             }
         }
         if(sizes) {
             this.filter.sizes.attributeValueId = sizes;
             if(this.sizesFilter) {
                 const size = this.sizesFilter.find((item) => {item.attributeValueId === sizes})
-                if(size)
-                this.filters.push(size)
+                if(size && !this.filters.includes(size)) {
+                    this.filters.push(size)
+                }
+                
             }
         }
         if(sizes || brands) {

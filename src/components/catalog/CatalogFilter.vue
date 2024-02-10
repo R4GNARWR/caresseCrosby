@@ -8,19 +8,22 @@
         position: !isMobile ? filterPosition : 'static' ,
         top: filterTop !=='auto' ? filterTop+'px': filterTop,
         bottom: filterBottom}"
-    ref="catalogFilter">
-    <div class="catalog__filter-head">
-        Фильтры
-        <div class="catalog__filter-close" @click="$emit('updateFilterStatus')">
-            <img src="/svg/close.svg" alt="">
+        ref="catalogFilter">
+        <div class="catalog__filter-head">
+            Фильтры
+            <div class="catalog__filter-close" @click="$emit('updateFilterStatus')">
+                <img src="/svg/close.svg" alt="">
+            </div>
+        </div>
+        <div class="catalog__filter-filters">
+            <FilterItem @update-filters="updateFilters" :filterObject="brands_search" :filterName="'Бренды'" v-if="brands_search && brands_search.length > 0"></FilterItem>
+            <FilterItem @update-filters="updateFilters" :filterObject="sizes_search" :filterName="'Размеры'" v-if="sizes_search && sizes_search.length > 0"></FilterItem>
+            <FilterItem @update-filters="updateFilters" :filterObject="colors_search" :filterName="'Цвета'" v-if="colors_search && colors_search.length > 0"></FilterItem>
+        </div>
+        <div class="catalog__filter-action">
+            <MainBtn class-name="btn-primary" @click="$emit('updateFilterStatus')">Фильтровать</MainBtn>
         </div>
     </div>
-    <div class="catalog__filter-filters">
-        <FilterItem @update-filters="updateFilters" :filterObject="brands_search" :filterName="'Бренды'" v-if="brands_search && brands_search.length > 0"></FilterItem>
-        <FilterItem @update-filters="updateFilters" :filterObject="sizes_search" :filterName="'Размеры'" v-if="sizes_search && sizes_search.length > 0"></FilterItem>
-        <FilterItem @update-filters="updateFilters" :filterObject="colors_search" :filterName="'Цвета'" v-if="colors_search && colors_search.length > 0"></FilterItem>
-    </div>
-</div>
 </div>
 </template>
 <script>
@@ -28,10 +31,11 @@
 import search from '../../api/search'
 import {mapState} from "vuex";
 import FilterItem from '../UI/FilterItem.vue';
-
+import MainBtn from '../UI/MainBtn.vue'
 export default {
     components: {
-        FilterItem
+        FilterItem,
+        MainBtn
     },
     data() {
         return {
@@ -165,7 +169,7 @@ export default {
         } else {
             this.filterPosition = 'fixed'
         }
-
+        
     },
     beforeUnmount() {
         // удаляем обработчик события при уничтожении компонента
@@ -207,6 +211,9 @@ export default {
     {
         display: none;
     }
+}
+.catalog__filter-action {
+    display: none;
 }
 @media (max-width: 960px) {
     .catalog__filter
@@ -261,6 +268,9 @@ export default {
             height: 100%;
             overflow-y: scroll;
         }
+    }
+    .catalog__filter-action {
+       display: block;
     }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <form class="modal-auth" ref="modalEl" @keyup.enter.prevent="handleFormSubmit">
+    <form class="modal-auth" ref="modalEl" @keyup.enter.prevent="">
         <button class="close-modal" @click="closeFancybox" type="button">
             <img src="/svg/close.svg" alt="">
         </button>
@@ -103,7 +103,7 @@ export default {
             });
         },
         sendSms(){
-            this.$API.ask_sms(this.phone, this.email).then(value => {
+            this.$API.ask_sms(this.phone.replace(/\D/g, "").substring(1), this.email).then(value => {
                 if (value.data.success) {
                     this.smsSended = true;
                     let msg = {};

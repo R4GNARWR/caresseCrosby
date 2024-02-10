@@ -30,7 +30,11 @@
             </div>
         </v-container>
         <div class="contacts-map" @mousedown="checkMouse" @touchstart="checkMouse">
+            <div class="map-loading" v-show="mapLoadStatus !== 'loaded'">
+                Загрузка...
+            </div>
             <yandex-map
+            v-show="mapLoadStatus === 'loaded'"
             v-model="mapEl"
             :settings="{
                 location: {
@@ -41,7 +45,6 @@
             }">
             <yandex-map-default-scheme-layer />
             <yandex-map-default-features-layer />
-            
             <yandex-map-marker
             :settings="{coordinates: [56.022775, 54.722379]}"
             :position="`left-center top`"
@@ -53,17 +56,17 @@
             />
         </yandex-map-marker>
     </yandex-map>
-    
 </div>
 </section>
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef } from 'vue';
+import { ref, shallowRef, watchEffect } from 'vue';
 import type { YMap } from '@yandex/ymaps3-types'
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
 import {
+    VueYandexMaps,
     YandexMap,
     YandexMapDefaultFeaturesLayer,
     YandexMapDefaultSchemeLayer,
@@ -76,6 +79,7 @@ const components = {
 };
 
 const mapEl = shallowRef<null | YMap>(null);
+const mapLoadStatus = ref(VueYandexMaps.loadStatus);
 const coords = [54.736637, 55.958040]
 
 const to2Gis = () => {
@@ -101,9 +105,6 @@ const checkMouse = () => {
     window.addEventListener("touchend", mouseLift);
 }
 </script>
-
-
-
 <style lang="scss">
 .contacts
 {
@@ -170,6 +171,17 @@ const checkMouse = () => {
 {
     height: 57rem;
     width: 100%;
+    .map-loading {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.8rem;
+        color: #FFFFFF;
+        background-color: #AAAAAA;
+        border-top: 1px solid $primary;
+    }
     .ymap-container
     {
         width: 100%;
@@ -185,6 +197,11 @@ const checkMouse = () => {
 
 @media (max-width: 960px)
 {
+    .contacts-map {
+        .map-loading {
+            font-size: 20px;
+        }
+    }
     .contacts
     {
         padding: 32px 0 0 0;

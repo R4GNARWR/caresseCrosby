@@ -11,13 +11,12 @@
         v-if="inputType !== 'tel' && inputType !== 'date'"
         @input="$emit('update:modelValue', $event.target.value)"
         @blur="$emit('blurEvent')">
-        <input class="form-control"
+        <input class="form-control tel"
         :type="inputType"
         :name="name"
         :value="modelValue"
         :required="required"
         :id="inputId"
-        v-maska data-maska="# (###) ###-##-##"
         autocomplete="tel"
         v-if="inputType === 'tel'"
         @input="$emit('update:modelValue', $event.target.value)">
@@ -36,9 +35,8 @@
 </template>
 <script>
 import { useVuelidate } from '@vuelidate/core'
-import { vMaska } from "maska"
+import { vMaska, MaskInput } from "maska"
 import { required, helpers, email, minLength} from '@vuelidate/validators'
-
 export default {
     props: {
         inputType: {
@@ -62,6 +60,17 @@ export default {
         }
     },
     setup () {
+        new MaskInput(".tel", {
+            mask: (value) => {
+                if(value.startsWith('7') || value.startsWith('+')) {
+                    return '+# (###) ###-##-##'
+                } else if(value.startsWith('8')) {
+                    return '# (###) ###-##-##'
+                } else {
+                    return '+7 (###) ###-##-##'
+                }
+            } 
+        })
         return {
             v$: useVuelidate()
         }

@@ -130,8 +130,7 @@ const choosePoint = (item) => {
     const element = document.querySelector(`.point-pick__aside-card[data-pvz-code='${item.code}']`);
     if (element) {
         if(window.innerWidth > 960) {
-            element.scrollIntoView({behavior: 'smooth'});
-            window.scrollTo(0,savedScroll)
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
         } else {
             element.scrollIntoView({
                 behavior: 'smooth',

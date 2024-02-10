@@ -8,14 +8,17 @@ body
 	font-size: 1rem;
 	font-family: 'Manrope';
 }
+
 main
 {
 	overflow: hidden;
 }
+
 .v-container
 {
 	padding: 0;
 }
+
 @media (max-width: 960px) {
 	.v-container
 	{

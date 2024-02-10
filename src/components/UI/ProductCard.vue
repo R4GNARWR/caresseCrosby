@@ -38,9 +38,36 @@ export default {
     },
     computed:{
         ...mapState(['cart', 'favorites','colors_list']),
+        colors(){
+            if (this.product.attributes && this.product.attributes.length > 0){
+                let colors=[]
+                for (let attr of this.product.attributes) {
+                    if (attr.attributeId === 6) {
+                        colors.push(attr)
+                    }
+                }
+                return colors
+            } else {
+                return null;
+            }
+        },
         com_color(){
-            if (!this.product.color) return null;
-            else return this.computed_color(this.product.color.trim());
+            if (this.colors && this.colors[0]) {
+                let color = null;
+                if(this.colors_list && this.colors_list.length > 0) {
+                    this.colors_list.forEach(element => {
+                        if(Object.values(element)[0].includes(this.colors[0].value)) {
+                            color = element
+                        }
+                    });
+                }
+                if(color) {
+                    return 'background-color:' + Object.getOwnPropertyNames(color)+'; border: 1px solid #827F7D;';
+                } else {
+                    return false
+                }
+ 
+            }
         },
         cartQuantity() {
             let vm = this, q = 0;
@@ -193,7 +220,7 @@ export default {
                 }
             }
         }
-
+        
         &__info
         {
             &-name

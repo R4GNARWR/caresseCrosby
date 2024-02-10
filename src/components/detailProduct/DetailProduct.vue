@@ -31,148 +31,146 @@
                         <img src="/img/loading.gif" v-for="(item, index) in 4" :key="index" alt="" >
                     </div>
                     <div class="product-detail__images d-lg-grid d-none" v-if="photosLoaded && full_photos">
-                      <div v-for="(item, index) in full_photos.slice(0,4)" :key="index">
-                        <img v-lazy="item" alt="" data-fancybox="gallery-product" >
-                        <MainBtn class-name="btn-danger btn-icon" style="z-index: 10; position: relative; bottom: 6rem; left: calc(100% - 10rem); border-radius: 40px"
-                                 @click="delImg(item)" v-if="user_info.role === 3">
-                          <v-icon icon="mdi-trash-can-outline" color="#FF7171"></v-icon>
+                        <div v-for="(item, index) in full_photos.slice(0,4)" :key="index">
+                            <img v-lazy="item" alt="" data-fancybox="gallery-product" >
+                            <MainBtn class-name="btn-danger btn-icon" style="z-index: 10; position: relative; bottom: 6rem; left: calc(100% - 10rem); border-radius: 40px"
+                            @click="delImg(item)" v-if="user_info.role === 3">
+                            <v-icon icon="mdi-trash-can-outline" color="#FF7171"></v-icon>
                         </MainBtn>
-                      </div>
                     </div>
-                    <div class="no-photo" v-if="photosLoaded && !full_photos">
-                        Вышлем фото по запросу
-                    </div>
-
-                  <div v-if="user_info.role === 3" style="display:flex;">
+                </div>
+                <div class="no-photo" v-if="photosLoaded && !full_photos">
+                    Вышлем фото по запросу
+                </div>
+                
+                <div v-if="user_info.role === 3" style="display:flex;">
                     <div style="font-size: 18px">Добавить фото товара:</div>
                     <input type="file" multiple
-                           class="btn"
-                           accept="image/jpeg, image/png, image/jpg"
-                           @change="setImgsToAdd"
+                    class="btn"
+                    accept="image/jpeg, image/png, image/jpg"
+                    @change="setImgsToAdd"
                     />
                     <MainBtn class-name="btn-gold btn-icon" v-if="imgsToAdd.length" @click="addImgs(imgsToAdd)">Сохранить</MainBtn>
-                  </div>
-
-
-
-
-
-                </v-col>
-                <v-col md="4" cols="12">
-                    <div class="product-detail__info">
-                        <div class="product-detail__info-top">
-                            <div class="product-detail__info-label">
-                                {{product.name}}
-                            </div>
-                            <div class="product-detail__info-type">
-                                {{category.name}}
-                            </div>
-                            <div class="product-detail__info-price" v-if="product.lowerPrice">
-                                {{computed_price_string(product.lowerPrice.value)}} ₽
-                            </div>
+                </div>
+            </v-col>
+            <v-col md="4" cols="12">
+                <div class="product-detail__info">
+                    <div class="product-detail__info-top">
+                        <div class="product-detail__info-label">
+                            {{product.name}}
                         </div>
-                        <div class="product-detail__info-color">
-                            <div class="product-detail__info-color__name" v-if="colors">
-                                Цвет: <span>{{colors[0].attributeValueText}}</span>
-                            </div>
+                        <div class="product-detail__info-type">
+                            {{category.name}}
                         </div>
-                        <div class="product-detail__info-sizes">
-                            <div class="product-detail__info-sizes__item">
-                                <div class="label">
-                                    Выберите размер
-                                    <a @click="openSizeModal()">Таблица размеров</a>
-                                </div>
-                                <div class="buttons">
-                                    <div class="buttons-item" v-for="item in sizes">
-                                        <input type="radio" name="size" :value="item" v-model="product.size" >
-                                        <label>{{item}}</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-detail__info-buttons" v-if="!addToOrder">
-                            <MainBtn v-if="!cartQuantity || cartQuantity===0" :disabled="!product.size" class-name="btn-primary" @click="handleAddToCart()">Добавить в корзину</MainBtn>
-                            <div v-else class="product-detail__info-buttons-counter">
-                                <button class="eq-minus" @click.prevent="changeQ(product, -1);">-</button>
-                                {{cartQuantity}}
-                                <button class="eq-plus" @click.prevent="changeQ(product, +1)">+</button>
-                            </div>
-                            <MainBtn class-name="btn-danger btn-icon" @click="delete_prod()" v-if="user_info.role === 3">
-                                <v-icon icon="mdi-trash-can-outline" color="#FF7171">
-                                </v-icon>
-                            </MainBtn>
-                            <MainBtn class-name="btn-primary heart btn-icon" @click="addFavorite(product.id)" :class="{'active': the_heart}">
-                                <v-icon icon="mdi-heart-outline" color="#FFF" v-if="!the_heart">
-                                </v-icon>
-                                <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart"></v-icon>
-                                <div class="tooltip" v-if="!the_heart">Добавить в избранное</div>
-                                <div class="tooltip" v-if="the_heart">Убрать из изранного</div>
-                            </MainBtn>
-                        </div>
-                        <div class="product-detail__info-buttons" v-else>
-                            <MainBtn :disabled="!product.size" class-name="btn-primary" @click="handleAddToCart()">Добавить в заказ</MainBtn>
-                            <MainBtn class-name="btn-danger btn-icon" @click="delete_prod()" v-if="user_info.role === 3">
-                                <v-icon icon="mdi-trash-can-outline" color="#FF7171">
-                                </v-icon>
-                            </MainBtn>
-                            <MainBtn class-name="btn-primary heart btn-icon" @click="addFavorite(product.id)" :class="{'active': the_heart}">
-                                <v-icon icon="mdi-heart-outline" color="#FFF" v-if="!the_heart">
-                                </v-icon>
-                                <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart"></v-icon>
-                                <div class="tooltip" v-if="!the_heart">Добавить в избранное</div>
-                                <div class="tooltip" v-if="the_heart">Убрать из изранного</div>
-                            </MainBtn>
-                        </div>
-                        <div class="product-detail__info-props">
-                            <div class="product-detail__info-props__item">
-                                <div class="name">
-                                    Бренд:
-                                </div>
-                                <div class="desc" v-for="attr of brand.slice(0,1)" :key="attr.attributeValueText" v-if="brand">
-                                    {{attr.attributeValueText}}
-                                </div>
-                                <div class="desc" v-else>
-                                    Данные отсутствует
-                                </div>
-                            </div>
-                            <div class="product-detail__info-props__item" >
-                                <div class="name">
-                                    Состав:
-                                </div>
-                                <div class="desc" v-for="attr of structure" :key="attr.attributeValueText" v-if="structure">
-                                    {{attr}},
-                                </div>
-                                <div class="desc" v-else>
-                                    Данные отсутствует
-                                </div>
-                            </div>
-                            <div class="product-detail__info-props__item">
-                                <div class="name">
-                                    Описание:
-                                </div>
-                                <div class="desc" v-if="product.description">
-                                    {{product.description}}
-                                </div>
-                                <div class="desc" v-else>
-                                    Описание отсутствует
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-detail__info-whatsapp">
-                            <a target="_blank" class="btn btn-gold outline" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:">
-                                <img src="/svg/whatsapp-gold.svg" alt="">
-                                Консультация в Whats App
-                            </a>
+                        <div class="product-detail__info-price" v-if="product.lowerPrice">
+                            {{computed_price_string(product.lowerPrice.value)}} ₽
                         </div>
                     </div>
-                </v-col>
-            </v-row>
-        </section>
-        <ModalSizes id="modalSizes"></ModalSizes>
-        <ModalToCart id="modalToCart" :product="product"></ModalToCart>
-        <SwiperCards class="product-detail__section" name="Вам понравится" v-if="similar_products" :slidesArray="similar_products"></SwiperCards>
-        <!--    <SwiperCards class="product-detail__section" name="С этим товаром покупают" v-if="similar_products" :slidesArray="products"></SwiperCards>-->
-    </v-container>
+                    <div class="product-detail__info-color">
+                        <div class="product-detail__info-color__name" v-if="colors">
+                            Цвет: <span>{{colors[0].attributeValueText}}</span>
+                            <div class="product-card__info-props__colors" v-if="com_color">
+                                <div :style="com_color"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-detail__info-sizes">
+                        <div class="product-detail__info-sizes__item">
+                            <div class="label">
+                                Выберите размер
+                                <a @click="openSizeModal()">Таблица размеров</a>
+                            </div>
+                            <div class="buttons">
+                                <div class="buttons-item" v-for="item in sizes">
+                                    <input type="radio" name="size" :value="item" v-model="product.size" >
+                                    <label>{{item}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-detail__info-buttons" v-if="!addToOrder">
+                        <MainBtn v-if="!cartQuantity || cartQuantity===0" :disabled="!product.size" class-name="btn-primary" @click="handleAddToCart()">Добавить в корзину</MainBtn>
+                        <div v-else class="product-detail__info-buttons-counter">
+                            <button class="eq-minus" @click.prevent="changeQ(product, -1);">-</button>
+                            {{cartQuantity}}
+                            <button class="eq-plus" @click.prevent="changeQ(product, +1)">+</button>
+                        </div>
+                        <MainBtn class-name="btn-danger btn-icon" @click="delete_prod()" v-if="user_info.role === 3">
+                            <v-icon icon="mdi-trash-can-outline" color="#FF7171">
+                            </v-icon>
+                        </MainBtn>
+                        <MainBtn class-name="btn-primary heart btn-icon" @click="addFavorite(product.id)" :class="{'active': the_heart}">
+                            <v-icon icon="mdi-heart-outline" color="#FFF" v-if="!the_heart">
+                            </v-icon>
+                            <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart"></v-icon>
+                            <div class="tooltip" v-if="!the_heart">Добавить в избранное</div>
+                            <div class="tooltip" v-if="the_heart">Убрать из изранного</div>
+                        </MainBtn>
+                    </div>
+                    <div class="product-detail__info-buttons" v-else>
+                        <MainBtn :disabled="!product.size" class-name="btn-primary" @click="handleAddToCart()">Добавить в заказ</MainBtn>
+                        <MainBtn class-name="btn-danger btn-icon" @click="delete_prod()" v-if="user_info.role === 3">
+                            <v-icon icon="mdi-trash-can-outline" color="#FF7171">
+                            </v-icon>
+                        </MainBtn>
+                        <MainBtn class-name="btn-primary heart btn-icon" @click="addFavorite(product.id)" :class="{'active': the_heart}">
+                            <v-icon icon="mdi-heart-outline" color="#FFF" v-if="!the_heart">
+                            </v-icon>
+                            <v-icon icon="mdi-heart" color="#FF7171" v-if="the_heart"></v-icon>
+                            <div class="tooltip" v-if="!the_heart">Добавить в избранное</div>
+                            <div class="tooltip" v-if="the_heart">Убрать из изранного</div>
+                        </MainBtn>
+                    </div>
+                    <div class="product-detail__info-props">
+                        <div class="product-detail__info-props__item">
+                            <div class="name">
+                                Бренд:
+                            </div>
+                            <div class="desc" v-for="attr of brand.slice(0,1)" :key="attr.attributeValueText" v-if="brand">
+                                {{attr.attributeValueText}}
+                            </div>
+                            <div class="desc" v-else>
+                                Данные отсутствует
+                            </div>
+                        </div>
+                        <div class="product-detail__info-props__item" >
+                            <div class="name">
+                                Состав:
+                            </div>
+                            <div class="desc" v-for="attr of structure" :key="attr.attributeValueText" v-if="structure">
+                                {{attr}},
+                            </div>
+                            <div class="desc" v-else>
+                                Данные отсутствует
+                            </div>
+                        </div>
+                        <div class="product-detail__info-props__item">
+                            <div class="name">
+                                Описание:
+                            </div>
+                            <div class="desc" v-if="product.description">
+                                {{product.description}}
+                            </div>
+                            <div class="desc" v-else>
+                                Описание отсутствует
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-detail__info-whatsapp">
+                        <a target="_blank" class="btn btn-gold outline" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:">
+                            <img src="/svg/whatsapp-gold.svg" alt="">
+                            Консультация в Whats App
+                        </a>
+                    </div>
+                </div>
+            </v-col>
+        </v-row>
+    </section>
+    <ModalSizes id="modalSizes"></ModalSizes>
+    <ModalToCart id="modalToCart" :product="product"></ModalToCart>
+    <SwiperCards class="product-detail__section" name="Вам понравится" v-if="similar_products" :slidesArray="similar_products"></SwiperCards>
+    <!--    <SwiperCards class="product-detail__section" name="С этим товаром покупают" v-if="similar_products" :slidesArray="products"></SwiperCards>-->
+</v-container>
 </template>
 
 <script>
@@ -218,11 +216,17 @@ export default {
             } else return null;
         },
         colors(){
-            if (this.attributes && this.attributes.length>0){
+            if (this.attributes && this.attributes.length > 0){
                 let colors=[]
-                for (let attr of this.attributes) if (attr.attributeId === 6) colors.push(attr)
+                for (let attr of this.attributes) {
+                    if (attr.attributeId === 6) {
+                        colors.push(attr)
+                    }
+                }
                 return colors
-            } else return null;
+            } else {
+                return null;
+            }
         },
         brand(){
             if (this.attributes && this.attributes.length>0){
@@ -273,15 +277,15 @@ export default {
         ...mapState(['headerPadding','user_info','cart','colors_list','favorites', 'pop_products','cat_products', 'addToOrder'])
     },
     methods: {
-      addFavorite(id) {
-        if(!this.the_heart){
-          this.addFavor(id)
-          store.commit("set_snack_message", {msg:"Товар добавлен в избранные"});
-        } else {
-          this.delFavor(id)
-        }
-      },
-      openFancybox(){
+        addFavorite(id) {
+            if(!this.the_heart){
+                this.addFavor(id)
+                store.commit("set_snack_message", {msg:"Товар добавлен в избранные"});
+            } else {
+                this.delFavor(id)
+            }
+        },
+        openFancybox(){
             Fancybox.close();
             Fancybox.show(
             [{
@@ -292,7 +296,7 @@ export default {
                 closeButton: false,
             });
         },
-      openSizeModal() {
+        openSizeModal() {
             Fancybox.close();
             Fancybox.show(
             [{
@@ -304,7 +308,7 @@ export default {
                 dragToClose: false,
             });
         },
-      handleAddToCart() {
+        handleAddToCart() {
             if(this.addToOrder) {
                 this.addProductToOrder(this.addToOrder)
             } else {
@@ -312,7 +316,7 @@ export default {
                 this.openFancybox()
             }
         },
-      updateProduct(){
+        updateProduct(){
             if (this.pop_products[this.$route.params.id]){
                 if(this.pop_products[this.$route.params.id].category.id === 24473) {
                     this.$router.replace({path: '/giftCard'})
@@ -345,7 +349,7 @@ export default {
                         this.pop_products[this.$route.params.id] = this.product;
                         this.pop_products[this.$route.params.id].attributes = this.attributes;
                         this.pop_products[this.$route.params.id].category = this.category;
-
+                        
                         this.$API.getFullPhotos(this.$route.params.id).then(value => {
                             setTimeout(() => {
                                 this.photosLoaded = true
@@ -369,7 +373,7 @@ export default {
                 })
             }
         },
-      delete_prod(){
+        delete_prod(){
             this.$API.deleteProduct(this.$route.params.id).then(response => {
                 if(response) {
                     this.cat_products[this.product.category_id] = null;
@@ -377,10 +381,10 @@ export default {
                 }
             });
         },
-      delImg(path){this.$API.delProductImg(this.product.id, path)},
-      setImgsToAdd(event){this.imgsToAdd = event.target.files},
-      addImgs(fd){this.$API.addPhotosToProduct(this.product.id, fd)},
-
+        delImg(path){this.$API.delProductImg(this.product.id, path)},
+        setImgsToAdd(event){this.imgsToAdd = event.target.files},
+        addImgs(fd){this.$API.addPhotosToProduct(this.product.id, fd)},
+        
         ...cart, ...productCard,
         ...mapMutations([
         "add2cart",

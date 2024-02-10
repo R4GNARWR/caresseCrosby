@@ -244,7 +244,7 @@ export default {
         }
     },
     created() {
-        if (!document.getElementById('ymaps')) {
+        if (!document.head.querySelector('#ymaps')) {
             const script = document.createElement('script');
             
             script.onload = () => {
@@ -254,6 +254,8 @@ export default {
             script.id = 'ymaps';
             script.src = "https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=453f5758-6290-4de4-bae1-d645fb102e5c&suggest_apikey=6d832aa2-715a-4c2f-bac8-daf07218d006";
             document.head.append(script);
+        } else {
+            ymaps.ready(this.init);
         }
         if(!this.cdek_cities) {
             this.getCitiesList()
@@ -273,7 +275,6 @@ export default {
         }
     },
     beforeUnmount() {
-        document.head.querySelector('script#ymaps').remove()
         if (this.suggestView) {
             this.suggestView.destroy();
         }

@@ -50,7 +50,12 @@ export default new Vuex.Store({
     {'Multi!':['harlequine', 'multi',  'teal/pink', 'tribal pri', 'watercolou', 'леопардовый', 'синий+голубой+айвори',
     'синий+лососевый+айвори', 'тропический принт на белом фоне', 'хаки+терракот+айвори', ]},
   ],
-  brands_search:[], colors_search:[], sizes_search:[], OneSize: null, search_result: {}, search_settings:{},
+  brands_search:[], colors_search:[], sizes_search:[],
+  OneSize: null,
+  search_result: {},
+  saved_search_filters: [],
+  saved_search_path: '',
+  search_settings:{},
   addToOrder: null,
   cdek_cities:null,
   cdek_pvz: null,
@@ -199,6 +204,8 @@ mutations: {
     state.brands_search.push({"attributeId" : 1, "attributeValueId" : 14435, "value" : "Умные купальники"}) //костыль про умные купальники
     for (let item of brands) state.brands_search.push(item)
   },
+  setFilter(state, filters) {state.saved_search_filters = filters},
+  setSearchPath(state, path) {state.saved_search_path = path},
   setColors(state, colors){state.colors_search = colors},
   setSizes(state,sizes){state.sizes_search  = sizes},
   OneSize(state, attr){state.OneSize = attr},
