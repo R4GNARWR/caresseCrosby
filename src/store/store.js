@@ -77,6 +77,9 @@ mutations: {
     state.snack_message.type = msg.type?msg.type:''
     setTimeout(()=> state.snack_message = {}, 5000);
   },
+  reset_snack_message(state) {
+    state.snack_message = {}
+  },
   errors_snack_message(state, errors){
     if (errors.length>0){
       state.snack_message = errors.toString();

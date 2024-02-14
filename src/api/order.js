@@ -1,3 +1,4 @@
+import { error } from "jquery";
 import store from "../store/store";
 import api from "./api";
 
@@ -64,5 +65,16 @@ export default {
     async getCitiesList() {
         api.getCdekSettings()
     },
+    async checkPromocode(promocode) {
+        api.checkPromocode(promocode).then(response => {
+            if(response && response.status === 200) {
+                console.log(response)
+            }
+        }).catch(error => {
+            {
+                console.log(error)
+            }
+        })
+    }
     
 }

@@ -83,7 +83,7 @@ let savedScroll = 0
 const router = useRouter()
 const store = useStore()
 
-const cityCode = ref('Уфа')
+const cityCode = ref('256')
 const chosenPVZ = ref({code:''})
 const pvzList = ref(null)
 
@@ -96,7 +96,7 @@ const headerPadding = computed(() => store.state.headerPadding)
 
 const cdek_min_time = computed(() => {
     const currentDate = new Date();
-    const futureDate = new Date(currentDate.getTime() + store.state.cdek_min_time * 24 * 60 * 60 * 1000);
+    const futureDate = new Date(currentDate.getTime() + (store.state.cdek_min_time + 2) * 24 * 60 * 60 * 1000);
     const day = futureDate.getDate();
     const monthNumber = futureDate.getMonth() + 1;
     const monthList=[
@@ -161,8 +161,7 @@ const savePvz = () => {
 }
 watch(cdek_pvz, (newVal, oldVal) => {
     if(newVal && newVal.length>0) {
-        const firsrPvz = newVal[0]
-        api.getCdekDeliveryPrice(138,{code: firsrPvz.code})
+        api.getCdekDeliveryPrice(138,{code: cityCode.value})
     }
 })
 onMounted(() => {

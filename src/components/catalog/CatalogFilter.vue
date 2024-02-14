@@ -78,7 +78,6 @@ export default {
             } else {
                 this.catalogOffsetTop = 0;
             }
-            this.removeListeners()
             this.setFilterValues()
             this.setFilterPositioning()
         },
@@ -90,8 +89,6 @@ export default {
             this.filtersBounds = this.$refs.catalogFilter.getBoundingClientRect()
             this.savedTopOffset = this.filtersBounds.top;
             this.filtersHeight = this.$refs.catalogFilter.offsetHeight;
-            window.addEventListener('scroll', this.setFilterPositioning)
-            window.addEventListener('resize', this.setCatalogPadding);
         },
         removeListeners() {
             window.removeEventListener('scroll', this.setFilterPositioning)
@@ -161,6 +158,10 @@ export default {
             this.currentScroll = newScroll;
         },
         ...search,
+    },
+    created() {
+        window.addEventListener('scroll', this.setFilterPositioning)
+        window.addEventListener('resize', this.setCatalogPadding);
     },
     mounted() {
         this.setCatalogPadding()

@@ -159,8 +159,9 @@ export default createRouter({
   scrollBehavior(to, from, savedPosition) {
     if (toArray.includes(to.name) && from.name === 'Product' && savedPosition) {
       setTimeout(() => {
-        window.scrollTo({
+        window.scroll({
           top: savedPosition.top,
+          behavior: "smooth",
         });
       }, 250);
     } else {

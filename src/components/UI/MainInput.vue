@@ -17,9 +17,10 @@
         :value="modelValue"
         :required="required"
         :id="inputId"
+        maxlength="18"
         autocomplete="tel"
         v-if="inputType === 'tel'"
-        @input="$emit('update:modelValue', $event.target.value)">
+        @input="onInput($event)">
         <input class="form-control"
         :type="inputType"
         :name="name"
@@ -60,17 +61,6 @@ export default {
         }
     },
     setup () {
-        new MaskInput(".tel", {
-            mask: (value) => {
-                if(value.startsWith('7') || value.startsWith('+')) {
-                    return '+# (###) ###-##-##'
-                } else if(value.startsWith('8')) {
-                    return '# (###) ###-##-##'
-                } else {
-                    return '+7 (###) ###-##-##'
-                }
-            } 
-        })
         return {
             v$: useVuelidate()
         }
@@ -94,7 +84,7 @@ export default {
                 case 'phone':
                 return {
                     modelValue: {
-                        minLength: helpers.withMessage("Пожалуйста введи телефон полностью", minLength(17)),
+                        minLength: helpers.withMessage("Пожалуйста введите телефон полностью", minLength(17)),
                         required: helpers.withMessage("Пожалуйста, введите ваш телефон", required),
                     }
                 };
@@ -130,15 +120,28 @@ export default {
     },
     methods: {
         onInput(event) {
-            this.$emit('input', event.target.value);
-        },
-        onChange(event) {
-            this.$emit('change', event.target.value);
+            let string = event.target.value
+            
+            this.$emit('update:modelValue', string);
         },
         showPicker(item) {
             item.showPicker()
         }
     },
+    mounted() {
+        new MaskInput(".tel", {
+            mask: (value) => {
+                let string = value
+                if(string.startsWith('8')) {
+                    return '8 (###) ###-##-##'
+                } else if(string.startsWith('7') || string.startsWith('+7') || string.startsWith('9')) {
+                    return '+7 (###) ###-##-##'
+                } else {
+                    return '+################'
+                }
+            } 
+        })
+    }
 }   
 </script>
 <style lang="scss">

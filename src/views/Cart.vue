@@ -27,9 +27,13 @@
                                 {{cartQuantity + ' ' + productsComputedText}} на сумму
                                 <span>{{cartSum}} ₽</span>
                             </div>
+                            <div class="cart-summary__item" v-if="promocode">
+                                Промокод: {{ promocode }}
+                                <span class="minus" v-if="promocodeStatus">- 3 000 ₽</span>
+                            </div>
                         </div>
                         <div class="cart-summary__input">
-                            <MainInput placeholder="Промокод"></MainInput>
+                            <MainInput placeholder="Промокод" v-model="promocode"></MainInput>
                         </div>
                         <div class="cart-summary__total">
                             Итого
@@ -38,12 +42,21 @@
                         <div class="cart-summary__total-additional">
                             Бесплатная доставка от 10 000 ₽
                         </div>
-                        <MainLink :destination="'/order'" class="btn-primary w-100" :class="{'disabled':cart.length === 0}">Перейти к оформлению</MainLink>
-                    </div>
-                </v-col>
-            </v-row>
-        </v-container>
-    </section>
+                        <MainLink
+                        :destination="'/order'"
+                        class="btn-primary w-100"
+                        :class="{'disabled':cart.length === 0}"
+                        v-if="promocode.length === 0">
+                        Перейти к оформлению
+                    </MainLink>
+                    <MainBtn class="btn-primary w-100" @click="handlePromocode()" v-else>
+                        Активировать промокод
+                    </MainBtn>
+                </div>
+            </v-col>
+        </v-row>
+    </v-container>
+</section>
 </template>
 
 <script>
@@ -63,6 +76,8 @@ export default {
         c_p:true, c_s:false, c_t:false, c_w:false,
         phone:'', address: {}, email:'',
         comment:'',
+        promocode: '',
+        promocodeStatus: false,
         commission: 0, dates_available:[], hours:{},
         the_error: '',
     }},
@@ -121,7 +136,12 @@ export default {
         },
         ...mapState(['cart','project_params','user_info','loggedIn','favorites' ])
     },
-    methods: {...order},
+    methods: {
+        handlePromocode() {
+            this.checkPromocode(this.promocode)
+        },
+        ...order
+    },
     created() {
         this.getCitiesList()
         if (this.user_info.phone) this.phone = this.user_info.phone;
@@ -261,7 +281,7 @@ section.cart
             font-size: 14px;
         }
     }
-
+    
     .cart-summary
     {
         &__label

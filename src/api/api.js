@@ -277,18 +277,27 @@ export default  {
         })
     },
     getCdekDeliveryPrice(tariff, toLocation){
-        return this.axios.get('get-cdek-delivery-cost',{params:{tariff:tariff, toLoaction:toLocation}}).then(response => {
+        store.commit('reset_snack_message')
+        return this.axios.get('get-cdek-delivery-cost',{params:{tariff:tariff, toLocation:toLocation}}).then(response => {
             if(response && response.status === 200 && response.data) {
-                store.commit('setCdekMinTime', response.data.period_min)
-                store.commit('setCdekDeliveryPrice', response.data.total_sum)
-                if(store.state.cdek_has_errors === true) {
-                    store.commit('setCdekError', true)
+                if(response.data.period_min && response.data.total_sum) {
+                    store.commit('setCdekMinTime', response.data.period_min)
+                    store.commit('setCdekDeliveryPrice', response.data.total_sum)
+                    if(store.state.cdek_has_errors === true) {
+                        store.commit('setCdekError', false)
+                    }
+                } else {
+                    store.commit('set_snack_message', { msg: 'Не удалось распознать адрес доставки', type:'error'})
                 }
+
             } else if(response && response.status > 299) {
                 if(store.state.cdek_has_errors !== true) {
                     store.commit('setCdekError', true)
                 }
             }
         })
+    },
+    checkPromocode(promocode) {
+        return this.axios.get('order/check-promocode', {params: {promocode:promocode}})
     }
 }

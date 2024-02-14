@@ -28,13 +28,11 @@
                             Данные для доставки
                         </div>
                         <div class="order-type">
-                            <div class="order-type__item" :class="{'active': deliveryType === 'courier'}">
-                                <input type="radio" name="delivery-type" value="courier" id="" v-model="deliveryType">
+                            <div class="order-type__item" :class="{'active': deliveryType === 'courier'}" @click="changeDeliveryType('courier')" role="button">
                                 <img :src="deliveryType === 'courier' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
                                 Курьером
                             </div>
-                            <div class="order-type__item" :class="{'active': deliveryType === 'pickup'}">
-                                <input type="radio" name="delivery-type" value="pickup" id="" v-model="deliveryType">
+                            <div class="order-type__item" :class="{'active': deliveryType === 'pickup'}"  @click="changeDeliveryType('pickup')" role="button">
                                 <img :src="deliveryType === 'pickup' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
                                 Самовывоз
                             </div>
@@ -48,11 +46,11 @@
                             </router-link>
                         </div>
                         
-                        <div class="order-delivery__form" v-if="user_info">
-                            <MainInput v-if="deliveryType === 'courier'" class="inline" placeholder="Адрес доставки*" v-model="address" :required="true" inputId="suggest" @blurEvent="getDeliveryPrice"></MainInput>
+                        <div class="order-delivery__form" v-show="user_info">
+                            <MainInput v-show="deliveryType === 'courier'" class="inline" placeholder="Адрес доставки*" v-model="address" :required="true" inputId="suggest" @blurEvent="blurAdressEvent"></MainInput>
                             <MainInput class="" placeholder="Имя*" v-model="name" :required="true"></MainInput>
                             <MainInput class="" placeholder="Фамилия"></MainInput>
-                            <MainInput class="" placeholder="Телефон*" validationType="phone" input-type="tel" v-model="phone" :required="true"></MainInput>
+                            <MainInput placeholder="Телефон*" validation-type="phone" v-model="phone" inputType="tel" :required="true"></MainInput>
                             <MainInput class="" placeholder="E-mail*" validationType="email" input-type="email" v-model="email" :required="true"></MainInput>
                         </div>
                     </div>
@@ -71,12 +69,12 @@
                                 <span class="waiting" v-else>Рассчитывается</span>
                             </div>
                             <div class="cart-summary__item" v-if="promocode">
-                                Промокод: SALE20
-                                <span class="minus">- 3 000 ₽</span>
+                                Промокод: {{ promocode }}
+                                <span class="minus" v-if="promocodeStatus">- 3 000 ₽</span>
                             </div>
                         </div>
                         <div class="cart-summary__input">
-                            <MainInput placeholder="Промокод"></MainInput>
+                            <MainInput placeholder="Промокод" v-model="promocode"></MainInput>
                         </div>
                         <div class="cart-summary__total">
                             Итого
@@ -85,7 +83,12 @@
                         <div class="cart-summary__total-additional">
                             Бесплатная доставка от 10 000 ₽
                         </div>
-                        <MainBtn class="btn-primary w-100" @click="handleOrder()" :disabled="!order_is_ready">Оформить заказ</MainBtn>
+                        <MainBtn class="btn-primary w-100" @click="handleOrder()" :disabled="!order_is_ready" v-if="promocode.length === 0">
+                            Оформить заказ
+                        </MainBtn>
+                        <MainBtn class="btn-primary w-100" @click="handlePromocode()" v-else>
+                            Активировать промокод
+                        </MainBtn>
                         <div class="cart-summary__offer">
                             Нажимая на кнопку «Оформить заказ», <br>
                             вы принимаете условия <a href="">Публичной оферты</a>
@@ -121,10 +124,12 @@ export default {
         phone:'', name: '', surname: '', address: '', email: '',
         comment:'',
         promocode: '',
+        promocodeStatus: false,
         commission: 0, dates_available:[], hours:{},
         the_error: '',
         deliveryType: null,
-        suggestView: null
+        suggestView: null,
+        addressInterval: null,
     }},
     setup() {
         return {
@@ -210,6 +215,11 @@ export default {
                 api.getCdekDeliveryPrice(139,{address: this.address})
             }
         },
+        blurAdressEvent() {
+            this.addressInterval = setInterval(()=> {
+                this.getDeliveryPrice()
+            }, 500)
+        },
         async handleOrder() {
             var validationResult = await this.v$.$validate();
             
@@ -219,29 +229,31 @@ export default {
             }
             this.make_the_order()
         },
+        handlePromocode() {
+            this.checkPromocode(this.promocode)
+        },
         init() {
             this.suggestView = new ymaps.SuggestView('suggest');
+            this.suggestView.events.add(['select'], (event) => {
+                const address = event.get("item").displayName
+                if(address) {
+                    clearInterval(this.addressInterval)
+                    this.address = address;
+                    this.getDeliveryPrice()
+                }
+            })
+        },
+        changeDeliveryType(value) {
+            this.deliveryType = value
+            store.commit('setCdekDeliveryPrice', null)
+            if(value === 'courier') {
+                store.commit('setCdekChosenPvz', null)
+            } else {
+                this.address = this.user_info.city || ''
+            }
         },
         ...order, ...cart, ...productCard,
         ...mapMutations(['clearCart', 'cartItemChangeQ', 'cartItemSetQ', 'removeFromCart']),
-    },
-    watch: {
-        address: function () {
-            if(!this.cdek_chozen_pvz) {
-                store.commit('setCdekDeliveryPrice', null)
-            }
-        },
-        deliveryType: {
-            handler: function (newVal) {
-                store.commit('setCdekDeliveryPrice', null)
-                if(newVal === 'courier') {
-                    store.commit('setCdekChosenPvz', null)
-                } else {
-                    this.address = this.user_info.city || ''
-                }
-            },
-            immediate: true
-        }
     },
     created() {
         if (!document.head.querySelector('#ymaps')) {
@@ -266,10 +278,13 @@ export default {
         this.phone = this.user_info.phone || ''
         this.name = this.user_info.name || ''
         this.surname = this.user_info.surname || ''
-        this.address = this.user_info.city || ''
+        if(this.user_info.city) {
+            this.address = this.user_info.city || ''
+            this.getDeliveryPrice()
+        }
+
         if(this.$route.query && this.$route.query.deliveryType) {
             this.deliveryType = this.$route.query.deliveryType
-            console.log(this.deliveryType)
         } else {
             this.deliveryType = 'courier'
         }
