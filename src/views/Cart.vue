@@ -27,6 +27,10 @@
                                 {{cartQuantity + ' ' + productsComputedText}} на сумму
                                 <span>{{cartSum}} ₽</span>
                             </div>
+                            <div class="cart-summary__item" v-if="cdek_delivery_price">
+                                Доставка
+                                <span >{{cdek_delivery_price}}</span>
+                            </div>
                             <div class="cart-summary__item" v-if="promocode">
                                 Промокод: {{ promocode }}
                                 <span class="minus" v-if="promocodeStatus">- 3 000 ₽</span>
@@ -93,7 +97,7 @@ export default {
                 return Math.ceil(sum);
             } else return 0
         },
-        the_sum(){return this.cartSum+this.commission},
+        the_sum(){return this.cartSum+this.commission+this.cdek_delivery_price},
         cartQuantity() {
             let q = 0;
             if(this.cart && this.cart.length>0)
@@ -134,7 +138,7 @@ export default {
             )
             return true; else return false
         },
-        ...mapState(['cart','project_params','user_info','loggedIn','favorites' ])
+        ...mapState(['cart','project_params','user_info','loggedIn','favorites', 'cdek_delivery_price'])
     },
     methods: {
         handlePromocode() {
