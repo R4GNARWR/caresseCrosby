@@ -96,7 +96,7 @@ const headerPadding = computed(() => store.state.headerPadding)
 
 const cdek_min_time = computed(() => {
     const currentDate = new Date();
-    const futureDate = new Date(currentDate.getTime() + (store.state.cdek_min_time + 2) * 24 * 60 * 60 * 1000);
+    const futureDate = new Date(currentDate.getTime() + (store.state.cdek_min_time) * 24 * 60 * 60 * 1000);
     const day = futureDate.getDate();
     const monthNumber = futureDate.getMonth() + 1;
     const monthList=[

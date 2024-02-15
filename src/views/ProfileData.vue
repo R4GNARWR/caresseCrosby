@@ -18,7 +18,7 @@
                 <v-col md="7" cols="12">
                     <form action="" class="profile-data__form" v-if="user">
                         <div class="profile-data__form-line">
-                            <MainInput placeholder="Адрес доставки*" validation-type="adress" v-model="user.city" :required="true"></MainInput>
+                            <MainInput placeholder="Адрес доставки*" inputId="suggest" validation-type="adress" v-model="user.city" :required="true"></MainInput>
                         </div>
                         <MainInput placeholder="Имя*"  validation-type="name" v-model="user.name" :required="true"></MainInput>
     
@@ -89,7 +89,8 @@ export default {
             dropdownLabels: [
                 'Размер белья',
                 'Размер одежды'
-            ]
+            ],
+            suggestView: null,
         };
     },
     setup() {
@@ -143,15 +144,42 @@ export default {
                 type: 'inline',
             }]);
         },
+        init() {
+            this.suggestView = new ymaps.SuggestView('suggest');
+            this.suggestView.events.add(['select'], (event) => {
+                const address = event.get("item").displayName
+                if(address) {
+                    this.user.city = address;
+                }
+            })
+        },
     },
     created() {
         this.get_sizes();
+        if (!document.head.querySelector('#ymaps')) {
+            const script = document.createElement('script');
+            
+            script.onload = () => {
+                ymaps.ready(this.init);
+            };
+            
+            script.id = 'ymaps';
+            script.src = "https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=453f5758-6290-4de4-bae1-d645fb102e5c&suggest_apikey=6d832aa2-715a-4c2f-bac8-daf07218d006";
+            document.head.append(script);
+        } else {
+            ymaps.ready(this.init);
+        }
     },
     beforeCreate() {
         if (!store.state.user_info.id) {
             this.$router.push("/");
         } 
     },
+    beforeUnmount() {
+        if (this.suggestView) {
+            this.suggestView.destroy();
+        }
+    }
 };
 </script>
 
