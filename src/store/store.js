@@ -63,6 +63,8 @@ export default new Vuex.Store({
   cdek_delivery_price: null,
   cdek_chozen_pvz: null,
   cdek_has_errors: false,
+  mainBanners: null,
+  blogsList: null,
 },
 mutations: {
   setHeaderPadding(state,value)
@@ -220,5 +222,7 @@ mutations: {
   setCdekDeliveryPrice(state,sr) {state.cdek_delivery_price = sr},
   setCdekChosenPvz(state,sr) {state.cdek_chozen_pvz = sr},
   setCdekError(state,sr) {state.cdek_has_errors = sr},
+  setBanners(state, banners) {state.mainBanners = banners},
+  setBlogs(state, blogs) {state.blogsList = blogs}
 },
 })

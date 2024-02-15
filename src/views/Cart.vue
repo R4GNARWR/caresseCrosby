@@ -27,9 +27,15 @@
                                 {{cartQuantity + ' ' + productsComputedText}} на сумму
                                 <span>{{cartSum}} ₽</span>
                             </div>
-                            <div class="cart-summary__item" v-if="cdek_delivery_price">
+                            <div class="cart-summary__item">
                                 Доставка
-                                <span >{{cdek_delivery_price}}</span>
+                                <span v-if="cdek_delivery_price && cartSum < 10000">{{cdek_delivery_price}}</span>
+                                <span v-if="cartSum > 10000">Бесплатно</span>
+                                <span class="waiting" v-if="!cdek_delivery_price && cartSum < 10000">Рассчитывается</span>
+                            </div>
+                            <div class="cart-summary__item"  v-if="cdek_delivery_price && cdek_min_time">
+                                Сроки доставки
+                                <span>{{cdek_min_time}}-{{ cdek_min_time + 2 }} {{ daysComputed }}</span>
                             </div>
                             <div class="cart-summary__item" v-if="promocode">
                                 Промокод: {{ promocode }}
@@ -41,7 +47,7 @@
                         </div>
                         <div class="cart-summary__total">
                             Итого
-                            <span>{{the_sum}} ₽</span>
+                            <span>{{cartSum}} ₽</span>
                         </div>
                         <div class="cart-summary__total-additional">
                             Бесплатная доставка от 10 000 ₽
@@ -86,6 +92,24 @@ export default {
         the_error: '',
     }},
     computed:{
+        daysComputed() {
+            if(this.cdek_min_time) {
+                let days = this.cdek_min_time+2
+                if(days === 1) {
+                    return 'день'
+                } else if(days > 1 && days < 5 && days < 10) {
+                    return 'дня'
+                } else if(days >= 5 && days < 20) {
+                    return 'дней'
+                } else if(days % 10 > 1 && days % 10 < 5 && days > 20) {
+                    return 'дня'
+                } else if(days % 10 >= 5 || days % 10===0 && days > 20) {
+                    return 'дней'
+                } else if(days % 10===1) {
+                    return 'день'
+                }
+            }
+        },
         full_address(){return (this.address.index?this.address.index + ' ':'')+ (this.address.city?this.address.city+ ' ':'')+ (this.address.street?this.address.street + ' ':'')+ (this.address.building?this.address.building:'')},
         delivery_date(){return new Date()},
         cartSum() {
@@ -97,7 +121,9 @@ export default {
                 return Math.ceil(sum);
             } else return 0
         },
-        the_sum(){return this.cartSum+this.commission+this.cdek_delivery_price},
+        the_sum(){
+            return this.cartSum + this.commission + this.cdek_delivery_price || 0
+        },
         cartQuantity() {
             let q = 0;
             if(this.cart && this.cart.length>0)
@@ -138,7 +164,7 @@ export default {
             )
             return true; else return false
         },
-        ...mapState(['cart','project_params','user_info','loggedIn','favorites', 'cdek_delivery_price'])
+        ...mapState(['cart','project_params','user_info','loggedIn','favorites', 'cdek_delivery_price', 'cdek_min_time',])
     },
     methods: {
         handlePromocode() {

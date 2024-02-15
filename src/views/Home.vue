@@ -1,12 +1,19 @@
 <template>
     <SwiperFullScreen :slidesArray="mainSlides" ></SwiperFullScreen>
     <MainProps></MainProps>
-    <SwiperCards id="hits" name="Хиты продаж" :slidesArray="hitProducts.slice(0, 20)" v-if="hitProducts && hitProducts.length > 0"></SwiperCards>
+    <keep-alive>
+        <SwiperCards id="hits" name="Хиты продаж" :slidesArray="hitProducts.slice(0, 20)" v-if="hitProducts && hitProducts.length > 0"></SwiperCards>
+    </keep-alive>
+    
     <MainCategories></MainCategories>
     <MainBanner></MainBanner>
-    <SwiperCards name="Популярное" :slidesArray="popularProducts.slice(0, 20)" v-if="popularProducts && popularProducts.length > 0"></SwiperCards>
+    <keep-alive>
+        <SwiperCards name="Популярное" :slidesArray="popularProducts.slice(0, 20)" v-if="popularProducts && popularProducts.length > 0"></SwiperCards>
+    </keep-alive>
     <MainAbout></MainAbout>
-    <SwiperCards name="Новое поступление" :slidesArray="newProducts.slice(0, 20)" v-if="newProducts && newProducts.length > 0"></SwiperCards>
+    <keep-alive>
+        <SwiperCards name="Новое поступление" :slidesArray="newProducts.slice(0, 20)" v-if="newProducts && newProducts.length > 0"></SwiperCards>
+    </keep-alive>
     <MainArticles></MainArticles>
 </template>
 <script>
@@ -117,7 +124,7 @@ export default {
             if (window.innerWidth>1600) return window.innerWidth/(0.22*window.innerWidth);
             else return window.innerWidth/(0.85*window.innerWidth);
         },
-        ...mapState(['popular_products','hit_products','new_products'])
+        ...mapState(['popular_products','hit_products','new_products', 'mainBanners'])
     },
     created() {
         if(!this.hit_products) {
@@ -146,17 +153,29 @@ export default {
         } else {
             this.newProducts = this.new_products
         }
-        this.$API.getGallery().then(value =>{
-            if(value.data.success && value.data.banners) {
-                for (let b of value.data.banners) {
-                    if (this.galleries[b.header]) this.galleries[b.header].push(b.file_name)
-                    else {
-                        this.galleries[b.header] = [];
-                        this.galleries[b.header].push(b.file_name)
+        if(!this.mainBanners) {
+            this.$API.getGallery().then(value =>{
+                if(value.data.success && value.data.banners) {
+                    store.commit('setBanners', value.data.banners)
+                    for (let b of value.data.banners) {
+                        if (this.galleries[b.header]) this.galleries[b.header].push(b.file_name)
+                        else {
+                            this.galleries[b.header] = [];
+                            this.galleries[b.header].push(b.file_name)
+                        }
                     }
                 }
+            })
+        } else {
+            for (let b of this.mainBanners) {
+                if (this.galleries[b.header]) this.galleries[b.header].push(b.file_name)
+                else {
+                    this.galleries[b.header] = [];
+                    this.galleries[b.header].push(b.file_name)
+                }
             }
-        })
+        }
+        
     },
 }
 </script>

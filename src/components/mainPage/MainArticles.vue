@@ -54,17 +54,29 @@
 </section>
 </template>
 <script>
+import store from '../../store/store';
+import {mapMutations, mapState} from "vuex";
 export default {
     data() {
         return {
             articles: []
         }
     },
+    computed:{
+        ...mapState(['blogsList'])
+    },
     created() {
-        this.$API.getBlogs().then(value => {
-            if (value.data.success)
-            this.articles = value.data.blogs;
-        })
+        if(!this.blogsList) {
+            this.$API.getBlogs().then(value => {
+                if (value.data.success) {
+                    this.articles = value.data.blogs;
+                    store.commit('setBlogs', value.data.blogs)
+                }
+            })
+        } else {
+            this.articles = this.blogsList;
+        }
+        
     },
 }
 </script>
@@ -113,7 +125,7 @@ export default {
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-
+        
         &-label
         {
             margin-bottom: 3.5rem;
@@ -208,7 +220,7 @@ export default {
     }
     .main-article
     {
-
+        
         &__img
         {
             height: 327px;

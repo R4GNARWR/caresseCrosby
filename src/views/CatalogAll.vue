@@ -1,4 +1,5 @@
 <template>
+    
     <section class="catalog catalogAll">
         <v-container>
             <div class="breadcrumbs text-page__breadcrumbs">
@@ -12,12 +13,15 @@
                     </div>
                 </v-col>
                 <v-col cols="12" v-if="products && products.length > 0">
-                    <SwiperCards v-for="(item, index) in products" :key="index" :slidesArray="item.products.slice(0, 12)" :name="item.name" :catId="item.catId"></SwiperCards>
+                    <keep-alive>
+                        <SwiperCards v-for="(item, index) in products" :key="index" :slidesArray="item.products.slice(0, 12)" :name="item.name" :catId="item.catId"></SwiperCards>
+                    </keep-alive>
                 </v-col>
             </v-row>
         </v-container>
         
     </section>
+    
 </template>
 
 <script>

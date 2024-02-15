@@ -61,13 +61,13 @@
                         <div class="cart-summary__items">
                             <div class="cart-summary__item">
                                 {{cartQuantity + ' ' + productsComputedText}} на сумму
-                                <span>{{the_sum}} ₽</span>
+                                <span>{{cartSum}} ₽</span>
                             </div>
                             <div class="cart-summary__item">
                                 Доставка
                                 <span v-if="cdek_delivery_price && cartSum < 10000">{{cdek_delivery_price}}</span>
-                                <span v-if="cdek_delivery_price && cartSum > 10000">Бесплатно</span>
-                                <span class="waiting" v-if="!cdek_delivery_price">Рассчитывается</span>
+                                <span v-if="cartSum > 10000">Бесплатно</span>
+                                <span class="waiting" v-if="!cdek_delivery_price && cartSum < 10000">Рассчитывается</span>
                             </div>
                             <div class="cart-summary__item"  v-if="cdek_delivery_price && cdek_min_time">
                                 Сроки доставки
@@ -83,7 +83,7 @@
                         </div>
                         <div class="cart-summary__total">
                             Итого
-                            <span>{{the_sum}} ₽</span>
+                            <span>{{cartSum}} ₽</span>
                         </div>
                         <div class="cart-summary__total-additional">
                             Бесплатная доставка от 10 000 ₽

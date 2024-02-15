@@ -2,7 +2,7 @@
     <section class="articles-detail" v-if="blog">
         <div class="articles-detail__img">
             <img v-if="blog.img"
-                :src="'https://static.ccrosby.ru/blogs/'+ blog.img" alt="">
+            :src="'https://static.ccrosby.ru/blogs/'+ blog.img" alt="">
         </div>
         <v-container>
             <div class="row">
@@ -15,36 +15,36 @@
                         <div class="articles-detail__content-label">
                             {{ blog.title }}
                         </div>
-
+                        
                         <div class="articles-detail__content-text" v-for="item in JSON.parse(blog.json_string.replace(/(\\r)*\\n\\n/g, '<br>'))" v-if="blog.json_string">
                             <div class="img" v-if="item.type === 'img'" >
                                 <img v-if="item.content.split(',').length===1" :alt="blog.title"
                                 :src="'https://static.ccrosby.ru/blogs/'+item.content">
                                 <swiper-container
-                                    v-else
-                                    class="swiper"
-                                    :slidesPerView="1"
-                                    :loop= "true"
-                                    :spaceBetween= "28"
-                                    :pagination="true"
-
-                                    >
-                                    <swiper-slide class="swiper-slide img" v-for="img in item.content.split(',')">
-                                        <img :alt="blog.title" :src="'https://static.ccrosby.ru/blogs/'+img">
-                                    </swiper-slide>
-
-                                </swiper-container>
-                            </div>
-                            <p v-if="item.type === 'text'" v-html="item.content">
-                            </p>
+                                v-else
+                                class="swiper"
+                                :slidesPerView="1"
+                                :loop= "true"
+                                :spaceBetween= "28"
+                                :pagination="true"
+                                
+                                >
+                                <swiper-slide class="swiper-slide img" v-for="img in item.content.split(',')">
+                                    <img :alt="blog.title" :src="'https://static.ccrosby.ru/blogs/'+img">
+                                </swiper-slide>
+                                
+                            </swiper-container>
                         </div>
-                        <button class="ms-auto btn btn-danger" @click="deleteBlog(blog.title)" v-if="user_info && user_info.role === 3">Удалить статью</button>
-                        <DetailLinks></DetailLinks>
+                        <p v-if="item.type === 'text'" v-html="item.content">
+                        </p>
                     </div>
-                </v-col>
-            </div>
-        </v-container>
-    </section>
+                    <button class="ms-auto btn btn-danger" @click="deleteBlog(blog.title)" v-if="user_info && user_info.role === 3">Удалить статью</button>
+                    <DetailLinks></DetailLinks>
+                </div>
+            </v-col>
+        </div>
+    </v-container>
+</section>
 </template>
 
 <script>
@@ -72,25 +72,41 @@ export default {
         }
     },
     computed: {
-        ...mapState(['user_info'])
+        ...mapState(['user_info', 'blogsList'])
     },
     beforeCreate() {
-        this.$API.getBlogs().then(value => {
-            if (value.data.success) this.blogs = value.data.blogs;
-        })
+        if(!this.blogsList) {
+            this.$API.getBlogs().then(value => {
+                if (value.data.success) {
+                    this.blogs = value.data.blogs;
+                    store.commit('setBlogs', value.data.blogs)
+                } 
+            })
+        } else {
+            this.blogs = this.blogsList
+        }
+        
     },
     created() {
         if (this.$route.params.id) {
             if (this.blogs && this.blogs.length>0) {
                 this.blog=this.blogs[this.$route.params.id];
             }
-            else this.$API.getBlogs().then(value => {
-                if (value.data.success) {
-                    this.blogs = value.data.blogs;
+            else {
+                if(!this.blogsList) {
+                    this.$API.getBlogs().then(value => {
+                        if (value.data.success) {
+                            this.blogs = value.data.blogs;
+                            this.blog=this.blogs[this.$route.params.id];
+                            store.commit('setBlogs', value.data.blogs)
+                        }
+                    })
+                } else {
+                    this.blogs = this.blogsList;
                     this.blog=this.blogs[this.$route.params.id];
                 }
-
-            })
+                
+            } 
         }
         register()
     },
@@ -138,10 +154,10 @@ export default {
             font-size: 2rem;
             line-height: 1.8em;
             letter-spacing: -0.32px;
-
+            
         }
     }
-
+    
 }
 .articles-detail__content-text
 {

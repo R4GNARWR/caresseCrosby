@@ -6,20 +6,20 @@
                 <div class="breadcrumbs-divider">/</div>
                 <a class="breadcrumbs-item active" >Статьи</a>
             </div>
-            <div class="articles-main" v-if="blogs && blogs.length > 0">
+            <div class="articles-main" v-if="articles && articles.length > 0">
                 <v-row>
                     <v-col md="6" cols="12">
                         <div class="articles-main__img">
-                            <img :src="'https://static.ccrosby.ru/blogs/' + blogs[0].img" alt="">
+                            <img :src="'https://static.ccrosby.ru/blogs/' + articles[0].img" alt="">
                         </div>
                     </v-col>
                     <v-col md="6" cols="12">
                         <div class="articles-main__content" >
                             <div class="articles-main__content-label">
-                                {{ blogs[0].title }}
+                                {{ articles[0].title }}
                             </div>
                             <div class="articles-main__content-text">
-                                {{ JSON.parse(blogs[0].json_string)[0].content }}
+                                {{ JSON.parse(articles[0].json_string)[0].content }}
                             </div>
                             <router-link to="articles/0" class="articles-main__content-more">Читать статью</router-link>
                         </div>
@@ -34,7 +34,7 @@
                         </div>
                     </v-col>
                     
-                    <v-col md="4" sm="6" cols="12" v-for="(item, index) in blogs.slice(1, blogs.length)" :key="index" v-if="blogs">
+                    <v-col md="4" sm="6" cols="12" v-for="(item, index) in articles.slice(1, articles.length)" :key="index" v-if="articles && articles.length > 0">
                         <ArticleCard :cardData="item" :cardId="index+1" v-if="item"></ArticleCard>
                     </v-col>
                 </v-row>
@@ -59,24 +59,42 @@ export default {
     data() {
         return {
             actual_blog: null,
-            blogs: [],
+            articles: [],
         }
     },
     computed:{
-        ...mapState(['user_info',])
+        ...mapState(['user_info','blogsList'])
     },
     beforeCreate() {
-        this.$API.getBlogs().then(value => {
-            if (value.data.success) this.blogs = value.data.blogs;
-        })
-    },
-    created() {
-        if (this.$route.params.blogId) {
-            if (this.blogs && this.blogs.length>0) this.actual_blog=this.blogs[this.$route.params.blogId];
-            else this.$API.getBlogs().then(value => {
-                if (value.data.success) this.blogs = value.data.blogs;
-                this.actual_blog=this.blogs[this.$route.params.blogId];
+        if(!this.blogsList) {
+            this.$API.getBlogs().then(value => {
+                if (value.data.success) {
+                    this.articles = value.data.blogs;
+                    store.commit('setBlogs', value.data.blogs)
+                }
             })
+        } else {
+            this.articles = this.blogsList;
+        }
+    },
+    mounted() {
+        if (this.$route.params.blogId) {
+            if (this.articles && this.articles.length>0) {
+                this.actual_blog=this.articles[this.$route.params.blogId];
+            } else {
+                if(!this.blogsList) {
+                    this.$API.getBlogs().then(value => {
+                        if (value.data.success) {
+                            this.articles = value.data.blogs;
+                            this.actual_blog=this.blogs[this.$route.params.blogId];
+                            store.commit('setBlogs', value.data.blogs)
+                        }
+                    })
+                } else {
+                    this.articles = this.blogsList;
+                    this.actual_blog=this.blogsList[this.$route.params.blogId];
+                }
+            }
         }
     },
 };
