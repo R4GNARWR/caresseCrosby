@@ -140,6 +140,7 @@ export default {
         handlePromocode() {
             this.checkPromocode(this.promocode)
         },
+        
         ...order
     },
     created() {

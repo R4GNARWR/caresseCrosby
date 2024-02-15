@@ -65,8 +65,13 @@
                             </div>
                             <div class="cart-summary__item">
                                 Доставка
-                                <span v-if="cdek_delivery_price">{{cdek_delivery_price}}</span>
-                                <span class="waiting" v-else>Рассчитывается</span>
+                                <span v-if="cdek_delivery_price && cartSum < 10000">{{cdek_delivery_price}}</span>
+                                <span v-if="cdek_delivery_price && cartSum > 10000">Бесплатно</span>
+                                <span class="waiting" v-if="!cdek_delivery_price">Рассчитывается</span>
+                            </div>
+                            <div class="cart-summary__item"  v-if="cdek_delivery_price && cdek_min_time">
+                                Сроки доставки
+                                <span>{{cdek_min_time}}-{{ cdek_min_time + 2 }} {{ daysComputed }}</span>
                             </div>
                             <div class="cart-summary__item" v-if="promocode">
                                 Промокод: {{ promocode }}
@@ -137,6 +142,24 @@ export default {
         };
     },
     computed:{
+        daysComputed() {
+            if(this.cdek_min_time) {
+                let days = this.cdek_min_time+2
+                if(days === 1) {
+                    return 'день'
+                } else if(days > 1 && days < 5 && days < 10) {
+                    return 'дня'
+                } else if(days >= 5 && days < 20) {
+                    return 'дней'
+                } else if(days % 10 > 1 && days % 10 < 5 && days > 20) {
+                    return 'дня'
+                } else if(days % 10 >= 5 || days % 10===0 && days > 20) {
+                    return 'дней'
+                } else if(days % 10===1) {
+                    return 'день'
+                }
+            }
+        },
         full_address(){
             if(this.deliveryType === 'courier') {
                 return this.address
@@ -193,7 +216,7 @@ export default {
                 return 'товаров'
             }
         },
-        ...mapState(['cart','project_params','user_info','loggedIn','favorites','cdek_delivery_price', 'cdek_cities','cdek_pvz','cdek_chozen_pvz'])
+        ...mapState(['cart','project_params','user_info','loggedIn','favorites','cdek_delivery_price', 'cdek_min_time', 'cdek_cities','cdek_pvz','cdek_chozen_pvz'])
     },
     methods:{
         addFavorite(id) {
@@ -211,12 +234,14 @@ export default {
             return false;
         },
         getDeliveryPrice() {
-            if(this.address.length > 0) {
-                api.getCdekDeliveryPrice(139,{address: this.address})
+            if(this.cartSum < 10000) {
+                if(this.address.length > 0) {
+                    api.getCdekDeliveryPrice(139,{address: this.address})
+                }
             }
         },
         blurAdressEvent() {
-            this.addressInterval = setInterval(()=> {
+            this.addressInterval = setTimeout(()=> {
                 this.getDeliveryPrice()
             }, 500)
         },
@@ -237,7 +262,7 @@ export default {
             this.suggestView.events.add(['select'], (event) => {
                 const address = event.get("item").displayName
                 if(address) {
-                    clearInterval(this.addressInterval)
+                    clearTimeout(this.addressInterval)
                     this.address = address;
                     this.getDeliveryPrice()
                 }
@@ -282,7 +307,7 @@ export default {
             this.address = this.user_info.city || ''
             this.getDeliveryPrice()
         }
-
+        
         if(this.$route.query && this.$route.query.deliveryType) {
             this.deliveryType = this.$route.query.deliveryType
         } else {
