@@ -46,7 +46,7 @@
 
 <script>
 import {mapState} from "vuex";
-
+import store from "../store/store";
 import ArticleCard from '../components/UI/ArticleCard.vue';
 import Breadcrumbs from '../components/UI/Breadcrumbs.vue';
 import MainBtn from '../components/UI/MainBtn.vue';

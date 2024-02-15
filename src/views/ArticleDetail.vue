@@ -51,6 +51,7 @@
 import DetailLinks from '../components/UI/DetailLinks.vue';
 import { register } from 'swiper/element/bundle';
 import {mapMutations, mapState} from "vuex";
+import store from "../store/store";
 
 export default {
     components: {
