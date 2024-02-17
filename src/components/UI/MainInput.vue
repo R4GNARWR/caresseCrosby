@@ -57,7 +57,6 @@ export default {
     directives: { maska: vMaska },
     data() {
         return {
-            
         }
     },
     setup () {
@@ -121,7 +120,6 @@ export default {
     methods: {
         onInput(event) {
             let string = event.target.value
-            
             this.$emit('update:modelValue', string);
         },
         showPicker(item) {
@@ -131,15 +129,13 @@ export default {
     mounted() {
         new MaskInput(".tel", {
             mask: (value) => {
-                let string = value
-                if(string.startsWith('8')) {
-                    return '8 (###) ###-##-##'
-                } else if(string.startsWith('7') || string.startsWith('+7') || string.startsWith('9')) {
+                if(value.startsWith('7') || value.startsWith('+7') || value.startsWith('9')) {
                     return '+7 (###) ###-##-##'
                 } else {
                     return '+################'
                 }
-            } 
+            },
+            preProcess: (value) => value.startsWith('8') ? 7 + value.substring(1) : value
         })
     }
 }   
