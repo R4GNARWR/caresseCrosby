@@ -31,7 +31,6 @@
                                 Доставка
                                 <span v-if="cdek_delivery_price && cartSum < 10000">{{cdek_delivery_price}}</span>
                                 <span v-if="cartSum > 10000">Бесплатно</span>
-                                <span class="waiting" v-if="!cdek_delivery_price && cartSum < 10000">Рассчитывается</span>
                             </div>
                             <div class="cart-summary__item"  v-if="cdek_delivery_price && cdek_min_time">
                                 Сроки доставки
@@ -39,7 +38,7 @@
                             </div>
                             <div class="cart-summary__item" v-if="promocode">
                                 Промокод: {{ promocode }}
-                                <span class="minus" v-if="promocodeStatus">- 3 000 ₽</span>
+                                <span class="minus" v-if="promocodeDiscount">- {{promocodeDiscount.toLocaleString()}} ₽</span>
                             </div>
                         </div>
                         <div class="cart-summary__input">
@@ -47,7 +46,7 @@
                         </div>
                         <div class="cart-summary__total">
                             Итого
-                            <span>{{cartSum}} ₽</span>
+                            <span>{{the_sum}} ₽</span>
                         </div>
                         <div class="cart-summary__total-additional">
                             Бесплатная доставка от 10 000 ₽
@@ -87,7 +86,6 @@ export default {
         phone:'', address: {}, email:'',
         comment:'',
         promocode: '',
-        promocodeStatus: false,
         commission: 0, dates_available:[], hours:{},
         the_error: '',
     }},
@@ -122,7 +120,11 @@ export default {
             } else return 0
         },
         the_sum(){
-            return this.cartSum + this.commission + this.cdek_delivery_price || 0
+            if(this.cartSum + this.commission < 10000) {
+                return this.cartSum+this.commission+this.cdek_delivery_price-this.promocodeDiscount
+            } else {
+                return this.cartSum+this.commission-this.promocodeDiscount
+            }
         },
         cartQuantity() {
             let q = 0;
@@ -164,7 +166,7 @@ export default {
             )
             return true; else return false
         },
-        ...mapState(['cart','project_params','user_info','loggedIn','favorites', 'cdek_delivery_price', 'cdek_min_time',])
+        ...mapState(['cart','project_params','user_info','loggedIn','favorites', 'cdek_delivery_price', 'cdek_min_time', 'promocodeDiscount'])
     },
     methods: {
         handlePromocode() {

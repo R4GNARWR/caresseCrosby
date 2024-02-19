@@ -62,11 +62,16 @@ export default {
                     });
                 }
                 if(color) {
-                    return 'background-color:' + Object.getOwnPropertyNames(color)+'; border: 1px solid #827F7D;';
+                    console.log(color)
+                    if(Object.getOwnPropertyNames(color) != '#FFFFFF') {
+                        return 'background-color:' + Object.getOwnPropertyNames(color)+';';
+                    } else {
+                        return 'background-color:' + Object.getOwnPropertyNames(color)+'; border: 1px solid #827F7D;';
+                    }
                 } else {
                     return false
                 }
- 
+                
             }
         },
         cartQuantity() {

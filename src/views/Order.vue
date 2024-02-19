@@ -75,7 +75,7 @@
                             </div>
                             <div class="cart-summary__item" v-if="promocode">
                                 Промокод: {{ promocode }}
-                                <span class="minus" v-if="promocodeStatus">- 3 000 ₽</span>
+                                <span class="minus" v-if="promocodeDiscount">- {{promocodeDiscount.toLocaleString()}} ₽</span>
                             </div>
                         </div>
                         <div class="cart-summary__input">
@@ -83,7 +83,7 @@
                         </div>
                         <div class="cart-summary__total">
                             Итого
-                            <span>{{cartSum}} ₽</span>
+                            <span>{{the_sum}} ₽</span>
                         </div>
                         <div class="cart-summary__total-additional">
                             Бесплатная доставка от 10 000 ₽
@@ -173,7 +173,13 @@ export default {
             for (let cartPosition of vm.cart) sum += cartPosition.price * cartPosition.q;
             return Math.ceil(sum);
         },
-        the_sum(){return this.cartSum+this.commission+this.cdek_delivery_price},
+        the_sum(){
+            if(this.cartSum + this.commission < 10000) {
+                return this.cartSum+this.commission+this.cdek_delivery_price-this.promocodeDiscount
+            } else {
+                return this.cartSum+this.commission-this.promocodeDiscount
+            }
+        },
         order_is_ready()
         {
             if(this.cart.length>0 &&
@@ -216,7 +222,7 @@ export default {
                 return 'товаров'
             }
         },
-        ...mapState(['cart','project_params','user_info','loggedIn','favorites','cdek_delivery_price', 'cdek_min_time', 'cdek_cities','cdek_pvz','cdek_chozen_pvz'])
+        ...mapState(['cart','project_params','user_info','loggedIn','favorites','cdek_delivery_price', 'cdek_min_time', 'cdek_cities','cdek_pvz','cdek_chozen_pvz', 'promocodeDiscount'])
     },
     methods:{
         addFavorite(id) {
