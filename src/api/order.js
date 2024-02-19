@@ -68,7 +68,12 @@ export default {
     async checkPromocode(promocode) {
         api.checkPromocode(promocode).then(response => {
             if(response && response.status === 200) {
-                console.log(response)
+                if(response.data.success) {
+                    store.commit('set_snack_message', {msg: response.data.message})
+                    store.commit('setPromocode', response.data.sum)
+                } else {
+                    store.commit('set_snack_message', {msg: "Указанный промокод не найден!"},'error')
+                }
             }
         }).catch(error => {
             {

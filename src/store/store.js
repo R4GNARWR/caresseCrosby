@@ -31,6 +31,7 @@ export default new Vuex.Store({
     cart: [],
     favorites:[],
     order:null,
+    promocodeDiscount: null,
     // search
     colors_list: [
       {'#000000':['#000000','#483D8B', 'black','черный', 'noir','charc/blac', 'черный/телесный',]},
@@ -225,6 +226,7 @@ mutations: {
   setCdekChosenPvz(state,sr) {state.cdek_chozen_pvz = sr},
   setCdekError(state,sr) {state.cdek_has_errors = sr},
   setBanners(state, banners) {state.mainBanners = banners},
-  setBlogs(state, blogs) {state.blogsList = blogs}
+  setBlogs(state, blogs) {state.blogsList = blogs},
+  setPromocode(state, value) {state.promocodeDiscount = value}
 },
 })
