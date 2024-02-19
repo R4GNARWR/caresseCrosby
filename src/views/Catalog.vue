@@ -33,7 +33,6 @@
                         :brands_search="brandFilters"
                         :colors_search="colorFilter"
                         :sizes_search="sizesFilter"
-                        :activeFilters="filters"
                         :catalogListHeight="catalogHeight"
                         @updateFilter="updateFilter"
                         @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
@@ -51,42 +50,37 @@
     </keep-alive>
 </template>
 <script>
-const objectsEqual = (o1, o2) =>
-typeof o1 === 'object' && Object.keys(o1).length > 0
-? Object.keys(o1).length === Object.keys(o2).length
-&& Object.keys(o1).every(p => objectsEqual(o1[p], o2[p]))
-: o1 === o2;
 
 const filterSuccess = (a, b) => {
     a=Array.from(a)
     b=Array.from(b)
-    
+
     let groupedFilter = {};
     for (var i=0; i<a.length; i++) {
         let p = a[i]["attributeId"];
         if (!groupedFilter[p]) { groupedFilter[p] = []; }
         groupedFilter[p].push(a[i]);
     }
-    
+
     let groupedProductAttr = {};
     for (var i=0; i<b.length; i++) {
         let p = b[i]["attributeId"];
         if (!groupedProductAttr[p]) { groupedProductAttr[p] = []; }
         groupedProductAttr[p].push(b[i]);
     }
-    
+
     let result = {}
     for (let k in groupedFilter){
         result[k]=false
         groupedFilter[k].forEach(a1=>{
             if (groupedProductAttr[k])
             groupedProductAttr[k].forEach(b1=>{
-                if (objectsEqual(a1, b1)) result[k]= true
+              if (a1.attributeValueId=== b1.attributeValueId) result[k]= true
             })
         })
         if (!result[k]) break
     }
-    
+
     let final=true
     for (let r in result) final=final * result[r]
     return final
@@ -132,7 +126,6 @@ export default {
             i:1,
             accept_product_request:false,
             no_result:false,
-            filter_selected: '',
             filter:{
                 "brand": {
                     "attributeId":1,
@@ -150,8 +143,6 @@ export default {
                     "value":""
                 }
             },
-            filters:[],
-            start_filter:{},
             isLoading: false,
             catalogHeight: 0,
         }
@@ -159,25 +150,10 @@ export default {
     computed:{
         productsComputed() {
             let productsFiltered = []
-            let upatedFilters={"brands":[],"colors":[],"sizes":[]}
-            if (this.filters && this.filters.length>0){
-                for (let p of this.products) {
-                    if (p.attributes) {
-                        if (filterSuccess(this.filters, p.attributes)) {
-                            productsFiltered.push(p)
-                            for (let attr of p.attributes){
-                                switch (attr.attributeId){
-                                    case 1: if (!upatedFilters.brands.some(item => item.attributeValueId === attr.attributeValueId)) upatedFilters.brands.push(attr); break;
-                                    case 2: if (!upatedFilters.sizes.some(item => item.attributeValueId === attr.attributeValueId)) upatedFilters.sizes.push(attr); break;
-                                    case 6: if (!upatedFilters.colors.some(item => item.attributeValueId === attr.attributeValueId)) upatedFilters.colors.push(attr); break;
-                                }
-                            }
-                        }
-                    }
-                }
-                this.brandFilters = upatedFilters.brands
-                this.sizesFilter = upatedFilters.sizes
-                this.colorFilter = upatedFilters.colors
+            if (this.saved_search_filters && this.saved_search_filters.length>0){
+                for (let p of this.products)
+                    if (p.attributes)
+                        if (filterSuccess(this.saved_search_filters, p.attributes)) productsFiltered.push(p)
             } else {
                 productsFiltered=this.products
             }
@@ -198,7 +174,7 @@ export default {
         },
         ...mapState(['headerPadding', 'categoriesTree', 'cat_products','brands_search', 'search_result', 'saved_search_filters', 'saved_search_path' ]),
         totalAmount() {
-            return this.productsComputed.length
+            return this.productsComputed?this.productsComputed.length:0
         },
         headerName() {
             const paramId = this.$route.params.brands;
@@ -253,7 +229,7 @@ export default {
                             this.colorFilter = productsResponse.data.colors;
                             this.productsInitial = productsResponse.data.products;
                             this.accept_product_request = true;
-                            
+
                             this.search_result.products = productsResponse.data.products
                             this.search_result.sizesFilter = productsResponse.data.sizes;
                             this.search_result.brandFilters = productsResponse.data.brands;
@@ -300,20 +276,38 @@ export default {
                 this.status = 'Ошибка поиска. Повторите попытку позднее'
                 console.log(error);
             }
-            
+
         },
         ...search,
         updateFilter(filter) {
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-            });
-            if (this.filters.indexOf(filter)>-1) {
-                this.filters.splice(this.filters.indexOf(filter),1)
-            } else  {
-                this.filters.push(filter)
+          window.scrollTo({top: 0, behavior: "smooth"});
+
+          if(!this.saved_search_filters.some(item=> item && item.attributeValueId === filter.attributeValueId)) store.commit("addToFilters", filter);
+          else store.commit("delFromFilters", filter)
+
+          let upatedFilters={"brands":[],"colors":[],"sizes":[]}
+            switch (filter.attributeId){
+              case 1: upatedFilters.brands = this.brandFilters; break;
+              case 2: upatedFilters.sizes = this.sizesFilter; break
+              case 6: upatedFilters.colors = this.colorFilter; break
             }
-            this.saved_search_filters = this.filters
+            for (let p of this.products)
+              if (p.attributes) {
+                if (filterSuccess(this.saved_search_filters, p.attributes)) {
+                  for (let attr of p.attributes){
+                    if (attr.attributeId !== filter.attributeId) switch (attr.attributeId){
+                      case 1: if (!upatedFilters.brands.some(item => item.attributeValueId === attr.attributeValueId)) upatedFilters.brands.push(attr); break;
+                      case 2: if (!upatedFilters.sizes.some(item => item.attributeValueId === attr.attributeValueId)) upatedFilters.sizes.push(attr); break;
+                      case 6: if (!upatedFilters.colors.some(item => item.attributeValueId === attr.attributeValueId)) upatedFilters.colors.push(attr); break;
+                    }
+                  }
+                }
+              }
+
+          for (let f of this.brandFilters) f.disabled = !upatedFilters.brands.some(item => item.attributeValueId === f.attributeValueId);
+          for (let f of this.sizesFilter) f.disabled = !upatedFilters.sizes.some(item => item.attributeValueId === f.attributeValueId);
+          for (let f of this.colorFilter) f.disabled = !upatedFilters.colors.some(item => item.attributeValueId === f.attributeValueId);
+
         },
     },
     watch: {
@@ -323,7 +317,7 @@ export default {
             this.filter.sizes = '';
             this.filter.colors = '';
             this.i = 1;
-            this.filters = [];
+
             store.commit('setFilter', []);
             store.commit('setSearchPath', this.$route.fullPath)
         },
@@ -333,7 +327,7 @@ export default {
             this.filter.sizes = '';
             this.filter.colors = '';
             this.i = 1;
-            this.filters = [];
+
             store.commit('setFilter', []);
         },
     },
@@ -348,30 +342,26 @@ export default {
     mounted() {
         const brands = this.$route.params.brands
         const sizes = this.$route.params.sizes
-        
-        if(this.saved_search_filters && this.$route.fullPath === this.saved_search_path) {
-            this.filters = this.saved_search_filters
-        } else {
-            store.commit('setFilter', []);
-        }
-        
+        //
+        // if(this.saved_search_filters && this.$route.fullPath === this.saved_search_path) {
+        //     this.filters = this.saved_search_filters
+        // } else {
+        //     store.commit('setFilter', []);
+        // }
+
         if(brands && brands !== 'sizes') {
             this.filter.brand.attributeValueId = brands;
             if(this.brandFilters) {
                 const brand = this.brandFilters.find((item) => {item.attributeValueId === brands})
-                if(brand && !this.filters.includes(brand)) {
-                    this.filters.push(brand)
-                }
+                if(brand && !this.filters.includes(brand)) store.commit('addToFilters', brand)
+
             }
         }
         if(sizes) {
             this.filter.sizes.attributeValueId = sizes;
             if(this.sizesFilter) {
-                const size = this.sizesFilter.find((item) => {item.attributeValueId === sizes})
-                if(size && !this.filters.includes(size)) {
-                    this.filters.push(size)
-                }
-                
+                const size = this.sizesFilter.find((item) => item.attributeValueId === sizes)
+                if(size && !this.filters.includes(size)) store.commit('addToFilters', size)
             }
         }
         if(sizes || brands) {

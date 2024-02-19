@@ -210,6 +210,8 @@ mutations: {
     for (let item of brands) state.brands_search.push(item)
   },
   setFilter(state, filters) {state.saved_search_filters = filters},
+  addToFilters(state, filter){state.saved_search_filters.push(filter)},
+  delFromFilters(state, filter){state.saved_search_filters.splice(state.saved_search_filters.indexOf(filter),1)},
   setSearchPath(state, path) {state.saved_search_path = path},
   setColors(state, colors){state.colors_search = colors},
   setSizes(state,sizes){state.sizes_search  = sizes},

@@ -53,16 +53,8 @@ export default {
         }
     },
     computed:{
-        isMobile() {
-            if(window.innerWidth < 960) {
-                return true
-            } else {
-                return false
-            }
-        },
-        ...mapState([
-        'headerPadding',
-        ]),
+        isMobile() {return window.innerWidth < 960;},
+        ...mapState(['headerPadding',]),
     },
     props: {
         filterStatus: Boolean,
@@ -100,14 +92,14 @@ export default {
                 return false
             }
             let newScroll = window.scrollY;
-            
+
             if(this.$refs.catalogFilter) {
                 this.filtersBounds = this.$refs.catalogFilter.getBoundingClientRect()
             }
             if(this.$refs.catalogFilter && this.filtersHeight !== this.$refs.catalogFilter.offsetHeight) {
                 this.filtersHeight = this.$refs.catalogFilter.offsetHeight;
             }
-            
+
             if(newScroll > this.currentScroll) {
                 // листаем вниз
                 if (this.filtersBounds.bottom - this.windowHeight + 40 <= 0 && this.filterScroll === 'unset') {
@@ -152,7 +144,7 @@ export default {
                     this.filterScroll = 'unset'
                 }
                 if(this.filterScroll === 'top') {
-                    this.savedTop = newScroll - this.headerPadding 
+                    this.savedTop = newScroll - this.headerPadding
                 }
             }
             this.currentScroll = newScroll;
@@ -170,7 +162,7 @@ export default {
         } else {
             this.filterPosition = 'fixed'
         }
-        
+
     },
     beforeUnmount() {
         // удаляем обработчик события при уничтожении компонента
@@ -235,7 +227,7 @@ export default {
             font-weight: 500;
             line-height: 1.33em;
             letter-spacing: -0.24px;
-            
+
         }
     }
     .catalog__filter-wrap

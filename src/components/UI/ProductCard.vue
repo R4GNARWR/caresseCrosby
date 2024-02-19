@@ -56,17 +56,16 @@ export default {
                 let color = null;
                 if(this.colors_list && this.colors_list.length > 0) {
                     this.colors_list.forEach(element => {
-                        if(Object.values(element)[0].includes(this.colors[0].value)) {
-                            color = element
-                        }
+                        if(Object.values(element)[0].includes(this.colors[0].value)) color = element
                     });
                 }
                 if(color) {
-                    return 'background-color:' + Object.getOwnPropertyNames(color)+'; border: 1px solid #827F7D;';
+                  if (Object.getOwnPropertyNames(color)[0] ==='Multi!') return 'background:linear-gradient(90deg, Red, Orange, Yellow, Green, Blue, Indigo,violet);'
+                  else return 'background-color:' + Object.getOwnPropertyNames(color)+'; border: 1px solid #827F7D;';
                 } else {
                     return false
                 }
- 
+
             }
         },
         cartQuantity() {
@@ -127,7 +126,7 @@ export default {
             justify-content: center;
             font-size: 2.8rem;
             line-height: 1.33em;
-            
+
         }
         &-new
         {
@@ -160,7 +159,7 @@ export default {
         }
     }
     &__info
-    {    
+    {
         &-name
         {
             margin-bottom: .4rem;
@@ -178,7 +177,7 @@ export default {
                 color: $primary;
                 font-size: 1.5rem;
                 font-weight: 700;
-                line-height: 1.5em; 
+                line-height: 1.5em;
             }
             &__colors
             {
@@ -220,7 +219,7 @@ export default {
                 }
             }
         }
-        
+
         &__info
         {
             &-name
@@ -244,7 +243,7 @@ export default {
                 }
                 &__colors
                 {
-                    
+
                     column-gap: 4px;
                     div
                     {
@@ -265,7 +264,7 @@ export default {
         {
             margin-bottom: 12px;
             height: 208px;
-            
+
         }
     }
 }

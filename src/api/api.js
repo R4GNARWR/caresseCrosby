@@ -4,7 +4,7 @@ import store from "../store/store";
 export default  {
     Api_ready: false,
     axios: axios.create({baseURL: "https://api.ccrosby.ru/api/"}),
-    //axios: axios.create({baseURL: "http://127.0.0.1:9080/api/"}),
+    // axios: axios.create({baseURL: "http://127.0.0.1:9080/api/"}),
     init(){
         this.axios.interceptors.request.use(
             config => {
