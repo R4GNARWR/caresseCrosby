@@ -156,15 +156,18 @@ export default  {
     getBlogs(){return this.axios.get("blogs")},
     delThisBlog(title){return this.axios.delete("blogs/"+title)},
     sentLid(lid) {
-        return this.axios.post("auth/lid", {
-            forWho:lid.for ?? '',
-            from:lid.from ?? '',
-            emailToSend:lid.emailToSend,
-            phoneFrom:lid.phoneFrom,
-            phonefor:lid.phonefor,
-            cost:lid.cost,
-            whenSend:lid.when,
-        })
+        const params = {}
+
+        lid.for ? params.forWho = lid.for : null
+        lid.from ? params.from = lid.from : null
+        lid.emailToSend ? params.emailToSend = lid.emailToSend : null
+        lid.emailFrom ? params.emailFrom = lid.emailFrom : null
+        lid.phonefor ? params.phonefor = lid.phonefor.replace(/\D/g, '') : null
+        lid.phoneFrom ? params.phoneFrom = lid.phoneFrom.replace(/\D/g, '') : null
+        lid.cost ? params.cost = lid.cost : null
+        lid.whenSend ? params.whenSend = new Date(lid.whenSend).toLocaleDateString('ru-RU') : null
+
+        return this.axios.post("auth/lid", params)
     },
 
     //admin api
@@ -206,6 +209,7 @@ export default  {
         this.axios.post('admin/photos/' + pId + '/add-images', fileList, {})
             .then(value => {
                 store.commit('loader','finish');
+                window.location.reload()
             })
             .catch(error=> {
                 store.commit('loader', 'finish');

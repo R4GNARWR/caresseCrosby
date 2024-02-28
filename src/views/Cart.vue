@@ -14,7 +14,7 @@
             <v-row>
                 <v-col md="7" cols=12>
                     <div class="cart-wrap">
-                        <div class="cart-item__wrap last" v-for="(item, index) in cart" :key="index" >
+                        <div class="cart-item__wrap last" v-for="(item, index) in cart" :key="index">
                             <cartProduct :product="item"></cartProduct>
                         </div>
                     </div>
@@ -24,50 +24,51 @@
                         <div class="cart-summary__label">Сумма заказа</div>
                         <div class="cart-summary__items">
                             <div class="cart-summary__item">
-                                {{cartQuantity + ' ' + productsComputedText}} на сумму
-                                <span>{{cartSum}} ₽</span>
+                                {{ cartQuantity + ' ' + productsComputedText }} на сумму
+                                <span>{{ cartSum }} ₽</span>
                             </div>
                             <div class="cart-summary__item">
                                 Доставка
-                                <span v-if="cdek_delivery_price && cartSum < 10000">{{cdek_delivery_price}}</span>
+                                <span v-if="cdek_delivery_price && cartSum < 10000">{{ cdek_delivery_price }}</span>
                                 <span v-if="cartSum > 10000">Бесплатно</span>
                             </div>
-                            <div class="cart-summary__item"  v-if="cdek_delivery_price && cdek_min_time">
+                            <div class="cart-summary__item" v-if="cdek_delivery_price && cdek_min_time">
                                 Сроки доставки
-                                <span>{{cdek_min_time}}-{{ cdek_min_time + 2 }} {{ daysComputed }}</span>
+                                <span>{{ cdek_min_time }}-{{ cdek_min_time + 2 }} {{ daysComputed }}</span>
                             </div>
                             <div class="cart-summary__item" v-if="promocode">
-                                Промокод: {{ promocode }}
-                                <span class="minus" v-if="promocodeDiscount">- {{promocodeDiscount.toLocaleString()}} ₽</span>
+                                Промокод: {{ promocodeString }}
+                                <span class="minus" v-if="promocodeDiscount">- {{ promocodeDiscount.toLocaleString() }}
+                                    ₽</span>
                             </div>
                         </div>
                         <div class="cart-summary__input">
-                            <MainInput placeholder="Промокод" v-model="promocode"></MainInput>
+                            <MainInput placeholder="Промокод" v-model="promocodeString"></MainInput>
+                        </div>
+                        <div class="cart-summary__promocode-error" v-if="promocodeError">
+                            {{ promocodeError }}
                         </div>
                         <div class="cart-summary__total">
                             Итого
-                            <span>{{the_sum}} ₽</span>
+                            <span>{{ the_sum }} ₽</span>
                         </div>
                         <div class="cart-summary__total-additional">
                             Бесплатная доставка от 10 000 ₽
                         </div>
-                        <MainLink
-                        :destination="'/order'"
-                        class="btn-primary w-100"
-                        :class="{'disabled':cart.length === 0}"
-                        v-if="promocode.length === 0">
-                        Перейти к оформлению
-                    </MainLink>
-                    <MainBtn class="btn-primary w-100" @click="handlePromocode()" v-else>
-                        Активировать промокод
-                    </MainBtn>
-                </div>
-            </v-col>
-        </v-row>
-    </v-container>
-</section>
+                        <MainLink :destination="'/order'" class="btn-primary w-100"
+                            :class="{ 'disabled': cart.length === 0 }"
+                            v-if="promocodeString.length === 0 || promocodeStatus">
+                            Перейти к оформлению</MainLink>
+                        <MainBtn class="btn-primary w-100" @click="handlePromocode()" v-else>
+                            Активировать промокод
+                        </MainBtn>
+                    </div>
+                </v-col>
+            </v-row>
+        </v-container>
+    </section>
 </template>
-
+    
 <script>
 import MainBtn from '../components/UI/MainBtn.vue';
 import MainInput from '../components/UI/MainInput.vue';
@@ -77,103 +78,123 @@ import cart from '../api/cart';
 import order from '../api/order';
 import productCard from "../api/productCard";
 import cartProduct from '../components/cart/cartProduct.vue'
-import {mapMutations, mapState} from "vuex";
+import { mapMutations, mapState } from "vuex";
+import store from '../store/store';
 
 export default {
-    data(){return{
-        p_e:false, s_e:false, t_e:false, w_e:false,
-        c_p:true, c_s:false, c_t:false, c_w:false,
-        phone:'', address: {}, email:'',
-        comment:'',
-        promocode: '',
-        commission: 0, dates_available:[], hours:{},
-        the_error: '',
-    }},
-    computed:{
+    data() {
+        return {
+            p_e: false, s_e: false, t_e: false, w_e: false,
+            c_p: true, c_s: false, c_t: false, c_w: false,
+            phone: '', address: {}, email: '',
+            comment: '',
+            promocodeString: '',
+            commission: 0, dates_available: [], hours: {},
+            the_error: '',
+            promocodeStatus: false,
+        }
+    },
+    computed: {
         daysComputed() {
-            if(this.cdek_min_time) {
-                let days = this.cdek_min_time+2
-                if(days === 1) {
+            if (this.cdek_min_time) {
+                let days = this.cdek_min_time + 2
+                if (days === 1) {
                     return 'день'
-                } else if(days > 1 && days < 5 && days < 10) {
+                } else if (days > 1 && days < 5 && days < 10) {
                     return 'дня'
-                } else if(days >= 5 && days < 20) {
+                } else if (days >= 5 && days < 20) {
                     return 'дней'
-                } else if(days % 10 > 1 && days % 10 < 5 && days > 20) {
+                } else if (days % 10 > 1 && days % 10 < 5 && days > 20) {
                     return 'дня'
-                } else if(days % 10 >= 5 || days % 10===0 && days > 20) {
+                } else if (days % 10 >= 5 || days % 10 === 0 && days > 20) {
                     return 'дней'
-                } else if(days % 10===1) {
+                } else if (days % 10 === 1) {
                     return 'день'
                 }
             }
         },
-        full_address(){return (this.address.index?this.address.index + ' ':'')+ (this.address.city?this.address.city+ ' ':'')+ (this.address.street?this.address.street + ' ':'')+ (this.address.building?this.address.building:'')},
-        delivery_date(){return new Date()},
+        full_address() { return (this.address.index ? this.address.index + ' ' : '') + (this.address.city ? this.address.city + ' ' : '') + (this.address.street ? this.address.street + ' ' : '') + (this.address.building ? this.address.building : '') },
+        delivery_date() { return new Date() },
         cartSum() {
             let vm = this
             let sum = 0
-            if(vm.cart){
+            if (vm.cart) {
                 for (let cartPosition of vm.cart)
-                sum += cartPosition.price * cartPosition.q;
+                    sum += cartPosition.price * cartPosition.q;
                 return Math.ceil(sum);
             } else return 0
         },
-        the_sum(){
-            if(this.cartSum + this.commission < 10000) {
-                return this.cartSum+this.commission+this.cdek_delivery_price-this.promocodeDiscount
+        the_sum() {
+            if (this.cartSum + this.commission < 10000) {
+                if (this.cartSum + this.commission + this.cdek_delivery_price > this.promocodeDiscount) {
+                    return this.cartSum + this.commission + this.cdek_delivery_price - this.promocodeDiscount;
+                } else {
+                    return 0;
+                }
+
             } else {
-                return this.cartSum+this.commission-this.promocodeDiscount
+                if (this.promocodeDiscount < this.cartSum + this.commission) {
+                    return this.cartSum + this.commission - this.promocodeDiscount;
+                } else {
+                    return 0;
+                }
             }
         },
         cartQuantity() {
             let q = 0;
-            if(this.cart && this.cart.length>0)
-            {
+            if (this.cart && this.cart.length > 0) {
                 this.cart.forEach(element => {
                     q += Number(element.q)
                 });
             }
             return q;
         },
-        productsComputedText(){
-            if(this.cart && this.cart.length > 0) {
+        productsComputedText() {
+            if (this.cart && this.cart.length > 0) {
                 let quantity = this.cartQuantity
-                if(quantity === 1) {
+                if (quantity === 1) {
                     return 'товар'
-                } else if(quantity > 1 && quantity < 5 && quantity < 10) {
+                } else if (quantity > 1 && quantity < 5 && quantity < 10) {
                     return 'товара'
-                } else if(quantity >= 5 && quantity < 10) {
+                } else if (quantity >= 5 && quantity < 10) {
                     return 'товаров'
-                } else if(quantity >= 10 && quantity <= 20 ) {
+                } else if (quantity >= 10 && quantity <= 20) {
                     return 'товаров'
-                } else if(quantity%10 > 1 && quantity%10 < 5 && quantity > 20) {
+                } else if (quantity % 10 > 1 && quantity % 10 < 5 && quantity > 20) {
                     return 'товара'
-                } else if(quantity%10 >= 5 || quantity%10===0 && quantity > 20) {
+                } else if (quantity % 10 >= 5 || quantity % 10 === 0 && quantity > 20) {
                     return 'товаров'
-                } else if(quantity%10===1) {
+                } else if (quantity % 10 === 1) {
                     return 'товар'
                 }
             } else {
                 return 'товаров'
             }
         },
-        order_is_ready(){
-            if(this.cart.length>0
-            && this.delivery_date
-            && (this.full_address) && this.phone && this.commission
-            && this.email
+        order_is_ready() {
+            if (this.cart.length > 0
+                && this.delivery_date
+                && (this.full_address) && this.phone && this.commission
+                && this.email
             )
-            return true; else return false
+                return true; else return false
         },
-        ...mapState(['cart','project_params','user_info','loggedIn','favorites', 'cdek_delivery_price', 'cdek_min_time', 'promocodeDiscount'])
+        ...mapState(['cart', 'project_params', 'user_info', 'loggedIn', 'favorites', 'cdek_delivery_price', 'cdek_min_time', 'promocode', 'promocodeDiscount', 'promocodeError'])
     },
     methods: {
         handlePromocode() {
-            this.checkPromocode(this.promocode)
+            this.checkPromocode(this.promocodeString)
         },
-        
         ...order
+    },
+    watch: {
+        promocodeString: {
+            handler() {
+                this.promocodeStatus = false
+                store.commit('setPromocodeError', null)
+            },
+            deep: true,
+        },
     },
     created() {
         this.getCitiesList()
@@ -181,48 +202,61 @@ export default {
         if (this.user_info.apartment) this.address.apartment = this.user_info.apartment;
         if (this.user_info.email) this.email = this.user_info.email;
     },
+    mounted() {
+        if (this.promocodeDiscount) {
+            this.promocodeStatus = true
+        }
+        if (this.promocode) {
+            this.promocodeString = this.promocode
+        }
+        store.commit('setPromocodeError', null)
+    },
+    beforeRouteLeave(to, from, next) {
+        if (to.fullPath !== '/order') {
+            store.commit('setPromocode', null)
+            store.commit('setPromocodeDiscount', null)
+        }
+        next();
+    },
     components: { MainBtn, MainInput, MainLink, cartProduct }
 };
 </script>
 
 <style lang="scss">
-section.cart
-{
+section.cart {
     padding-top: 4rem;
     padding-bottom: 12rem;
 }
-.cart-head
-{
+
+.cart-head {
     margin-bottom: 4rem;
     display: flex;
     align-items: center;
     column-gap: 2rem;
-    &__label
-    {
+
+    &__label {
         color: $primary;
         font-size: 4rem;
         font-weight: 600;
         line-height: 1.2em;
         letter-spacing: -0.4px;
     }
-    &__count
-    {
+
+    &__count {
         color: #A6A5A3;
         font-size: 1.6rem;
         line-height: 1.5em;
         letter-spacing: -0.128px;
     }
 }
-.cart-wrap
-{
+
+.cart-wrap {
     display: flex;
     flex-direction: column;
 }
 
-.cart-summary
-{
-    &__label
-    {
+.cart-summary {
+    &__label {
         margin-bottom: 2.4rem;
         color: $primary;
         font-size: 2.8rem;
@@ -230,39 +264,38 @@ section.cart
         line-height: 1.2em;
         letter-spacing: -0.504px;
     }
-    &__items
-    {
+
+    &__items {
         margin-bottom: 3.2rem;
         display: flex;
         flex-direction: column;
         row-gap: 1.2rem;
     }
-    &__item
-    {
+
+    &__item {
         display: flex;
         justify-content: space-between;
         color: $primary;
         font-size: 1.6rem;
         line-height: 1.5em;
         letter-spacing: -0.128px;
-        span
-        {
-            &.waiting
-            {
+
+        span {
+            &.waiting {
                 color: #A6A5A3;
             }
-            &.minus
-            {
+
+            &.minus {
                 color: #C11D1D;
             }
         }
     }
-    &__input
-    {
+
+    &__input {
         margin-bottom: 3.2rem;
     }
-    &__total
-    {
+
+    &__total {
         margin-bottom: 1rem;
         display: flex;
         justify-content: space-between;
@@ -271,12 +304,12 @@ section.cart
         font-weight: 600;
         line-height: 1.33em;
         letter-spacing: -0.384px;
-        span
-        {
+
+        span {
             text-transform: uppercase;
         }
-        &-additional
-        {
+
+        &-additional {
             margin-bottom: 3.2rem;
             color: #A6A5A3;
             font-size: 1.4rem;
@@ -284,78 +317,75 @@ section.cart
             letter-spacing: -0.056px;
         }
     }
-    &__offer
-    {
+
+    &__offer {
         margin-top: 3.2rem;
         color: #A6A5A3;
         font-size: 1.4rem;
         line-height: 1.4em;
         letter-spacing: -0.056px;
-        a
-        {
+
+        a {
             color: inherit;
         }
     }
 }
 
 @media (max-width: 600px) {
-    .cart-head
-    {
+    .cart-head {
         margin-bottom: 32px;
         flex-direction: column;
         align-items: flex-start;
         row-gap: 8px;
-        &__label
-        {
+
+        &__label {
             font-size: 32px;
         }
-        &__count
-        {
+
+        &__count {
             font-size: 14px;
         }
     }
-    
-    .cart-summary
-    {
-        &__label
-        {
+
+    .cart-summary {
+        &__label {
             margin-bottom: 24px;
             font-size: 24px;
         }
-        &__item
-        {
+
+        &__item {
             font-size: 14px;
         }
-        &__items
-        {
+
+        &__items {
             margin-bottom: 32px;
             column-gap: 12px;
         }
-        &__input
-        {
+
+        &__input {
             margin-bottom: 32px;
         }
-        &__offer
-        {
+
+        &__offer {
             margin-top: 8px;
             text-align: center;
             font-size: 12px;
             letter-spacing: normal;
-            a
-            {
+
+            a {
                 color: inherit;
             }
         }
-        &__total
-        {
+
+        &__total {
             margin-bottom: 10px;
             font-size: 20px;
-            span
-            {
+
+            span {
                 text-transform: uppercase;
             }
-            &-additional
-            {
+
+            &-additional {
                 margin-bottom: 32px;
                 font-size: 12px;
             }

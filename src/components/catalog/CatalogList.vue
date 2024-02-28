@@ -46,9 +46,11 @@ export default {
     },
     mounted() {
         window.addEventListener('scroll', this.updateCatalogHeight)
+        window.addEventListener('resize', this.updateCatalogHeight)
     },
     beforeUnmount() {
         window.removeEventListener('scroll', this.updateCatalogHeight)
+        window.removeEventListener('resize', this.updateCatalogHeight)
     }
 }
 </script>

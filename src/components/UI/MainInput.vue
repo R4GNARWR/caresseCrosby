@@ -7,6 +7,7 @@
         :value="modelValue"
         :required="required"
         :id="inputId"
+        :min="min"
         :autocomplete="inputType === 'email' ? 'email': ''"
         v-if="inputType !== 'tel' && inputType !== 'date'"
         @input="$emit('update:modelValue', $event.target.value)"
@@ -17,6 +18,7 @@
         :value="modelValue"
         :required="required"
         :id="inputId"
+        :min="min"
         maxlength="18"
         autocomplete="tel"
         v-if="inputType === 'tel'"
@@ -27,7 +29,9 @@
         :value="modelValue"
         :required="required"
         :id="inputId"
+        :min="min"
         @focus="this.showPicker($event.target)"
+        @input="$emit('update:modelValue', $event.target.value)"
         v-if="inputType === 'date'">
         <div class="form-control__errors" v-for="error of v$.$errors" :key="error.$uid">
             <div class="form-control__errors-item">{{ error.$message }}</div>
@@ -52,6 +56,7 @@ export default {
             type: Boolean,
             default: false
         },
+        min: null,
         inputId:String,
     },
     directives: { maska: vMaska },

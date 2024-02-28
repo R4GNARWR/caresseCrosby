@@ -61,7 +61,11 @@ export default {
                 }
                 if(color) {
                   if (Object.getOwnPropertyNames(color)[0] ==='Multi!') return 'background:linear-gradient(90deg, Red, Orange, Yellow, Green, Blue, Indigo,violet);'
-                  else return 'background-color:' + Object.getOwnPropertyNames(color)+'; border: 1px solid #827F7D;';
+                  else if(Object.getOwnPropertyNames(color)[0] ==='#FFFFFF') {
+                    return 'background-color:' + Object.getOwnPropertyNames(color)+'; border: 1px solid #827F7D;';
+                  } else {
+                    return 'background-color:' + Object.getOwnPropertyNames(color)+';';
+                  } 
                 } else {
                     return false
                 }

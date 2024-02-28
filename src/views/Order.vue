@@ -6,33 +6,37 @@
                     <div class="order-products">
                         <div class="order-label">
                             Ваш заказ
-                            <span>{{cartQuantity + ' ' + productsComputedText}}</span>
+                            <span>{{ cartQuantity + ' ' + productsComputedText }}</span>
                         </div>
                         <div class="order-products__wrap">
                             <a class="order-products__wrap-item" href="#" v-for="(item, index) in cart" :key="index">
-                                <img :src="item.photo" alt="">
-                                <div class="order-products__wrap-item-name">{{item.name}}</div>
+                                <img :src="item.photo" alt="" v-if="item.photo">
+                                <div class="order-products__wrap-item-name">{{ item.name }}</div>
                                 <ul class="order-products__wrap-item-props">
-                                    <li>{{item.size}}</li>
-                                    <li>{{item.colors}}</li>
+                                    <li>{{ item.size }}</li>
+                                    <li>{{ item.colors }}</li>
                                 </ul>
                                 <div class="order-products__wrap-item-price">
-                                    {{Number((item.q * item.price)).toLocaleString()}}{{!(item.q *item.price).toString().split('.')[1] ? '' :(item.q *item.price).toString().split('.')[1].length===1 ?'' :''}} ₽
+                                    {{ Number((item.q * item.price)).toLocaleString() }}{{ !(item.q
+                                        * item.price).toString().split('.')[1] ? '' : (item.q
+                                            * item.price).toString().split('.')[1].length === 1 ? '' : '' }} ₽
                                 </div>
                             </a>
                         </div>
-                        
+
                     </div>
                     <div class="order-delivery">
                         <div class="order-delivery__label">
                             Данные для доставки
                         </div>
                         <div class="order-type">
-                            <div class="order-type__item" :class="{'active': deliveryType === 'courier'}" @click="changeDeliveryType('courier')" role="button">
+                            <div class="order-type__item" :class="{ 'active': deliveryType === 'courier' }"
+                                @click="changeDeliveryType('courier')" role="button">
                                 <img :src="deliveryType === 'courier' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
                                 Курьером
                             </div>
-                            <div class="order-type__item" :class="{'active': deliveryType === 'pickup'}"  @click="changeDeliveryType('pickup')" role="button">
+                            <div class="order-type__item" :class="{ 'active': deliveryType === 'pickup' }"
+                                @click="changeDeliveryType('pickup')" role="button">
                                 <img :src="deliveryType === 'pickup' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
                                 Самовывоз
                             </div>
@@ -45,13 +49,22 @@
                                 Выбрать пункт самовывоза
                             </router-link>
                         </div>
-                        
-                        <div class="order-delivery__form" v-show="user_info">
-                            <MainInput v-show="deliveryType === 'courier'" class="inline" placeholder="Адрес доставки*" v-model="address" :required="true" inputId="suggest" @blurEvent="blurAdressEvent"></MainInput>
+
+                        <div class="order-delivery__form">
+                            <v-autocomplete label="Выберите город" v-if="cdek_cities" v-show="deliveryType === 'courier'"
+                                :items="cdek_cities" item-title="city" no-data-text="Нет подходящих городов"
+                                item-value="city" v-model="chosenCity"
+                                @update:modelValue="(event) => updateRegion(event)"></v-autocomplete>
+                            <MainInput class="inline" placeholder="Адрес доставки*" v-model="address"
+                                :required="deliveryType === 'courier'" inputId="suggest" @blurEvent="blurAdressEvent"
+                                v-show="deliveryType === 'courier'">
+                            </MainInput>
                             <MainInput class="" placeholder="Имя*" v-model="name" :required="true"></MainInput>
                             <MainInput class="" placeholder="Фамилия"></MainInput>
-                            <MainInput placeholder="Телефон*" validation-type="phone" v-model="phone" inputType="tel" :required="true"></MainInput>
-                            <MainInput class="" placeholder="E-mail*" validationType="email" input-type="email" v-model="email" :required="true"></MainInput>
+                            <MainInput placeholder="Телефон*" validation-type="phone" v-model="phone" inputType="tel"
+                                :required="true"></MainInput>
+                            <MainInput class="" placeholder="E-mail*" validationType="email" input-type="email"
+                                v-model="email" :required="true"></MainInput>
                         </div>
                     </div>
                 </v-col>
@@ -60,35 +73,40 @@
                         <div class="cart-summary__label">Сумма заказа</div>
                         <div class="cart-summary__items">
                             <div class="cart-summary__item">
-                                {{cartQuantity + ' ' + productsComputedText}} на сумму
-                                <span>{{cartSum}} ₽</span>
+                                {{ cartQuantity + ' ' + productsComputedText }} на сумму
+                                <span>{{ cartSum }} ₽</span>
                             </div>
                             <div class="cart-summary__item">
                                 Доставка
-                                <span v-if="cdek_delivery_price && cartSum < 10000">{{cdek_delivery_price}}</span>
+                                <span v-if="cdek_delivery_price && cartSum < 10000">{{ cdek_delivery_price }}</span>
                                 <span v-if="cartSum > 10000">Бесплатно</span>
                                 <span class="waiting" v-if="!cdek_delivery_price && cartSum < 10000">Рассчитывается</span>
                             </div>
-                            <div class="cart-summary__item"  v-if="cdek_delivery_price && cdek_min_time">
+                            <div class="cart-summary__item" v-if="cdek_delivery_price && cdek_min_time">
                                 Сроки доставки
-                                <span>{{cdek_min_time}}-{{ cdek_min_time + 2 }} {{ daysComputed }}</span>
+                                <span>{{ cdek_min_time }}-{{ cdek_min_time + 2 }} {{ daysComputed }}</span>
                             </div>
                             <div class="cart-summary__item" v-if="promocode">
-                                Промокод: {{ promocode }}
-                                <span class="minus" v-if="promocodeDiscount">- {{promocodeDiscount.toLocaleString()}} ₽</span>
+                                Промокод: {{ promocodeString }}
+                                <span class="minus" v-if="promocodeDiscount">- {{ promocodeDiscount.toLocaleString() }}
+                                    ₽</span>
                             </div>
                         </div>
                         <div class="cart-summary__input">
-                            <MainInput placeholder="Промокод" v-model="promocode"></MainInput>
+                            <MainInput placeholder="Промокод" v-model="promocodeString"></MainInput>
+                        </div>
+                        <div class="cart-summary__promocode-error" v-if="promocodeError">
+                            {{ promocodeError }}
                         </div>
                         <div class="cart-summary__total">
                             Итого
-                            <span>{{the_sum}} ₽</span>
+                            <span>{{ the_sum }} ₽</span>
                         </div>
                         <div class="cart-summary__total-additional">
                             Бесплатная доставка от 10 000 ₽
                         </div>
-                        <MainBtn class="btn-primary w-100" @click="handleOrder()" :disabled="!order_is_ready" v-if="promocode.length === 0">
+                        <MainBtn class="btn-primary w-100" @click="handleOrder()" :disabled="!order_is_ready"
+                            v-if="promocodeString.length === 0 || promocodeStatus">
                             Оформить заказ
                         </MainBtn>
                         <MainBtn class="btn-primary w-100" @click="handlePromocode()" v-else>
@@ -113,7 +131,7 @@ import MainInput from '../components/UI/MainInput.vue';
 import cart from '../api/cart';
 import order from '../api/order';
 import productCard from "../api/productCard";
-import {mapMutations, mapState} from "vuex";
+import { mapMutations, mapState } from "vuex";
 
 import useVuelidate from "@vuelidate/core";
 import MainBtn from '../components/UI/MainBtn.vue';
@@ -123,151 +141,174 @@ export default {
         MainInput,
         MainBtn,
     },
-    data(){return{
-        p_e:false, s_e:false, t_e:false, w_e:false,
-        c_p:true, c_s:false, c_t:false, c_w:false,
-        phone:'', name: '', surname: '', address: '', email: '',
-        comment:'',
-        promocode: '',
-        promocodeStatus: false,
-        commission: 0, dates_available:[], hours:{},
-        the_error: '',
-        deliveryType: null,
-        suggestView: null,
-        addressInterval: null,
-    }},
+    data() {
+        return {
+            p_e: false, s_e: false, t_e: false, w_e: false,
+            c_p: true, c_s: false, c_t: false, c_w: false,
+            phone: '', name: '', surname: '', address: '', email: '',
+            comment: '',
+            promocodeString: '',
+            promocodeStatus: false,
+            commission: 0,
+            dates_available: [],
+            hours: {},
+            the_error: '',
+            deliveryType: null,
+            suggestView: null,
+            addressInterval: null,
+            promocodeStatus: false,
+            chosenCity: '',
+        }
+    },
     setup() {
         return {
             v$: useVuelidate(),
         };
     },
-    computed:{
+    computed: {
         daysComputed() {
-            if(this.cdek_min_time) {
-                let days = this.cdek_min_time+2
-                if(days === 1) {
+            if (this.cdek_min_time) {
+                let days = this.cdek_min_time + 2
+                if (days === 1) {
                     return 'день'
-                } else if(days > 1 && days < 5 && days < 10) {
+                } else if (days > 1 && days < 5 && days < 10) {
                     return 'дня'
-                } else if(days >= 5 && days < 20) {
+                } else if (days >= 5 && days < 20) {
                     return 'дней'
-                } else if(days % 10 > 1 && days % 10 < 5 && days > 20) {
+                } else if (days % 10 > 1 && days % 10 < 5 && days > 20) {
                     return 'дня'
-                } else if(days % 10 >= 5 || days % 10===0 && days > 20) {
+                } else if (days % 10 >= 5 || days % 10 === 0 && days > 20) {
                     return 'дней'
-                } else if(days % 10===1) {
+                } else if (days % 10 === 1) {
                     return 'день'
                 }
             }
         },
-        full_address(){
-            if(this.deliveryType === 'courier') {
+        full_address() {
+            if (this.deliveryType === 'courier') {
                 return this.address
-            } else if(this.cdek_chozen_pvz) {
-                return 'Код пункта CDEK:' + this.cdek_chozen_pvz
+            } else if (this.cdek_chozen_pvz) {
+                return 'Код пункта CDEK:' + this.cdek_chozen_pvz.code
             }
         },
-        delivery_date(){return new Date()},
+        delivery_date() { return new Date() },
         cartSum() {
             let vm = this, sum = 0;
             for (let cartPosition of vm.cart) sum += cartPosition.price * cartPosition.q;
             return Math.ceil(sum);
         },
-        the_sum(){
-            if(this.cartSum + this.commission < 10000) {
-                return this.cartSum+this.commission+this.cdek_delivery_price-this.promocodeDiscount
+        the_sum() {
+            if (this.cartSum + this.commission < 10000) {
+                if (this.cartSum + this.commission + this.cdek_delivery_price > this.promocodeDiscount) {
+                    return this.cartSum + this.commission + this.cdek_delivery_price - this.promocodeDiscount;
+                } else {
+                    return 0;
+                }
+
             } else {
-                return this.cartSum+this.commission-this.promocodeDiscount
+                if (this.promocodeDiscount < this.cartSum + this.commission) {
+                    return this.cartSum + this.commission - this.promocodeDiscount;
+                } else {
+                    return 0;
+                }
             }
         },
-        order_is_ready()
-        {
-            if(this.cart.length>0 &&
-            this.delivery_date &&
-            this.full_address &&
-            this.cdek_delivery_price)
-            return true
+        order_is_ready() {
+            if (this.cart.length > 0 &&
+                this.delivery_date &&
+                this.full_address &&
+                (this.cdek_delivery_price || this.cartSum > 10000))
+                return true
             else
-            return false
+                return false
         },
         cartQuantity() {
             let q = 0;
-            if(this.cart && this.cart.length>0)
-            {
+            if (this.cart && this.cart.length > 0) {
                 this.cart.forEach(element => {
                     q += Number(element.q)
                 });
             }
             return q;
         },
-        productsComputedText(){
-            if(this.cart && this.cart.length > 0) {
+        productsComputedText() {
+            if (this.cart && this.cart.length > 0) {
                 let quantity = this.cartQuantity
-                if(quantity === 1) {
+                if (quantity === 1) {
                     return 'товар'
-                } else if(quantity > 1 && quantity < 5 && quantity < 10) {
+                } else if (quantity > 1 && quantity < 5 && quantity < 10) {
                     return 'товара'
-                } else if(quantity >= 5 && quantity < 10) {
+                } else if (quantity >= 5 && quantity < 10) {
                     return 'товаров'
-                } else if(quantity >= 10 && quantity <= 20 ) {
+                } else if (quantity >= 10 && quantity <= 20) {
                     return 'товаров'
-                } else if(quantity % 10 > 1 && quantity % 10 < 5 && quantity > 20) {
+                } else if (quantity % 10 > 1 && quantity % 10 < 5 && quantity > 20) {
                     return 'товара'
-                } else if(quantity % 10 >= 5 || quantity % 10===0 && quantity > 20) {
+                } else if (quantity % 10 >= 5 || quantity % 10 === 0 && quantity > 20) {
                     return 'товаров'
-                } else if(quantity % 10===1) {
+                } else if (quantity % 10 === 1) {
                     return 'товар'
                 }
             } else {
                 return 'товаров'
             }
         },
-        ...mapState(['cart','project_params','user_info','loggedIn','favorites','cdek_delivery_price', 'cdek_min_time', 'cdek_cities','cdek_pvz','cdek_chozen_pvz', 'promocodeDiscount'])
+        ...mapState(['cart', 'project_params', 'user_info', 'loggedIn', 'favorites', 'cdek_delivery_price', 'cdek_min_time', 'cdek_cities', 'cdek_pvz', 'cdek_chozen_pvz', 'promocode', 'promocodeDiscount', 'promocodeError'])
     },
-    methods:{
+    methods: {
         addFavorite(id) {
-            if(!this.the_heart){
+            if (!this.the_heart) {
                 this.addFavor(id)
             } else {
                 this.delFavor(id)
             }
         },
-        the_heart(item){
+        the_heart(item) {
             for (let f of this.favorites)
-            if (f.id === item.id) {
-                return true;
-            }
+                if (f.id === item.id) {
+                    return true;
+                }
             return false;
         },
         getDeliveryPrice() {
-            if(this.cartSum < 10000) {
-                if(this.address.length > 0) {
-                    api.getCdekDeliveryPrice(139,{address: this.address})
+            if (this.cartSum < 10000) {
+                if (this.address.length > 0) {
+                    api.getCdekDeliveryPrice(139, { address: this.address })
                 }
             }
         },
         blurAdressEvent() {
-            this.addressInterval = setTimeout(()=> {
+            this.addressInterval = setTimeout(() => {
                 this.getDeliveryPrice()
             }, 500)
         },
         async handleOrder() {
             var validationResult = await this.v$.$validate();
-            
+
             if (!validationResult) {
-                console.log("Validation failed");
+                store.commit('set_snack_message', { msg: 'Проверьте правильность введенных данных', type:'error'})
                 return;
             }
             this.make_the_order()
         },
         handlePromocode() {
-            this.checkPromocode(this.promocode)
+            this.checkPromocode(this.promocodeString)
+        },
+        updateRegion() {
+            this.suggestView.destroy();
+            this.init()
         },
         init() {
-            this.suggestView = new ymaps.SuggestView('suggest');
+            this.suggestView = new ymaps.SuggestView('suggest', {
+                provider: {
+                    suggest: ((request, options) => {
+                        return ymaps.suggest(this.chosenCity + ", " + request)
+                    })
+                }
+            });
             this.suggestView.events.add(['select'], (event) => {
                 const address = event.get("item").displayName
-                if(address) {
+                if (address) {
                     clearTimeout(this.addressInterval)
                     this.address = address;
                     this.getDeliveryPrice()
@@ -277,7 +318,7 @@ export default {
         changeDeliveryType(value) {
             this.deliveryType = value
             store.commit('setCdekDeliveryPrice', null)
-            if(value === 'courier') {
+            if (value === 'courier') {
                 store.commit('setCdekChosenPvz', null)
             } else {
                 this.address = this.user_info.city || ''
@@ -286,21 +327,30 @@ export default {
         ...order, ...cart, ...productCard,
         ...mapMutations(['clearCart', 'cartItemChangeQ', 'cartItemSetQ', 'removeFromCart']),
     },
+    watch: {
+        promocodeString: {
+            handler() {
+                this.promocodeStatus = false
+                store.commit('setPromocodeError', null)
+            },
+            deep: true,
+        },
+    },
     created() {
         if (!document.head.querySelector('#ymaps')) {
             const script = document.createElement('script');
-            
+
             script.onload = () => {
                 ymaps.ready(this.init);
             };
-            
+
             script.id = 'ymaps';
             script.src = "https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=453f5758-6290-4de4-bae1-d645fb102e5c&suggest_apikey=6d832aa2-715a-4c2f-bac8-daf07218d006";
             document.head.append(script);
         } else {
             ymaps.ready(this.init);
         }
-        if(!this.cdek_cities) {
+        if (!this.cdek_cities) {
             this.getCitiesList()
         }
     },
@@ -309,16 +359,35 @@ export default {
         this.phone = this.user_info.phone || ''
         this.name = this.user_info.name || ''
         this.surname = this.user_info.surname || ''
-        if(this.user_info.city) {
+        if (this.user_info.city) {
             this.address = this.user_info.city || ''
-            this.getDeliveryPrice()
         }
-        
-        if(this.$route.query && this.$route.query.deliveryType) {
-            this.deliveryType = this.$route.query.deliveryType
-        } else {
+
+        if (!this.cdek_chozen_pvz) {
             this.deliveryType = 'courier'
+            this.getDeliveryPrice()
+        } else {
+            this.deliveryType = 'pickup'
         }
+
+        if (this.$route.query && this.$route.query.deliveryType) {
+            this.deliveryType = this.$route.query.deliveryType
+        }
+
+        if (this.promocodeDiscount) {
+            this.promocodeStatus = true
+        }
+        if (this.promocode) {
+            this.promocodeString = this.promocode
+        }
+        store.commit('setPromocodeError', null)
+    },
+    beforeRouteLeave(to, from, next) {
+        if (to.fullPath !== '/cart') {
+            store.commit('setPromocode', null)
+            store.commit('setPromocodeDiscount', null)
+        }
+        next();
     },
     beforeUnmount() {
         if (this.suggestView) {
@@ -329,73 +398,72 @@ export default {
 </script>
 
 <style lang="scss">
-.order
-{
+.order {
     padding: 4rem 0 14rem 0;
 }
+
 .v-list-item-title {
     font-size: 1.6rem !important;
 }
 
-.order-label
-{
+.order-label {
     margin-bottom: 4rem;
     color: $primary;
     font-size: 4rem;
     font-weight: 600;
     line-height: 1.2em;
     letter-spacing: -0.4px;
-    span
-    {
+
+    span {
         display: none;
     }
 }
-.order-products
-{
+
+.order-products {
     margin-bottom: 3.2rem;
     padding-bottom: 3.2rem;
     border-bottom: 1px solid #E9E9E9;
 }
-.order-products__wrap
-{
-    
+
+.order-products__wrap {
+
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     column-gap: 3.2rem;
     row-gap: 3.2rem;
-    &-item
-    {
+
+    &-item {
         text-decoration: none;
-        img
-        {
+
+        img {
             width: 100%;
             height: 16rem;
             object-fit: cover;
         }
-        &-name
-        {
+
+        &-name {
             margin-bottom: .4rem;
             color: $primary;
             font-size: 1.4rem;
             line-height: 1.4em;
             letter-spacing: -0.056px;
         }
-        &-props
-        {
+
+        &-props {
             margin-bottom: .4rem;
             display: flex;
             flex-direction: column;
             list-style: none;
             row-gap: .4rem;
-            li
-            {
+
+            li {
                 color: #A6A5A3;
                 font-size: 1.2rem;
                 line-height: 1.33em;
             }
         }
-        &-price
-        {
+
+        &-price {
             color: $primary;
             font-size: 1.4rem;
             font-weight: 600;
@@ -404,10 +472,17 @@ export default {
         }
     }
 }
-.order-delivery
-{
-    &__label
-    {
+
+.cart-summary__promocode-error {
+    margin-top: -2rem;
+    margin-bottom: 2.5rem;
+    color: #c50f0f;
+    font-size: 1.4rem;
+    line-height: 1.5em;
+}
+
+.order-delivery {
+    &__label {
         margin-bottom: 3.2rem;
         color: $primary;
         font-size: 2.8rem;
@@ -415,32 +490,77 @@ export default {
         line-height: 1.2em;
         letter-spacing: -0.504px;
     }
-    &__form
-    {
+
+    &__form {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         column-gap: 3.2rem;
         row-gap: 3.2rem;
+
+        .v-input {
+            width: 100%;
+            grid-column: span 2;
+
+            .v-field--variant-filled .v-field__overlay {
+                background-color: #FFFFFF;
+            }
+
+            .v-label.v-field-label {
+                margin-left: 0;
+                color: #A6A5A3 !important;
+                font-size: 1.6rem;
+                line-height: 1.5em;
+                opacity: 1 !important;
+            }
+            .v-field__outline
+            {
+                
+            }
+            .v-field__outline::after {
+                display: none;
+            }
+            .v-field__outline::before {
+                border-color: #A6A5A3 !important;
+                opacity: 1 !important;
+            }
+            .v-field__input {
+                font-size: 1.6rem;
+                line-height: 1.5em;
+                font-weight: 500;
+                color: #27231F;
+                padding-inline-start: 0;
+
+            }
+            .v-label.v-field-label.v-field-label--floating
+            {
+                top: 0;
+            }
+        }
+
+        .v-input__details {
+            display: none;
+        }
+
         .split {
             display: flex;
             align-items: center;
             column-gap: 1.6rem;
         }
-        *.inline
-        {
+
+        *.inline {
             grid-column: span 2;
         }
     }
 }
-.order-type
-{
+
+.order-type {
     margin-bottom: 3.2rem;
     width: 100%;
     display: flex;
     column-gap: 1.6rem;
 }
-.order-type__item
-{
+
+.order-type__item {
     position: relative;
     padding: 1.6rem;
     display: flex;
@@ -449,12 +569,12 @@ export default {
     flex-grow: 1;
     border: 1px solid #E9E9E9;
     transition: .3s;
-    &.active
-    {
+
+    &.active {
         border: 1px solid #1B1916;
     }
-    input
-    {
+
+    input {
         position: absolute;
         left: 0;
         top: 0;
@@ -463,13 +583,14 @@ export default {
         opacity: 0;
         cursor: pointer;
     }
+
     color: #27231F;
     font-size: 1.6rem;
     line-height: 1.5em;
     letter-spacing: -0.128px;
 }
-.order-pickup__wrap
-{
+
+.order-pickup__wrap {
     border-bottom: 1px solid #E9E9E9;
     border-top: 1px solid #E9E9E9;
     padding: 3.2rem 0;
@@ -478,14 +599,14 @@ export default {
     align-items: center;
     column-gap: 1.6rem;
 }
-.order-pickup__address
-{
+
+.order-pickup__address {
     flex-basis: 60%;
     font-size: 2.8rem;
     line-height: 1.5em;
 }
-.order-pickup
-{
+
+.order-pickup {
     width: 100%;
     padding: 2rem;
     display: block;
@@ -498,28 +619,30 @@ export default {
     text-align: center;
     text-decoration: none;
 }
+
 @media (max-width: 1280px) {
-    .order-products__wrap
-    {
+    .order-products__wrap {
         grid-template-columns: repeat(4, 1fr);
     }
 }
+
 @media (max-width: 960px) {
-    .order
-    {
+    .order {
         padding: 32px 0 60px 0;
     }
+
     .v-list-item-title {
         font-size: 16px !important;
         line-height: 120% !important;
     }
+
     .order-label {
         display: flex;
         flex-direction: column;
         margin-bottom: 32px;
         font-size: 32px;
-        span
-        {
+
+        span {
             margin-top: 8px;
             display: block;
             color: #A6A5A3;
@@ -528,91 +651,109 @@ export default {
             letter-spacing: -0.056px;
         }
     }
+
     .order-products {
         order: 1;
         border-bottom: 0;
         padding-bottom: 0;
         margin-bottom: 8px;
     }
+
     .order-pickup {
         padding: 12px;
         font-size: 14px;
     }
+
     .order-type__item {
         padding: 14px;
         column-gap: 8px;
         font-size: 14px;
     }
+
     .order-type {
         margin-bottom: 24px;
     }
-    .order-pickup__wrap{
+
+    .order-pickup__wrap {
         padding: 24px 0;
         margin-bottom: 16px;
         column-gap: 12px;
     }
+
     .order-products__wrap {
         &-item {
             img {
                 margin-bottom: 16px;
                 height: 165px;
             }
+
             &-name {
                 margin-bottom: 4px;
                 font-size: 12px;
             }
+
             &-props {
                 margin-bottom: 0;
                 row-gap: 4px;
+
                 li {
                     font-size: 12px;
                 }
             }
+
             &-price {
                 display: none;
             }
         }
     }
+
     .order-delivery {
         margin-bottom: 48px;
         order: 0;
+
         &__label {
             margin-bottom: 32px;
             font-size: 32px;
         }
+
         &__form {
             grid-template-columns: repeat(1, 1fr);
             row-gap: 24px;
+
+            .v-input {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
             .split {
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
                 column-gap: initial;
                 row-gap: 12px;
-                .btn
-                {
+
+                .btn {
                     padding: 14px;
                     width: 100%;
                 }
             }
+
             .form-control__wrap {
                 grid-column: 2 span;
             }
         }
     }
-    .order-summary
-    {
-        .cart-summary__input
-        {
+
+    .order-summary {
+        .cart-summary__input {
             display: none;
         }
     }
-    
+
 }
+
 @media (max-width: 600px) {
-    .order-products__wrap
-    {
+    .order-products__wrap {
         grid-template-columns: repeat(3, 1fr);
     }
-}
-</style>
+}</style>

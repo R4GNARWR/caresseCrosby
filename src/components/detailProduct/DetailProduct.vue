@@ -318,10 +318,6 @@ export default {
         },
         updateProduct(){
             if (this.pop_products[this.$route.params.id]){
-                if(this.pop_products[this.$route.params.id].category.id === 24473) {
-                    this.$router.replace({path: '/giftCard'})
-                    return
-                }
                 this.product = this.pop_products[this.$route.params.id];
                 this.attributes = this.pop_products[this.$route.params.id].attributes;
                 this.category = this.pop_products[this.$route.params.id].category;
@@ -338,10 +334,6 @@ export default {
                 this.attributes=[];
                 this.$API.getProductById(this.$route.params.id).then(value =>{
                     if (value.data.status === "OK") {
-                        if(value.data.response && value.data.response.category.id && value.data.response.category.id === 24473) {
-                            this.$router.replace({path: '/giftCard'})
-                            return
-                        }
                         this.product = value.data.response.product?value.data.response.product:null;
                         this.attributes = value.data.response.attributes?value.data.response.attributes:null;
                         this.category = value.data.response.category?value.data.response.category:null;
@@ -381,9 +373,18 @@ export default {
                 }
             });
         },
-        delImg(path){this.$API.delProductImg(this.product.id, path)},
+        delImg(path){
+            this.$API.delProductImg(this.product.id, path).then((response)=> {
+                if(response && response.status) {
+                    window.location.reload()
+                }
+            })
+        },
         setImgsToAdd(event){this.imgsToAdd = event.target.files},
-        addImgs(fd){this.$API.addPhotosToProduct(this.product.id, fd)},
+        addImgs(fd){
+            this.$API.addPhotosToProduct(this.product.id, fd)
+
+        },
         
         ...cart, ...productCard,
         ...mapMutations([
