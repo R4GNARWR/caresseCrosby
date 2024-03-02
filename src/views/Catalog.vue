@@ -222,7 +222,7 @@ export default {
                         this.$API.searchProducts( this.$route.query.query, null, 1, null)
                         ]);
                         this.i = 1;
-                        if (productsResponse) {
+                        if (productsResponse && productsResponse.data && productsResponse.data.products && productsResponse.data.products.length > 0) {
                             this.products = productsResponse.data.products;
                             this.sizesFilter = productsResponse.data.sizes;
                             this.brandFilters = productsResponse.data.brands;
@@ -253,11 +253,11 @@ export default {
                         this.$API.getCategoryTopProducts(this.$route.params.id, 380, 570),
                         this.$API.getCatDescription(this.$route.params.id)
                         ])
-                        if (descriptionResponse.data.success) {
+                        if (descriptionResponse && descriptionResponse.data && descriptionResponse.data.success) {
                             this.description = descriptionResponse.data.description;
                         }
                         this.i = 1;
-                        if (productsResponse) {
+                        if (productsResponse && productsResponse.data && productsResponse.data.products && productsResponse.data.products.length > 0) {
                             this.products = productsResponse.data.products;
                             this.productsInitial = productsResponse;
                             this.sizesFilter = productsResponse.data.sizes;

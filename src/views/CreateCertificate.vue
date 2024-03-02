@@ -48,7 +48,7 @@
                 </button>
                 <button
                 v-if="certificate"
-                class="btn btn-primary "
+                class="btn btn-primary"
                 @click="startPayment(cost, 0, certificate)">
                 Ссылка на оплату
             </button>
