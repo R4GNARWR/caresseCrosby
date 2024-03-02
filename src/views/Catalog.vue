@@ -280,10 +280,14 @@ export default {
         },
         ...search,
         updateFilter(filter) {
+          let skip = false
           window.scrollTo({top: 0, behavior: "smooth"});
 
           if(!this.saved_search_filters.some(item=> item && item.attributeValueId === filter.attributeValueId)) store.commit("addToFilters", filter);
-          else store.commit("delFromFilters", filter)
+          else {
+            store.commit("delFromFilters", filter)
+            skip = true
+          }
 
           let upatedFilters={"brands":[],"colors":[],"sizes":[]}
             switch (filter.attributeId){
@@ -304,9 +308,9 @@ export default {
                 }
               }
 
-          for (let f of this.brandFilters) f.disabled = !upatedFilters.brands.some(item => item.attributeValueId === f.attributeValueId);
-          for (let f of this.sizesFilter) f.disabled = !upatedFilters.sizes.some(item => item.attributeValueId === f.attributeValueId);
-          for (let f of this.colorFilter) f.disabled = !upatedFilters.colors.some(item => item.attributeValueId === f.attributeValueId);
+          for (let f of this.brandFilters) if (!f.disabled || skip) f.disabled = !upatedFilters.brands.some(item => item.attributeValueId === f.attributeValueId);
+          for (let f of this.sizesFilter) if (!f.disabled || skip) f.disabled = !upatedFilters.sizes.some(item => item.attributeValueId === f.attributeValueId);
+          for (let f of this.colorFilter) if (!f.disabled  || skip) f.disabled = !upatedFilters.colors.some(item => item.attributeValueId === f.attributeValueId);
 
         },
     },
