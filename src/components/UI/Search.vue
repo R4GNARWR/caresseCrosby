@@ -52,6 +52,7 @@ export default {
             i:1,
             accept_product_request:false,
             resultEmpty: false,
+            resultTranslated: null,
         }
     },
     props: {

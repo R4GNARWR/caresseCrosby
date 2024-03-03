@@ -26,6 +26,7 @@ function stringToRus(str) {
 export default {
     getVariants(callTime) {
         let vm = this;
+        vm.resultTranslated = null
         if (vm.keyPressedTime <= callTime) {
             if (vm.searchString.length > 3) {
                 vm.activeSearchVariantIdx = null;
@@ -44,7 +45,7 @@ export default {
                                                 vm.variants = response.data.products;
                                                 vm.searchResultsVisible = true;
                                                 vm.resultEmpty = false
-                                                // vm.searchString = stringToRus(vm.searchString)
+                                                vm.resultTranslated = stringToRus(vm.searchString)
                                             } else {
                                                 vm.variants = [];
                                                 vm.resultEmpty = true
@@ -108,7 +109,13 @@ export default {
                 break;
             case e && e.keyCode === 13: // Enter
                 if (vm.searchString.length > 3) {
-                    this.$router.push('/catalog/search/?query=' + vm.searchString)
+                    if(vm.resultTranslated) {
+                        this.$router.push('/catalog/search/?query=' + vm.resultTranslated)
+                        vm.searchString = vm.resultTranslated
+                    } else {
+                        this.$router.push('/catalog/search/?query=' + vm.searchString)
+                    }
+                    
                 }
                 break;
             case e && e.keyCode === 27: // Esc
