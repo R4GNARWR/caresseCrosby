@@ -1,5 +1,5 @@
 import store from "../store/store";
-
+import { sendMetrika } from "../utils/metrika";
 function stringToRus(str) {
     const replacer = {
         "q": "й", "w": "ц", "e": "у", "r": "к", "t": "е", "y": "н", "u": "г",
@@ -109,13 +109,13 @@ export default {
                 break;
             case e && e.keyCode === 13: // Enter
                 if (vm.searchString.length > 3) {
-                    if(vm.resultTranslated) {
+                    if (vm.resultTranslated) {
                         this.$router.push('/catalog/search/?query=' + vm.resultTranslated)
                         vm.searchString = vm.resultTranslated
                     } else {
                         this.$router.push('/catalog/search/?query=' + vm.searchString)
                     }
-                    
+
                 }
                 break;
             case e && e.keyCode === 27: // Esc
@@ -127,6 +127,7 @@ export default {
         }
     },
     focus() {
+        sendMetrika('focus_search', 'reachGoal')
         if (this.searchString && this.searchString.length) {
             this.keydown();
             this.$refs.searchStringInput.select();

@@ -80,6 +80,7 @@ import productCard from "../api/productCard";
 import cartProduct from '../components/cart/cartProduct.vue'
 import { mapMutations, mapState } from "vuex";
 import store from '../store/store';
+import { sendMetrika } from '../utils/metrika';
 
 export default {
     data() {
@@ -203,6 +204,7 @@ export default {
         if (this.user_info.email) this.email = this.user_info.email;
     },
     mounted() {
+        sendMetrika('open_cart', 'reachGoal')
         if (this.promocodeDiscount) {
             this.promocodeStatus = true
         }

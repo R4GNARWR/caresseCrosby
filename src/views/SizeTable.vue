@@ -427,6 +427,7 @@
 </template>
 
 <script>
+import { sendMetrika } from "../utils/metrika";
 import search from "../api/search";
 import store from '../store/store'
 import {mapState} from "vuex";
@@ -494,6 +495,7 @@ export default {
             }
         },
         showSize() {
+            sendMetrika('calculate_size', 'reachGoal')
             this.show = true
             this.searchSize()
             if(this.size) {

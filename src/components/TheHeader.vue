@@ -1,4 +1,4 @@
-<template >
+<template>
     <header ref="headerElement">
         <v-container>
             <div class="header-top">
@@ -11,8 +11,8 @@
                             <img src="/svg/search.svg" alt="">
                         </div>
                     </div>
-                    
-                    
+
+
                     <!-- <div class="header-location" >
                         <img src="/svg/placemark-outline.svg" alt="">
                         г. Уфа
@@ -22,7 +22,7 @@
                 <router-link class="header-logo " to="/">
                     <img src="/svg/logo-header.svg" alt="">
                 </router-link>
-                
+
                 <div class="header-right__col">
                     <div class="header-contacts">
                         <div class="header-contacts__phone">
@@ -40,41 +40,43 @@
                     </div>
                     <div class="header-links">
                         <router-link class="header-links__item" to="/favorite">
-                            <div class="count" v-if="favorites.length>0">{{favorites.length}}</div>
+                            <div class="count" v-if="favorites.length > 0">{{ favorites.length }}</div>
                             <img src="/svg/heart.svg" alt="">
                         </router-link>
-                        <button @click="accountClick"  class="header-links__item d-md-block d-none">
+                        <button @click="accountClick" class="header-links__item d-md-block d-none">
                             <img src="/svg/account.svg" alt="">
                         </button>
                         <router-link class="header-links__item  " to="/cart">
-                            <div class="count" v-if="cart.length>0">{{cart.length}}</div>
+                            <div class="count" v-if="cart.length > 0">{{ cart.length }}</div>
                             <img src="/svg/cart.svg" alt="">
                         </router-link>
                     </div>
                 </div>
             </div>
-            <div class="header-catalog" :class="{'show': showMenu}">
-                <div class="close-menu d-lg-none d-block" @click="showMenu =!showMenu">
+            <div class="header-catalog" :class="{ 'show': showMenu }">
+                <div class="close-menu d-lg-none d-block" @click="showMenu = !showMenu">
                     <img src="/svg/close.svg" alt="">
                 </div>
                 <div class="header-catalog__inner">
                     <Search class="d-lg-none d-flex" :searchActive="true"></Search>
                     <nav class="header-catalog__list">
-                        <div class="header-catalog__list-item" v-for="(item, index) in left_menu.slice(0,4)" :key="index" v-if="left_menu && windowWidth > 960">
-                            <Dropdown :list-items="item.children"  v-if="item.children">
+                        <div class="header-catalog__list-item" v-for="(item, index) in left_menu.slice(0, 4)"
+                            :key="index" v-if="left_menu && windowWidth > 960">
+                            <Dropdown :list-items="item.children" v-if="item.children">
                                 {{ item.name }}
                             </Dropdown>
-                            <router-link :to="item.link" v-if="item.link">{{item.name}}</router-link>
+                            <router-link :to="item.link" v-if="item.link">{{ item.name }}</router-link>
                         </div>
-                        <div class="header-catalog__list-item" v-for="(item, index) in left_menu" :key="index" v-if="left_menu && windowWidth < 960">
+                        <div class="header-catalog__list-item" v-for="(item, index) in left_menu" :key="index"
+                            v-if="left_menu && windowWidth < 960">
                             <Dropdown :list-items="item.children" class="no-arrow" v-if="item.children">
                                 {{ item.name }}
                                 <img src="/svg/arrow.svg" alt="" style="transform: rotate(-90deg);">
                             </Dropdown>
-                            <button @click="item.action" v-if="item.action">{{item.name}}</button>
-                            <router-link :to="item.link"  v-if="item.link">{{item.name}}</router-link>
+                            <button @click="item.action" v-if="item.action">{{ item.name }}</button>
+                            <router-link :to="item.link" v-if="item.link">{{ item.name }}</router-link>
                         </div>
-                        
+
                         <div class="header-catalog__list-item">
                             <router-link to="/giftCard">
                                 <img src="/svg/gift.svg" alt="">
@@ -88,10 +90,13 @@
                             </router-link>
                         </div>
                         <div class="header-catalog__list-item d-lg-flex d-none">
-                            <Dropdown :list-items="left_menu.slice(4, left_menu.length)" class="no-arrow"><img src="/svg/more.svg"  alt=""></Dropdown>
+                            <Dropdown :list-items="left_menu.slice(4, left_menu.length)" class="no-arrow"><img
+                                    src="/svg/more.svg" alt=""></Dropdown>
                         </div>
                     </nav>
-                    <a class="header-catalog__btn" target="_blank" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:">
+                    <a class="header-catalog__btn" target="_blank"
+                        href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:"
+                        @click="clickWhatsapp()">
                         <img src="/svg/whatsapp.svg" alt="">
                         Написать в Whats App
                     </a>
@@ -120,11 +125,13 @@
         </v-container>
         <ModalSearch :searchActive="searchStatus" @toggleSearch="closeSearch"></ModalSearch>
     </header>
-    
+
 </template>
+
 <script>
+import { sendMetrika } from "../utils/metrika";
 import { Fancybox } from "@fancyapps/ui";
-import {mapState, mapMutations} from "vuex";
+import { mapState, mapMutations } from "vuex";
 
 import Dropdown from './UI/Dropdown.vue';
 import Search from './UI/Search.vue';
@@ -142,39 +149,16 @@ export default {
             searchStatus: false,
         };
     },
-    emits: [
-    'update-offset-top'
-    ],
+    emits: ['update-offset-top'],
     methods: {
         closeSearch() {
             this.searchStatus = false
         },
-        showLoginForm(){
+        clickWhatsapp() {
+            sendMetrika('click_whatsapp', 'reachGoal')
+        },
+        showLoginForm() {
             Fancybox.show(
-            [{
-                src: '#loginForm',
-                type: 'inline',
-            }],
-            {
-                closeButton: false,
-                mainClass: 'modal-base__wrap',
-            });
-        },
-        changeSize() {
-            let headerHeight = 0;
-            if(this.$refs.headerElement) {
-                headerHeight = this.$refs.headerElement.clientHeight
-            }
-            if(window.innerWidth > 950) {
-                this.searchStatus = true;
-            }
-            this.$store.commit('setHeaderPadding', headerHeight)
-            this.$emit('update-offset-top', headerHeight);
-            this.windowWidth = window.innerWidth
-        },
-        accountClick(){
-            if (!this.loggedIn) {
-                Fancybox.show(
                 [{
                     src: '#loginForm',
                     type: 'inline',
@@ -183,105 +167,127 @@ export default {
                     closeButton: false,
                     mainClass: 'modal-base__wrap',
                 });
+        },
+        changeSize() {
+            let headerHeight = 0;
+            if (this.$refs.headerElement) {
+                headerHeight = this.$refs.headerElement.clientHeight
+            }
+            if (window.innerWidth > 950) {
+                this.searchStatus = true;
+            }
+            this.$store.commit('setHeaderPadding', headerHeight)
+            this.$emit('update-offset-top', headerHeight);
+            this.windowWidth = window.innerWidth
+        },
+        accountClick() {
+            if (!this.loggedIn) {
+                Fancybox.show(
+                    [{
+                        src: '#loginForm',
+                        type: 'inline',
+                    }],
+                    {
+                        closeButton: false,
+                        mainClass: 'modal-base__wrap',
+                    });
             } else {
                 Fancybox.close()
-                this.$route.path !=='/profileData' ? this.$router.push('/profileData') : '';
+                this.$route.path !== '/profileData' ? this.$router.push('/profileData') : '';
             }
         },
-        ask_sms(){
+        ask_sms() {
             this.$API.ask_sms(this.phone, this.email);
         },
-        reg_it(){
+        reg_it() {
             this.$metrika.reachGoal('registration')
             this.$API.registration(this.name, this.phone, this.email, this.password)
-            .then(value => {
-                if (value.data.success) {
-                    this.the_error="Регистрация прошла успешно"
-                    this.show_menu = false;
-                    this.login();
-                }
-                else {
-                    let msg={}
-                    msg.msg='';
-                    if (value.data.errors){
-                        for (let e in value.data.errors){
-                            msg.msg +=value.data.errors[e]+' ';
-                        }
-                    } else msg.msg ="Неизвестная ошибка"
-                    msg.color = "red";
-                    // this.$store.commit('set_snack_message',msg);
-                }
-            });
+                .then(value => {
+                    if (value.data.success) {
+                        this.the_error = "Регистрация прошла успешно"
+                        this.show_menu = false;
+                        this.login();
+                    }
+                    else {
+                        let msg = {}
+                        msg.msg = '';
+                        if (value.data.errors) {
+                            for (let e in value.data.errors) {
+                                msg.msg += value.data.errors[e] + ' ';
+                            }
+                        } else msg.msg = "Неизвестная ошибка"
+                        msg.color = "red";
+                        // this.$store.commit('set_snack_message',msg);
+                    }
+                });
         },
-        logout(){
+        logout() {
             this.$API.logout()
-            .then(value => {
-                if(value.data.success) {
-                    this.clearCart();
-                    this.$store.commit('logout');
-                    this.show_menu = false;
-                    if (this.$route.path !='/') this.$router.push('/');
-                }
-            });
+                .then(value => {
+                    if (value.data.success) {
+                        this.clearCart();
+                        this.$store.commit('logout');
+                        this.show_menu = false;
+                        if (this.$route.path != '/') this.$router.push('/');
+                    }
+                });
         },
-        close_left_menu(){
-            if (this.show_left_menu && !this.show_sizes) {this.show_left_menu=false; this.slm=false;}
+        close_left_menu() {
+            if (this.show_left_menu && !this.show_sizes) { this.show_left_menu = false; this.slm = false; }
         },
-        sendLid(){
+        sendLid() {
             this.$API.lid(this.name, this.phone, this.email, this.lidDate.toString())
-            .then(value => {
-                if (value.data.success) {
-                    let msg={}
-                    msg.msg="Ждем вас на примерку! Мы свяжемся с вами чтобы уточнить детали."
-                    this.lidForm = false;
-                    // this.$store.commit('set_snack_message',msg);
-                }
-                else {
-                    let msg={}
-                    msg.msg='';
-                    if (value.data.errors){
-                        for (let e in value.data.errors){
-                            msg.msg +=value.data.errors[e]+' ';
-                        }
-                    } else msg.msg ="Неизвестная ошибка"
-                    msg.color = "red";
-                    // this.$store.commit('set_snack_message',msg);
-                }
-            });
+                .then(value => {
+                    if (value.data.success) {
+                        let msg = {}
+                        msg.msg = "Ждем вас на примерку! Мы свяжемся с вами чтобы уточнить детали."
+                        this.lidForm = false;
+                        // this.$store.commit('set_snack_message',msg);
+                    }
+                    else {
+                        let msg = {}
+                        msg.msg = '';
+                        if (value.data.errors) {
+                            for (let e in value.data.errors) {
+                                msg.msg += value.data.errors[e] + ' ';
+                            }
+                        } else msg.msg = "Неизвестная ошибка"
+                        msg.color = "red";
+                        // this.$store.commit('set_snack_message',msg);
+                    }
+                });
         },
         ...mapMutations(['clearCart'])
     },
-    watch:{
+    watch: {
         '$route.fullPath': function () {
             this.showMenu = false;
             this.searchStatus = false
         },
     },
-    computed:{
-        ...mapState(['project_params', 'loggedIn', 'user_info', 'cart','favorites','categoriesTree']),
+    computed: {
+        ...mapState(['project_params', 'loggedIn', 'user_info', 'cart', 'favorites', 'categoriesTree']),
         left_menu() {
             let lm_catalog = [];
             let lm_swimsuit = {
                 name: 'Купальники',
-                children: [{ name: "Все модели", link: '/catalog/search/?query=купальник'}]
+                children: [{ name: "Все модели", link: '/catalog/search/?query=купальник' }]
             };
             let lm_underwear = {
                 name: 'Нижнее белье',
                 children: []
             };
             for (let category of this.categoriesTree) {
-                if(category.id !== 24473)
-                {
-                    if(category.name === 'Купальники Раздельные' || category.name === "Купальники Слитные")
-                    {
+                if (category.id !== 24473) {
+                    if (category.name === 'Купальники Раздельные' || category.name === "Купальники Слитные") {
                         lm_swimsuit.children.push({ name: category.name, link: '/catalog/' + category.id })
-                    } else if(category.name === 'Трусики'
-                    || category.name === "Бюстгальтеры"
-                    || category.name === "Коррекция"
-                    || category.name === "Белье для кормления"
-                    || category.name === "Спортивный бюстгальтер"
-                    || category.name === "Специализированное белье"
-                    || category.name === "Боди"){
+                    } else if (category.name === 'Трусики'
+                        || category.name === "Бюстгальтеры"
+                        || category.name === "Коррекция"
+                        || category.name === "Белье для кормления"
+                        || category.name === "Спортивный бюстгальтер"
+                        || category.name === "Специализированное белье"
+                        || category.name === "Боди") {
                         lm_underwear.children.push({ name: category.name, link: '/catalog/' + category.id })
                     } else {
                         lm_catalog.push({ name: category.name, link: '/catalog/' + category.id });
@@ -289,55 +295,55 @@ export default {
                 }
             }
             let lm = []
-            if(this.windowWidth > 960) {
+            if (this.windowWidth > 960) {
                 lm = [
-                lm_underwear,
-                lm_swimsuit,
-                ...lm_catalog,
-                { name: 'Бренды', link: '/Brands' },
-                { name: 'О нас', link: '/about' },
-                { name: 'Контакты', link: '/contacts' },
-                { name: 'Фотогалерея', link: '/photoAlbum' },
-                { name: 'Статьи', link: '/articles' },
-                { name: 'Доставка', link: '/delivery' },
-                { name: 'Избранные товары', link: '/favorite' },
+                    lm_underwear,
+                    lm_swimsuit,
+                    ...lm_catalog,
+                    { name: 'Бренды', link: '/Brands' },
+                    { name: 'О нас', link: '/about' },
+                    { name: 'Контакты', link: '/contacts' },
+                    { name: 'Фотогалерея', link: '/photoAlbum' },
+                    { name: 'Статьи', link: '/articles' },
+                    { name: 'Доставка', link: '/delivery' },
+                    { name: 'Избранные товары', link: '/favorite' },
                 ]
             } else {
                 lm = !this.loggedIn
-                ? [
-                {
-                    name: 'Войти в личный кабинет',
-                    action: this.showLoginForm,
-                },
-                { name: 'Бренды', link: '/Brands' },
-                lm_underwear,
-                lm_swimsuit,
-                ...lm_catalog,
-                { name: 'О нас', link: '/About' },
-                { name: 'Избранные товары', link: '/favorite' },
-                { name: 'Контакты', link: '/contacts' },
-                { name: 'Фотогалерея', link: '/photoAlbum' },
-                { name: 'Статьи', link: '/articles' },
-                { name: 'Доставка', link: '/delivery' },
-                ]
-                : [
-                {
-                    name: 'Личный кабинет',
-                    link: '/profileData',
-                },
-                { name: 'Бренды', link: '/Brands' },
-                lm_underwear,
-                lm_swimsuit,
-                { name: 'Избранные товары', link: '/favorite' },
-                ...lm_catalog,
-                { name: 'О нас', link: '/About' },
-                { name: 'Контакты', link: '/Contacts' },
-                { name: 'Фотогалерея', link: '/photoAlbum' },
-                { name: 'Статьи', link: '/articles' },
-                { name: 'Доставка', link: '/delivery' },
-                ];
+                    ? [
+                        {
+                            name: 'Войти в личный кабинет',
+                            action: this.showLoginForm,
+                        },
+                        { name: 'Бренды', link: '/Brands' },
+                        lm_underwear,
+                        lm_swimsuit,
+                        ...lm_catalog,
+                        { name: 'О нас', link: '/About' },
+                        { name: 'Избранные товары', link: '/favorite' },
+                        { name: 'Контакты', link: '/contacts' },
+                        { name: 'Фотогалерея', link: '/photoAlbum' },
+                        { name: 'Статьи', link: '/articles' },
+                        { name: 'Доставка', link: '/delivery' },
+                    ]
+                    : [
+                        {
+                            name: 'Личный кабинет',
+                            link: '/profileData',
+                        },
+                        { name: 'Бренды', link: '/Brands' },
+                        lm_underwear,
+                        lm_swimsuit,
+                        { name: 'Избранные товары', link: '/favorite' },
+                        ...lm_catalog,
+                        { name: 'О нас', link: '/About' },
+                        { name: 'Контакты', link: '/Contacts' },
+                        { name: 'Фотогалерея', link: '/photoAlbum' },
+                        { name: 'Статьи', link: '/articles' },
+                        { name: 'Доставка', link: '/delivery' },
+                    ];
             }
-            
+
             return lm;
         },
     },
@@ -347,7 +353,7 @@ export default {
     },
     // created() {if (!this.categoriesTree.length) this.$API.getParentsCategories();},
     mounted() {
-        if (!this.categoriesTree.length){
+        if (!this.categoriesTree.length) {
             this.$API.getParentsCategories();
         }
         this.changeSize();
@@ -357,12 +363,12 @@ export default {
         // удаляем обработчик события при уничтожении компонента
         window.removeEventListener('resize', this.changeSize);
     },
-    
+
 }
 </script>
+
 <style lang="scss">
-header
-{
+header {
     height: auto;
     position: fixed;
     top: 0;
@@ -372,8 +378,8 @@ header
     background-color: #FFFEFD;
     box-shadow: 0px 6px 20px 0px rgba(63, 36, 5, 0.04);
 }
-.header-top
-{
+
+.header-top {
     margin-bottom: 1rem;
     padding: 1rem 6rem 1rem 6rem;
     position: relative;
@@ -383,32 +389,32 @@ header
     column-gap: 3.2rem;
     border-bottom: 1px solid #E5E1DA;
 }
+
 .header-search__icon,
-.header-menu__icon
-{
+.header-menu__icon {
     width: 24px;
     height: 24px;
-    img
-    {
+
+    img {
         width: 100%;
         height: 100%;
         object-fit: contain;
     }
 }
-.header-links
-{
+
+.header-links {
     height: 100%;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     column-gap: 4rem;
-    &__item
-    {
+
+    &__item {
         position: relative;
         width: 2.4rem;
         height: 2.4rem;
-        .count
-        {
+
+        .count {
             position: absolute;
             right: 0;
             top: 0;
@@ -427,60 +433,60 @@ header
             font-weight: 500;
             line-height: 1.16rem;
         }
-        img
-        {
+
+        img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
-        
+
     }
 }
-.header-logo
-{
+
+.header-logo {
     display: block;
     width: 25.8rem;
     height: 5.6rem;
-    img
-    {
+
+    img {
         width: 100%;
         height: 100%;
         object-fit: contain;
         object-position: center;
     }
 }
-.header-left__col
-{
+
+.header-left__col {
     position: relative;
     display: flex;
     column-gap: 6.5rem;
     flex-basis: 44.5rem;
     align-items: center;
 }
-.header-right__col
-{
+
+.header-right__col {
     position: relative;
     display: flex;
     align-items: center;
     column-gap: 6.5rem;
 }
-.header-contacts
-{
+
+.header-contacts {
     display: flex;
     align-items: center;
     column-gap: 2.4rem;
-    &__phone
-    {
+
+    &__phone {
         display: flex;
         column-gap: 1rem;
-        img
-        {
+
+        img {
             width: 2rem;
             height: 2rem;
             object-fit: contain;
         }
-        a
-        {
+
+        a {
             color: #827F7D;
             font-size: 1.6rem;
             line-height: 1em;
@@ -488,14 +494,13 @@ header
             text-decoration: none;
         }
     }
-    &__socials
-    {
+
+    &__socials {
         display: flex;
         column-gap: 1.2rem;
-        a
-        {
-            img
-            {
+
+        a {
+            img {
                 width: 2.4rem;
                 height: 2.4rem;
                 object-fit: contain;
@@ -503,14 +508,14 @@ header
         }
     }
 }
-.header-search__mobile
-{
+
+.header-search__mobile {
     height: 100%;
     align-items: center;
     column-gap: 24px;
 }
-.header-location
-{
+
+.header-location {
     height: 100%;
     display: flex;
     align-items: center;
@@ -519,163 +524,159 @@ header
     font-size: 1.6rem;
     line-height: 1.5em;
     letter-spacing: -0.128px;
-    img
-    {
+
+    img {
         width: 2rem;
         height: 2rem;
         object-fit: contain;
     }
 }
-.close-menu
-{
+
+.close-menu {
     margin-bottom: 32px;
     width: 24px;
     height: 24px;
     cursor: pointer;
-    img
-    {
+
+    img {
         width: 100%;
         height: 100%;
         object-fit: contain;
     }
 }
-.header-catalog__inner
-{
+
+.header-catalog__inner {
     width: 100%;
     display: flex;
     column-gap: 6.4rem;
 }
 
-.header-catalog
-{
+.header-catalog {
     padding: .8rem 6rem 2.8rem 6rem;
     display: flex;
-    &__list
-    {
+
+    &__list {
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-grow: 1;
-        &-item
-        {
+
+        &-item {
             color: $primary;
             font-size: 1.6rem;
             font-weight: 400;
             line-height: 1.5em;
             letter-spacing: -0.16px;
-            a
-            {
+
+            a {
                 display: flex;
                 align-items: center;
                 column-gap: .8rem;
                 text-decoration: none;
                 color: inherit;
                 transition: .2s;
-                img
-                {
+
+                img {
                     width: 2rem;
                     height: 2rem;
                     object-fit: contain;
                 }
-                &.router-link-active
-                {
+
+                &.router-link-active {
                     font-weight: bold;
                 }
-                &:hover
-                {
+
+                &:hover {
                     color: lighten($primary, $amount: 30%);
                 }
             }
         }
     }
-    &__btn
-    {
+
+    &__btn {
         display: flex;
         align-items: center;
         column-gap: 1rem;
-        img
-        {
+
+        img {
             width: 2rem;
             height: 2rem;
             object-fit: contain;
         }
+
         color: #867B6E;
         font-size: 1.6rem;
         font-weight: 700;
         line-height: 1.5em;
         letter-spacing: -0.128px;
-        
+
     }
 }
+
 @media (max-width: 1280px) {
-    .header-catalog__inner
-    {
+    .header-catalog__inner {
         column-gap: 15px;
     }
-    .header-catalog
-    {
-        &__list
-        {
-            &-item
-            {
+
+    .header-catalog {
+        &__list {
+            &-item {
                 font-size: 1.4rem;
             }
         }
     }
 }
-.header-search
-{
-    .search-wrap
-    {
+
+.header-search {
+    .search-wrap {
         margin-bottom: 0;
     }
 }
+
 @media (max-width: 960px) {
-    .header-logo
-    {
-        img
-        {
+    .header-logo {
+        img {
             object-position: center;
         }
     }
-    .header-top
-    {
+
+    .header-top {
         padding: 12px 0;
     }
+
     .header-contacts,
-    .header-location
-    {
+    .header-location {
         display: none;
     }
-    .header-left__col
-    {
+
+    .header-left__col {
         flex-basis: initial;
     }
-    .header-top
-    {
+
+    .header-top {
         border-bottom: 0;
     }
-    
-    .header-catalog__inner
-    {
+
+    .header-catalog__inner {
         padding: 0 0 20px 0;
         height: 100%;
         display: flex;
         flex-direction: column;
         overflow-y: scroll;
-        .header-search
-        {
+
+        .header-search {
             margin-bottom: 32px;
             width: 100%;
         }
     }
-    .header-catalog
-    {
+
+    .header-catalog {
         display: none;
-        &.show
-        {
+
+        &.show {
             display: flex;
         }
+
         padding: 20px;
         position: absolute;
         top: 0;
@@ -685,203 +686,199 @@ header
         flex-direction: column;
         background: #FFFEFC;
         box-shadow: 0px 4px 58px 0px rgba(0, 0, 0, 0.25);
-        &__list
-        {
+
+        &__list {
             margin-bottom: 36px;
             align-items: flex-start;
             flex-direction: column;
             flex-grow: 0;
             row-gap: 36px;
-            &-item
-            {
+
+            &-item {
                 font-size: 16px;
-                a
-                {
-                    
+
+                a {
+
                     column-gap: 8px;
-                    img
-                    {
+
+                    img {
                         width: 20px;
                         height: 20px;
                     }
-                    
+
                 }
             }
-            .dropdown
-            {
-                .dropdown__body
-                {
+
+            .dropdown {
+                .dropdown__body {
                     position: static;
                     margin-top: 16px;
                     background-color: transparent;
                 }
             }
         }
-        &__btn
-        {
+
+        &__btn {
             text-decoration: none;
             column-gap: 10px;
-            img
-            {
+
+            img {
                 width: 20px;
                 height: 20px;
             }
+
             font-size: 16px;
         }
-        .header-search
-        {
+
+        .header-search {
             height: auto;
         }
-        .search-wrap
-        {
+
+        .search-wrap {
             padding-top: 0;
             margin-bottom: 32px;
             width: 100%;
             left: initial;
             top: initial;
             display: block !important;
-            input
-            {
+
+            input {
                 padding: 8px 16px 8px 42px;
                 border: 0;
                 border-bottom: 1px solid #E9E9E9;
                 box-shadow: none;
             }
         }
-        .header-search__close
-        {
+
+        .header-search__close {
             right: 8px;
         }
-        .search-wrap
-        {
+
+        .search-wrap {
             margin-bottom: 10px;
         }
-        .search-result
-        {
+
+        .search-result {
             background-color: #FFFFFF;
-            &__item
-            {
+
+            &__item {
                 padding: 4px 8px 4px 8px;
             }
         }
-        
+
     }
-    .header-catalog__contacts
-    {
+
+    .header-catalog__contacts {
         margin-top: auto;
         display: flex;
         flex-direction: column;
         column-gap: 16px;
+
         .header-contacts,
-        .header-location
-        {
+        .header-location {
             display: flex;
         }
     }
-    .header-contacts
-    {
+
+    .header-contacts {
         margin-top: 32px;
         column-gap: 16px;
-        &__phone
-        {
+
+        &__phone {
             column-gap: 10px;
-            img
-            {
+
+            img {
                 width: 20px;
                 height: 20px;
             }
-            a
-            {
+
+            a {
                 font-size: 16px;
             }
         }
-        &__socials
-        {
-            a
-            {
-                img
-                {
+
+        &__socials {
+            a {
+                img {
                     width: 24px;
                     height: 24px;
                 }
             }
-            
+
         }
     }
-    .header-location
-    {
+
+    .header-location {
         column-gap: 10px;
-        img
-        {
+
+        img {
             width: 20px;
             height: 20px;
         }
+
         font-size: 16px;
     }
-    .header-left__col
-    {
+
+    .header-left__col {
         justify-content: flex-start;
         border-bottom: 0;
     }
-    .header-right__col
-    {
+
+    .header-right__col {
         justify-content: flex-end;
         border-bottom: 0;
     }
-    .header
-    {
-        &-search
-        {
+
+    .header {
+        &-search {
             column-gap: 24px;
-            span
-            {
+
+            span {
                 display: none;
             }
-            &__icon
-            {
+
+            &__icon {
                 width: 24px;
                 height: 24px;
             }
         }
-        &-logo
-        {
+
+        &-logo {
             width: 126px;
             height: 36px;
         }
-        &-links
-        {
+
+        &-links {
             column-gap: 24px;
-            
-            &__item
-            {
-                .count
-                {
+
+            &__item {
+                .count {
                     width: 16px;
                     height: 16px;
                     font-size: 12px;
                 }
+
                 width: 24px;
                 height: 24px;
             }
         }
-        
+
     }
-    .header-left__col
-    {
+
+    .header-left__col {
         position: static;
     }
 }
+
 @media (max-width: 600px) {
-    header
-    {
-        .v-container
-        {
+    header {
+        .v-container {
             max-width: 100%;
             padding: 0 20px;
         }
     }
-    .header-top
-    {
+
+    .header-top {
         position: static;
     }
 }

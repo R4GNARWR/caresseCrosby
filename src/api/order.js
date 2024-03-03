@@ -1,6 +1,6 @@
-import { error } from "jquery";
 import store from "../store/store";
 import api from "./api";
+import { sendMetrika } from "../utils/metrika";
 
 export default {
     make_the_order() {
@@ -35,6 +35,7 @@ export default {
         };
         this.$API.makeOrder(to_send).then(value => {
             if (value.data.success) {
+                sendMetrika('make_order', 'reachGoal')
                 this.clearCart();
                 if (value.data.new_user) {
                     this.$API.tryAuth();

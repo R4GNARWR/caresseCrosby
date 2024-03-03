@@ -1,38 +1,28 @@
 <template>
-    <div>
-      <img
-        src="https://top-fwz1.mail.ru/counter?id=3468047;js=na"
-        style="position: absolute; left: -9999px;"
-        alt="Top.Mail.Ru"
-      />
-    </div>
-  </template>
-  
-  <script setup>
-  import { onMounted } from 'vue';
-  
-  const loadTopMailRuScript = () => {
-    var _tmr = window._tmr || (window._tmr = []);
-    _tmr.push({ id: "3468047", type: "pageView", start: new Date().getTime() });
-    if (document.getElementById("tmr-code")) return;
-    var ts = document.createElement("script");
-    ts.type = "text/javascript";
-    ts.async = true;
-    ts.id = "tmr-code";
-    ts.src = "https://top-fwz1.mail.ru/js/code.js";
-    var f = function () {
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(ts, s);
-    };
-    if (window.opera == "[object Opera]") {
-      document.addEventListener("DOMContentLoaded", f, false);
-    } else {
-      f();
-    }
-  };
-  
-  onMounted(() => {
-    loadTopMailRuScript();
+  <!-- Yandex.Metrika counter -->
+  <noscript>
+    <div><img src="https://mc.yandex.ru/watch/96486278" style="position:absolute; left:-9999px;" alt="" /></div>
+  </noscript>
+  <!-- /Yandex.Metrika counter -->
+</template>
+
+<script setup>
+import { onMounted } from 'vue';
+
+onMounted(() => {
+  (function (m, e, t, r, i, k, a) {
+    m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+    m[i].l = 1 * new Date();
+    for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+    k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+  })
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+  ym(96486278, "init", {
+    clickmap: true,
+    trackLinks: true,
+    accurateTrackBounce: true,
+    webvisor: true
   });
-  </script>
-  
+})
+</script>

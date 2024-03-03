@@ -157,7 +157,7 @@
                         </div>
                     </div>
                     <div class="product-detail__info-whatsapp">
-                        <a target="_blank" class="btn btn-gold outline" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:">
+                        <a target="_blank" class="btn btn-gold outline" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:" @click="clickWhatsapp()">
                             <img src="/svg/whatsapp-gold.svg" alt="">
                             Консультация в Whats App
                         </a>
@@ -180,6 +180,8 @@ let sortOrder={'36':26,'38':35,'40':48,'42':58,'44':67,'46':69,'48':71,'50':73,'
 import {mapMutations, mapState} from "vuex";
 import { register } from 'swiper/element/bundle';
 import { Fancybox } from "@fancyapps/ui";
+
+import { sendMetrika } from "../../utils/metrika";
 
 import cart from "../../api/cart";
 import productCard from "../../api/productCard";
@@ -309,6 +311,7 @@ export default {
             });
         },
         handleAddToCart() {
+            sendMetrika('add_to_cart', 'reachGoal')
             if(this.addToOrder) {
                 this.addProductToOrder(this.addToOrder)
             } else {
@@ -364,6 +367,9 @@ export default {
                     } else this.$router.push('/')
                 })
             }
+        },
+        clickWhatsapp() {
+            sendMetrika('click_whatsapp', 'reachGoal')
         },
         delete_prod(){
             this.$API.deleteProduct(this.$route.params.id).then(response => {

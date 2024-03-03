@@ -57,7 +57,7 @@
                         </ul>
                         <div class="footer-additional-info d-lg-flex d-none">
                             <div class="footer-socials">
-                                <a target="_blank" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:"><img src="/svg/whatsapp.svg" alt=""></a>
+                                <a target="_blank" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:" @click="clickWhatsapp()"><img src="/svg/whatsapp.svg" alt=""></a>
                                 <a target="_blank" href="https://vk.com/ccrosby"><img src="/svg/vk.svg" alt=""></a>
                                 <a target="_blank" href="https://t.me/+79177471561"><img src="/svg/telegram.svg" alt=""></a>
                             </div>
@@ -106,7 +106,12 @@ export default {
         currentYear() {
             return new Date().getFullYear()
         }
-    }
+    },
+    methods: {
+        clickWhatsapp() {
+            sendMetrika('click_whatsapp', 'reachGoal')
+        },
+    },
 }
 </script>
 <style lang="scss">

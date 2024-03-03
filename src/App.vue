@@ -1,5 +1,3 @@
-
-
 <template>
   <Metrika></Metrika>
   <main :style="{ paddingTop: mainOffsetTop + 'px' }" ref="wrapper">

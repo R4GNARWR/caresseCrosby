@@ -1,17 +1,19 @@
 <template>
     <div class="widget" @click.stop="toggleWidget" ref="widget">
-        <img class="widget-img" src="/svg/widget.svg" :class="{'active': !widgetActive}">
-        <img class="widget-close" src="/svg/widget-close.svg" :class="{'active': widgetActive}">
+        <img class="widget-img" src="/svg/widget.svg" :class="{ 'active': !widgetActive }">
+        <img class="widget-close" src="/svg/widget-close.svg" :class="{ 'active': widgetActive }">
         <div class="widget-list" v-if="widgetActive">
             <a class="widget-list__item" href="https://t.me/+79177471561" target="_blank">
                 <img src="/svg/widget-telegram.svg">
             </a>
-            <a class="widget-list__item" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:" target="_blank">
+            <a class="widget-list__item" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:"
+                target="_blank" @click="clickWhatsapp()">
                 <img src="/svg/widget-whatsapp.svg">
             </a>
         </div>
     </div>
 </template>
+
 <script>
 import { ref, onMounted } from 'vue'
 import { onClickOutside } from '@vueuse/core'
@@ -23,6 +25,9 @@ export default {
 
         const toggleWidget = () => {
             widgetActive.value = !widgetActive.value
+        }
+        const clickWhatsapp = () => {
+            sendMetrika('click_whatsapp', 'reachGoal')
         }
 
         onMounted(() => {
@@ -37,8 +42,7 @@ export default {
 </script>
 
 <style lang="scss">
-.widget
-{
+.widget {
     cursor: pointer;
     position: fixed;
     right: 7.2rem;
@@ -52,30 +56,30 @@ export default {
     background-color: #867B6E;
     border-radius: 50%;
 }
-.widget-img
-{
+
+.widget-img {
     display: none;
     width: 2.4rem;
     height: 2.4rem;
     object-fit: contain;
-    &.active
-    {
+
+    &.active {
         display: block;
     }
 }
-.widget-close
-{
+
+.widget-close {
     display: none;
     width: 1.6rem;
     height: 1.6rem;
     object-fit: contain;
-    &.active
-    {
+
+    &.active {
         display: block;
     }
 }
-.widget-list
-{
+
+.widget-list {
     display: flex;
     flex-direction: column;
     row-gap: 1rem;
@@ -84,40 +88,40 @@ export default {
     left: 50%;
     transform: translateX(-50%);
 }
-.widget-list__item
-{
+
+.widget-list__item {
     width: 4.4rem;
     height: 4.4rem;
-    img
-    {
+
+    img {
         width: 100%;
         height: 100%;
     }
 }
+
 @media (max-width: 991px) {
-    .widget
-    {
+    .widget {
         right: 20px;
         bottom: 20px;
         width: 60px;
         height: 60px;
     }
-    .widget-img
-    {
+
+    .widget-img {
         width: 24px;
         height: 24px;
     }
-    .widget-close
-    {
+
+    .widget-close {
         width: 16px;
         height: 16px;
     }
-    .widget-list
-    {
+
+    .widget-list {
         row-gap: 10px;
     }
-    .widget-list__item
-    {
+
+    .widget-list__item {
         width: 48px;
         height: 48px;
     }

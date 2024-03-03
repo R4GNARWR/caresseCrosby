@@ -108,6 +108,7 @@ import MainInput from '../components/UI/MainInput.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
 import MainLink from '../components/UI/MainLink.vue';
 import SwiperCards from '../components/SwiperCards.vue'
+import { sendMetrika } from '../utils/metrika';
 
 export default {
     components: {
@@ -158,6 +159,7 @@ export default {
             this.sendStatus = false
             this.$API.sentLid(this.lid).then(value => {
                 if (value.data.success === true) {
+                    sendMetrika('make_gift_card', 'reachGoal')
                     this.v$.$reset()
                     this.resetLid()
                     store.commit('set_snack_message', { msg: 'Мы получили Вашу заявку и свяжемся с Вами в ближайшее время!' })
@@ -207,6 +209,9 @@ export default {
     },
     created() {
         this.getProducts()
+    },
+    mounted() {
+        sendMetrika('open_gift_card', 'reachGoal')
     }
 };
 </script>
