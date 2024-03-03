@@ -11,6 +11,7 @@
   "dependencies": {
     "@fancyapps/ui": "^5.0.24",
     "@mdi/font": "^7.2.96",
+    "@unhead/vue": "^1.8.10",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
     "@vueuse/core": "^10.6.0",

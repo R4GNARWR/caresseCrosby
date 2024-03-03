@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createHead, VueHeadMixin} from '@unhead/vue'
 import router from './router/router'
 import store from './store/store'
 import App from './App.vue'
@@ -21,7 +22,8 @@ import { createYmaps } from 'vue-yandex-maps';
 import './assets/scss/_style.scss';
 
 const app = createApp(App)
-
+const head = createHead()
+app.mixin(VueHeadMixin)
 const vuetify = createVuetify({
   icons: {
     defaultSet: 'mdi',
@@ -54,5 +56,5 @@ app.use(createYmaps({
 app.use(vuetify)
 
 app.use(router)
-
+app.use(head)
 app.mount('#app')
