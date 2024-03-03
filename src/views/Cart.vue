@@ -95,6 +95,14 @@ export default {
             promocodeStatus: false,
         }
     },
+    head() {
+        return {
+            title: "Корзина | Caresse Crosby",
+            meta: [
+                { content: "Корзина | Caresse Crosby" }
+            ]
+        }
+    },
     computed: {
         daysComputed() {
             if (this.cdek_min_time) {

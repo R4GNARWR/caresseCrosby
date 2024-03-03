@@ -6,28 +6,22 @@
     <Widget></Widget>
     <ModalAuth id="loginForm"></ModalAuth>
     <TheFooter></TheFooter>
-    <SnackMessage
-    v-if="snack_message && snack_message.message"
-    :message="snack_message.message"
-    :type="snack_message.type?snack_message.type:''"/>
+    <SnackMessage v-if="snack_message && snack_message.message" :message="snack_message.message"
+      :type="snack_message.type ? snack_message.type : ''" />
   </main>
   <v-dialog v-model="loader" width="300">
     <v-card color="#867B6E">
       <v-card-text style="color: white">
         Идет загрузка
-        <v-progress-linear
-            indeterminate="true"
-            color="white"
-            class="mb-0"
-            background-opacity="0.01"
-        ></v-progress-linear>
+        <v-progress-linear indeterminate="true" color="white" class="mb-0"
+          background-opacity="0.01"></v-progress-linear>
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 import { Fancybox } from "@fancyapps/ui";
 
 
@@ -46,8 +40,8 @@ export default {
     Widget,
     ModalAuth,
     Metrika
-},
-  computed: {...mapState(['loader', 'snack_message']),},
+  },
+  computed: { ...mapState(['loader', 'snack_message']), },
   data() {
     return {
       mainOffsetTop: 0,
@@ -95,13 +89,12 @@ export default {
 </script>
 
 <style lang="scss">
-.fancybox__content > .f-button.is-close-btn
-{
+.fancybox__content>.f-button.is-close-btn {
   right: 5% !important;
 }
+
 @media (max-width: 580px) {
-  .is-compact .fancybox__content > .f-button.is-close-btn
-  {
+  .is-compact .fancybox__content>.f-button.is-close-btn {
     top: -15px !important;
     right: 20px !important;
   }

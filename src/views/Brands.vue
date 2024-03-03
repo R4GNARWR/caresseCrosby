@@ -39,6 +39,14 @@ export default {
     data() {
         return {};
     },
+    head() {
+        return {
+            title: "Брэнды | Caresse Crosby",
+            meta: [
+                { content: "Брэнды | Caresse Crosby" }
+            ]
+        }
+    },
     computed:{
         ...mapState(['brands_search',]),
     },

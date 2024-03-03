@@ -134,6 +134,14 @@ export default {
             sendStatus: true,
         };
     },
+    head() {
+        return {
+            title: "Подарочные сертификаты | Caresse Crosby",
+            meta: [
+                { content: "Подарочные сертификаты | Caresse Crosby" }
+            ]
+        }
+    },
     computed: {
         minDate() {
             return new Date().toISOString().split("T")[0]

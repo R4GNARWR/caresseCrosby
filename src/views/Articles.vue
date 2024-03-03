@@ -62,6 +62,14 @@ export default {
             articles: [],
         }
     },
+    head() {
+        return {
+            title: "Статьи | Caresse Crosby",
+            meta: [
+                { content: "Статьи | Caresse Crosby" }
+            ]
+        }
+    },
     computed:{
         ...mapState(['user_info','blogsList'])
     },

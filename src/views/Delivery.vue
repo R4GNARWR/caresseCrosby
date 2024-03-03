@@ -100,6 +100,14 @@ export default {
     data() {
         return {};
     },
+    head() {
+        return {
+            title: "Доставка | Caresse Crosby",
+            meta: [
+                { content: "Доставка | Caresse Crosby" }
+            ]
+        }
+    },
 };
 </script>
 

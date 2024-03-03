@@ -39,6 +39,14 @@ export default {
     data() {
         return {};
     },
+    head() {
+        return {
+            title: "Избранное | Caresse Crosby",
+            meta: [
+                { content: "Избранное | Caresse Crosby" }
+            ]
+        }
+    },
 };
 </script>
 

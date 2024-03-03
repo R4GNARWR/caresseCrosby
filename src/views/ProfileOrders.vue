@@ -19,8 +19,8 @@
                     <div class="order__item">
                         <div class="order__item-head">
                             <div class="order__item-head__name">
-                                {{getTime(item.date)}}
-                                <span>Заказ № {{item.orderId}}</span>
+                                {{ getTime(item.date) }}
+                                <span>Заказ № {{ item.orderId }}</span>
                             </div>
                             <div class="order__item-head__summary">
                                 <!-- Доставка: 700 ₽ -->
@@ -32,11 +32,11 @@
                                 <div class="order__item-body">
                                     <div class="order__item-body__prop">
                                         Статус:
-                                        <span class="status">{{item.statusName}}</span>
+                                        <span class="status">{{ item.statusName }}</span>
                                     </div>
                                     <div class="order__item-body__prop">
                                         Дата оформления:
-                                        <span>{{getTime(item.date)}}</span>
+                                        <span>{{ getTime(item.date) }}</span>
                                     </div>
                                     <!-- <div class="order__item-body__prop">
                                         Адрес доставки:
@@ -47,29 +47,28 @@
                                         <span>Гайнцев Егор, тел. +7 950 279-37-31 <br>
                                             При получении может потребоваться паспорт</span>
                                         </div> -->
-                                        <MainLink className="btn-gold d-lg-block d-none">Позвонить +7 917 747 15 61</MainLink>
-                                    </div>
-                                </v-col>
-                                <v-col md="6" cols="12">
-                                    <div class="order__item-photos">
-                                        <swiper-container
-                                        class="swiper"
-                                        :loop= "true"
-                                        :breakpoints="{
-                                            0:{
-                                                slidesPerView: 2,
-                                                spaceBetween: 18,
-                                            },
-                                            600: {
-                                                slidesPerView: 3,
-                                                spaceBetween: 24,
-                                            },
-                                            960: {
-                                                slidesPerView: 4,
-                                                spaceBetween: 32,
-                                            },
-                                        }">
-                                        <swiper-slide class="swiper-slide" v-for="(product, index) in products[item.orderId]" :key="index">
+                                    <MainLink className="btn-gold d-lg-block d-none">Позвонить +7 917 747 15 61
+                                    </MainLink>
+                                </div>
+                            </v-col>
+                            <v-col md="6" cols="12">
+                                <div class="order__item-photos">
+                                    <swiper-container class="swiper" :loop="true" :breakpoints="{
+                    0: {
+                        slidesPerView: 2,
+                        spaceBetween: 18,
+                    },
+                    600: {
+                        slidesPerView: 3,
+                        spaceBetween: 24,
+                    },
+                    960: {
+                        slidesPerView: 4,
+                        spaceBetween: 32,
+                    },
+                }">
+                                        <swiper-slide class="swiper-slide"
+                                            v-for="(product, index) in products[item.orderId]" :key="index">
                                             <OrderCard :product="product"></OrderCard>
                                             <!-- <a class="order-products__wrap-item" href="#">
                                                 <img src="/img/product-detail.jpg" alt="">
@@ -83,10 +82,11 @@
                                             </a> -->
                                         </swiper-slide>
                                     </swiper-container>
-                                    <MainLink className="btn-gold d-lg-none d-block">Позвонить +7 917 747 15 61</MainLink>
+                                    <MainLink className="btn-gold d-lg-none d-block">Позвонить +7 917 747 15 61
+                                    </MainLink>
                                     <MainLink className="btn-primary">Написать в WhatsApp</MainLink>
                                 </div>
-                                
+
                             </v-col>
                         </v-row>
                     </div>
@@ -124,6 +124,14 @@ export default {
             products: {}
         };
     },
+    head() {
+        return {
+            title: "Заказы | Caresse Crosby",
+            meta: [
+                { content: "Заказы | Caresse Crosby" }
+            ]
+        }
+    },
     beforeCreate() {
         register()
     },
@@ -135,7 +143,7 @@ export default {
                 for (let order of value.data.orders) {
                     let orderId = order.orderId
                     const orderedProducts = await this.$API.get_order_info(orderId)
-                    this.products[orderId] =  orderedProducts.data.products
+                    this.products[orderId] = orderedProducts.data.products
                 }
             } catch (error) {
                 console.log(error);
@@ -143,14 +151,14 @@ export default {
         },
         getTime(string) {
             const date = new Date(string);
-            
+
             const options = {
                 day: "numeric",
                 month: "long",
                 hour: "numeric",
                 minute: "numeric"
             };
-            
+
             const formattedDate = date.toLocaleString("ru-RU", options);
             return formattedDate
         },
@@ -165,35 +173,34 @@ export default {
             return formattedPrice;
         }
     },
-    
+
     created() {
         this.getOrders()
     }
-    
+
 };
 </script>
 
 <style lang="scss">
-.order__item
-{
+.order__item {
     margin-bottom: 4rem;
     border: 1px solid #E9E9E9;
 }
-.order__empty
-{
+
+.order__empty {
     font-size: 36px;
     padding: 50px;
     text-align: center;
 }
-.order__item-head
-{
+
+.order__item-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.6rem 2.4rem;
     background: #F4F4F4;
-    &__name
-    {
+
+    &__name {
         display: flex;
         flex-direction: column;
         row-gap: .4rem;
@@ -202,16 +209,16 @@ export default {
         font-weight: 600;
         line-height: 1.4em;
         letter-spacing: -0.28px;
-        span
-        {
+
+        span {
             color: #827F7D;
             font-size: 1.4rem;
             line-height: 1.4em;
             letter-spacing: -0.056px;
         }
     }
-    &__summary
-    {
+
+    &__summary {
         display: flex;
         column-gap: 2.4rem;
         color: #827F7D;
@@ -219,8 +226,8 @@ export default {
         font-weight: 500;
         line-height: 1.4em;
         letter-spacing: -0.28px;
-        span
-        {
+
+        span {
             color: $primary;
             font-size: 2rem;
             font-weight: 500;
@@ -229,103 +236,103 @@ export default {
         }
     }
 }
-.order__item-body
-{
+
+.order__item-body {
     height: 100%;
     padding: 3.2rem 0 2.4rem 2rem;
     display: flex;
     flex-direction: column;
     row-gap: 1.6rem;
-    &__prop
-    {
+
+    &__prop {
         display: flex;
         flex-direction: column;
-        color:#827F7D;
+        color: #827F7D;
         font-size: 1.6rem;
         line-height: 1.5em;
         letter-spacing: -0.128px;
-        span
-        {
+
+        span {
             color: #27231F;
             font-size: 1.6rem;
             line-height: 1.5em;
             letter-spacing: -0.128px;
         }
     }
-    .btn
-    {
+
+    .btn {
         margin-top: auto;
     }
 }
-.order__item-photos
-{
+
+.order__item-photos {
     padding: 3.2rem 2rem 2.4rem 0;
     display: flex;
     flex-direction: column;
     row-gap: 2rem;
     height: 100%;
-    &__wrap
-    {
+
+    &__wrap {
         padding-left: 4rem;
         display: grid;
         column-gap: 3.2rem;
         grid-template-columns: repeat(4, 1fr);
     }
-    .btn
-    {
+
+    .btn {
         margin-top: auto;
     }
 }
+
 @media (max-width: 960px) {
-    .order__item-head
-    {
+    .order__item-head {
         padding: 16px;
         flex-direction: column;
         row-gap: 16px;
         align-items: flex-start;
-        &__name
-        {
+
+        &__name {
             row-gap: 0;
             font-size: 16px;
-            span
-            {
+
+            span {
                 font-size: 12px;
             }
         }
-        &__summary
-        {
+
+        &__summary {
             column-gap: 24px;
             font-size: 14px;
-            span
-            {
+
+            span {
                 font-size: 14px;
             }
         }
     }
-    .order__item-photos
-    {
+
+    .order__item-photos {
         padding: 0 16px 24px 16px;
-        &__wrap
-        {
+
+        &__wrap {
             margin-bottom: 24px;
             padding-left: 0;
         }
     }
-    .order__item-body
-    {
+
+    .order__item-body {
         padding: 24px 16px 16px 16px;
         row-gap: 16px;
-        &__prop
-        {
+
+        &__prop {
             font-size: 14px;
-            span
-            {
+
+            span {
                 font-size: 14px;
             }
         }
     }
-    .order__item-photos
-    {
+
+    .order__item-photos {
         margin-bottom: 32px;
     }
 }

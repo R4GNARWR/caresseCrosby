@@ -160,6 +160,14 @@ export default {
             chosenCity: '',
         }
     },
+    head() {
+        return {
+            title: "Оформление заказа | Caresse Crosby",
+            meta: [
+                { content: "Оформление заказа | Caresse Crosby" }
+            ]
+        }
+    },
     setup() {
         return {
             v$: useVuelidate(),

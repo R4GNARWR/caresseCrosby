@@ -75,6 +75,14 @@
         blog: null,
       }
     },
+    head() {
+        return {
+            title: "Магазин удобного белья в Уфе | Caresse Crosby",
+            meta: [
+                { content: "Магазин удобного белья в Уфе | Caresse Crosby" }
+            ]
+        }
+    },
     methods:{
       newImg() {
         this.json_string.push({"type":"img", "content":null})

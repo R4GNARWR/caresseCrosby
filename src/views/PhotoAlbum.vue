@@ -68,6 +68,14 @@ export default {
             new_name:'',
         }
     },
+    head() {
+        return {
+            title: "Фотогалерея | Caresse Crosby",
+            meta: [
+                { content: "Фотогалерея | Caresse Crosby" }
+            ]
+        }
+    },
     methods: {
         saveNew() {
             store.commit('loader','start');

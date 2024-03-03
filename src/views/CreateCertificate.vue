@@ -79,6 +79,14 @@ export default {
             certificate: null, message: "", link: ""
         };
     },
+    head() {
+        return {
+            title: "Магазин удобного белья в Уфе | Caresse Crosby",
+            meta: [
+                { content: "Магазин удобного белья в Уфе | Caresse Crosby" }
+            ]
+        }
+    },
     computed: {
         ...mapState(['user_info', 'loggedIn'])
     },

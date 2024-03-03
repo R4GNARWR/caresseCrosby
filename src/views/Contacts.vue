@@ -33,31 +33,21 @@
             <div class="map-loading" v-show="mapLoadStatus !== 'loaded'">
                 Загрузка...
             </div>
-            <yandex-map
-            v-show="mapLoadStatus === 'loaded'"
-            v-model="mapEl"
-            :settings="{
-                location: {
-                    center: [56.022775, 54.722379],
-                    zoom: 16,
-                    controls: [],
-                },
-            }">
-            <yandex-map-default-scheme-layer />
-            <yandex-map-default-features-layer />
-            <yandex-map-marker
-            :settings="{coordinates: [56.022775, 54.722379]}"
-            :position="`left-center top`"
-            >
-            <img
-            class="map-marker"
-            alt=""
-            :src="'/svg/map-placemark.svg'"
-            />
-        </yandex-map-marker>
-    </yandex-map>
-</div>
-</section>
+            <yandex-map v-show="mapLoadStatus === 'loaded'" v-model="mapEl" :settings="{
+            location: {
+                center: [56.022775, 54.722379],
+                zoom: 16,
+                controls: [],
+            },
+        }">
+                <yandex-map-default-scheme-layer />
+                <yandex-map-default-features-layer />
+                <yandex-map-marker :settings="{ coordinates: [56.022775, 54.722379] }" :position="`left-center top`">
+                    <img class="map-marker" alt="" :src="'/svg/map-placemark.svg'" />
+                </yandex-map-marker>
+            </yandex-map>
+        </div>
+    </section>
 </template>
 
 <script setup lang="ts">
@@ -72,6 +62,7 @@ import {
     YandexMapDefaultSchemeLayer,
     YandexMapMarker,
 } from 'vue-yandex-maps';
+import { useHead } from '@unhead/vue';
 
 const components = {
     Breadcrumbs,
@@ -85,13 +76,19 @@ const coords = [54.736637, 55.958040]
 const to2Gis = () => {
     window.open('https://go.2gis.com/1xqkl', '_blank')?.focus();
 };
+useHead({
+    title: "Контакты | Caresse Crosby",
+    meta: [
+        { content: "Контакты | Caresse Crosby" }
+    ]
+})
 const checkMouse = () => {
     let drag = false;
     const mouseDrag = () => {
         drag = true;
     };
     const mouseLift = () => {
-        if(!drag) {
+        if (!drag) {
             to2Gis();
         }
         window.removeEventListener("mousemove", mouseDrag);
@@ -105,17 +102,17 @@ const checkMouse = () => {
     window.addEventListener("touchend", mouseLift);
 }
 </script>
+
 <style lang="scss">
-.contacts
-{
+.contacts {
     padding: 2.4rem 0 0 0;
 }
-.contacts-breadcrumbs
-{
+
+.contacts-breadcrumbs {
     margin-bottom: 4rem;
 }
-.contacts-label
-{
+
+.contacts-label {
     margin-bottom: 8rem;
     color: $primary;
     font-size: 4rem;
@@ -123,25 +120,25 @@ const checkMouse = () => {
     line-height: 1.2em;
     letter-spacing: -0.4px;
 }
-.contacts-props
-{
+
+.contacts-props {
     margin-bottom: 9rem;
     display: flex;
     column-gap: 14rem;
     flex-wrap: wrap;
-    &__item
-    {
+
+    &__item {
         display: flex;
         column-gap: 1.6rem;
-        img
-        {
+
+        img {
             width: 2rem;
             height: 2rem;
             object-fit: contain;
         }
-        &-content
-        {
-            
+
+        &-content {
+
             display: flex;
             flex-direction: column;
             row-gap: .8rem;
@@ -150,27 +147,29 @@ const checkMouse = () => {
             font-weight: 500;
             line-height: 1.5em;
             letter-spacing: -0.128px;
-            a
-            {
+
+            a {
                 text-decoration: none;
                 color: inherit;
             }
-            span
-            {
+
+            span {
                 color: lighten($color: $primary, $amount: 50%);
                 font-size: 1.4rem;
             }
         }
     }
 }
+
 .ymaps3x0--main-engine-container {
     -webkit-filter: grayscale(100%);
     filter: grayscale(100%);
 }
-.contacts-map
-{
+
+.contacts-map {
     height: 57rem;
     width: 100%;
+
     .map-loading {
         width: 100%;
         height: 100%;
@@ -182,71 +181,71 @@ const checkMouse = () => {
         background-color: #AAAAAA;
         border-top: 1px solid $primary;
     }
-    .ymap-container
-    {
+
+    .ymap-container {
         width: 100%;
         height: 100%;
         overflow: hidden;
     }
 }
+
 .map-marker {
     width: 5.6rem;
     height: 7.1rem;
     object-fit: contain;
 }
 
-@media (max-width: 960px)
-{
+@media (max-width: 960px) {
     .contacts-map {
         .map-loading {
             font-size: 20px;
         }
     }
-    .contacts
-    {
+
+    .contacts {
         padding: 32px 0 0 0;
     }
-    .contacts-label
-    {
+
+    .contacts-label {
         margin-bottom: 32px;
         font-size: 32px;
         font-weight: 500;
     }
-    .contacts-props
-    {
+
+    .contacts-props {
         margin-bottom: 32px;
         flex-direction: column;
         column-gap: 0;
         row-gap: 32px;
-        &__item
-        {
+
+        &__item {
             column-gap: 16px;
-            img
-            {
+
+            img {
                 width: 20px;
                 height: 20px;
             }
-            &-content
-            {
+
+            &-content {
                 row-gap: 8px;
                 font-size: 16px;
-                span
-                {
+
+                span {
                     font-size: 14px;
                 }
             }
         }
     }
+
     .map-marker {
         width: 56px;
         height: 70px;
     }
 }
+
 @media (max-width: 600px) {
-    .contacts-map
-    {
+    .contacts-map {
         height: 380px;
     }
 }
-
 </style>

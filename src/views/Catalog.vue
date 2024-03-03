@@ -147,6 +147,14 @@ export default {
             catalogHeight: 0,
         }
     },
+    head() {
+        return {
+            title: "Каталог | Caresse Crosby",
+            meta: [
+                { content: "Каталог | Caresse Crosby" }
+            ]
+        }
+    },
     computed:{
         productsComputed() {
             let productsFiltered = []

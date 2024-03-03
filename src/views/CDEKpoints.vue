@@ -77,6 +77,12 @@ import {
 import type { YMap } from '@yandex/ymaps3-types';
 import MainBtn from '../components/UI/MainBtn.vue';
 
+// useHead({
+//     title: "Магазин удобного белья в Уфе | Caresse Crosby",
+//     meta: [
+//         { content: "Магазин удобного белья в Уфе | Caresse Crosby" }
+//     ]
+// })
 let centerCoords = [56.022775, 54.722379];
 let savedScroll = 0
 

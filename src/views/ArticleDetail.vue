@@ -55,8 +55,18 @@ export default {
     data() {
         return {
             blogs: [],
-            blog: [],
+            blog: {
+                title: null
+            },
         };
+    },
+    head() {
+        return {
+            title: this.blog && this.blog.title || "Магазин удобного белья в Уфе | Caresse Crosby",
+            meta: [
+                { content:  this.blog && this.blog.title || "Магазин удобного белья в Уфе | Caresse Crosby" }
+            ]
+        }
     },
     methods: {
         deleteBlog(title) {

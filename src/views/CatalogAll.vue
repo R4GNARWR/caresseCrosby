@@ -41,6 +41,14 @@ export default {
             status: 'Загрузка...'
         };
     },
+    head() {
+        return {
+            title: "Каталог | Caresse Crosby",
+            meta: [
+                { content: "Каталог | Caresse Crosby" }
+            ]
+        }
+    },
     methods: {
         async pushAll() {
             const reversedTree = this.categoriesTree;

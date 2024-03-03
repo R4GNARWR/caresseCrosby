@@ -93,6 +93,14 @@ export default {
             suggestView: null,
         };
     },
+    head() {
+        return {
+            title: "Профиль | Caresse Crosby",
+            meta: [
+                { content: "Профиль | Caresse Crosby" }
+            ]
+        }
+    },
     setup() {
         return {
             v$: useVuelidate(),

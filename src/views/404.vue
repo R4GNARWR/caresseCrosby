@@ -44,6 +44,14 @@ export default {
     data() {
         return {};
     },
+    head() {
+        return {
+            title: "404 | Caresse Crosby",
+            meta: [
+                { content: "404 | Caresse Crosby" }
+            ]
+        }
+    },
 };
 </script>
 

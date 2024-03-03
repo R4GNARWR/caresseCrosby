@@ -110,6 +110,14 @@ export default {
             galleries: {},
         }
     },
+    head() {
+        return {
+            title: "Магазин удобного белья в Уфе | Caresse Crosby",
+            meta: [
+                { content: "Магазин удобного белья в Уфе | Caresse Crosby" }
+            ]
+        }
+    },
     computed: {
         blogsToShow(){
             if (window.innerWidth>400 && window.innerWidth<899) return window.innerWidth/(0.32*window.innerWidth);

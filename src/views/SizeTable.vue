@@ -16,17 +16,18 @@
                         <div class="table-size__calc">
                             <div class="table-size__calc-item">
                                 <img src="/img/calc1.png" alt="">
-                                <MainInput :placeholder="'Обхват груди, см'" v-model="b2" ></MainInput>
+                                <MainInput :placeholder="'Обхват груди, см'" v-model="b2"></MainInput>
                             </div>
                             <div class="table-size__calc-item">
                                 <img src="/img/calc2.png" alt="" class="d-lg-block d-none">
                                 <MainInput :placeholder="'Обхват под грудью, см'" v-model="b1"></MainInput>
                             </div>
                         </div>
-                        <MainBtn class="btn-primary w-100" @click="showSize()" :disabled="readyToShow">Рассчитать размер</MainBtn>
+                        <MainBtn class="btn-primary w-100" @click="showSize()" :disabled="readyToShow">Рассчитать размер
+                        </MainBtn>
                         <div class="table-size__calc-result" v-if="size_b && show">
                             Ваш размер: {{ size_b }}
-                            <MainBtn @click="to_size_models" class="btn btn-white outline" >Показать модели</MainBtn>
+                            <MainBtn @click="to_size_models" class="btn btn-white outline">Показать модели</MainBtn>
                         </div>
                         <div class="table-size__calc-result" v-if="!size_b && show">
                             Невозможно расчитать размер, укажите правильные размеры
@@ -35,25 +36,34 @@
                 </v-col>
                 <v-col md="5" cols="12" class="d-md-block d-none">
                     <div class="table-size__calc-label">Видео о том как правильно снять мерки</div>
-                    <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/D1-iP7rtnIg?si=я" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/D1-iP7rtnIg?si=я"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe>
                 </v-col>
-                <v-col cols="12" v-if="products && products.length > 0  && showProducts">
-                    <SwiperCards :slidesArray="products" name="Модели" v-if="products && products.length >0"></SwiperCards>
+                <v-col cols="12" v-if="products && products.length > 0 && showProducts">
+                    <SwiperCards :slidesArray="products" name="Модели" v-if="products && products.length > 0">
+                    </SwiperCards>
                 </v-col>
                 <v-col cols="12" v-else-if="showProducts">
                     <div class="table-size__calc-error">
-                        {{status}}
+                        {{ status }}
                     </div>
                 </v-col>
                 <v-col cols="12" class="d-md-none d-block">
                     <div class="table-size__calc-label">Видео о том как правильно снять мерки</div>
-                    <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/D1-iP7rtnIg?si=я" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/D1-iP7rtnIg?si=я"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe>
                 </v-col>
             </v-row>
             <div class="table-size_wrapper">
                 <table class="table-size">
                     <thead>
-                        <tr><th colspan="14">Соответствие размеров европейской и английской чашки бюстгальтеров</th></tr>
+                        <tr>
+                            <th colspan="14">Соответствие размеров европейской и английской чашки бюстгальтеров</th>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr>
@@ -91,14 +101,18 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <div class="table-size__text">
-                Определить размер трусиков намного проще, чем размер бюстгальтера - сантиметровой лентой измеряем обхват бедер (по наиболее выступающим точкам бедер и ягодиц). При измерении лента должна ложиться параллельно полу и обязательно быть натянутой.
+                Определить размер трусиков намного проще, чем размер бюстгальтера - сантиметровой лентой измеряем обхват
+                бедер (по наиболее выступающим точкам бедер и ягодиц). При измерении лента должна ложиться параллельно
+                полу и обязательно быть натянутой.
             </div>
             <div class="table-size_wrapper">
                 <table class="table-size">
                     <thead>
-                        <tr><th colspan="14">Как определить размер трусиков?</th></tr>
+                        <tr>
+                            <th colspan="14">Как определить размер трусиков?</th>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr>
@@ -156,11 +170,13 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <div class="table-size_wrapper">
                 <table class="table-size small">
                     <thead>
-                        <tr><th colspan="16">Размеры корректирующего белья</th></tr>
+                        <tr>
+                            <th colspan="16">Размеры корректирующего белья</th>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr>
@@ -418,7 +434,7 @@
                             <td>XXL</td>
                             <td>XXL</td>
                         </tr>
-                        
+
                     </tbody>
                 </table>
             </div>
@@ -430,7 +446,7 @@
 import { sendMetrika } from "../utils/metrika";
 import search from "../api/search";
 import store from '../store/store'
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 
 import MainBtn from '../components/UI/MainBtn.vue';
 import MainInput from '../components/UI/MainInput.vue';
@@ -446,43 +462,51 @@ export default {
     },
     data() {
         return {
-            b1:null,
-            b2:null,
+            b1: null,
+            b2: null,
             show: false,
             size: null,
             showProducts: false,
             products: null,
-            filter:{
+            filter: {
                 "brand": {
-                    "attributeId":1,
-                    "attributeValueId":'',
-                    "value":""
+                    "attributeId": 1,
+                    "attributeValueId": '',
+                    "value": ""
                 },
                 "sizes": {
-                    "attributeId":2,
-                    "attributeValueId":'',
-                    "value":""
+                    "attributeId": 2,
+                    "attributeValueId": '',
+                    "value": ""
                 },
                 "colors": {
-                    "attributeId":6,
-                    "attributeValueId":'',
-                    "value":""
+                    "attributeId": 6,
+                    "attributeValueId": '',
+                    "value": ""
                 }
             },
             status: 'По вашему запросу не удалось найти товары. Попробуйте изменить параметры поиска.',
         };
     },
-    computed:{
+    head() {
+        return {
+            title: "Подобрать размер | Caresse Crosby",
+            meta: [
+                { content: "Подобрать размер | Caresse Crosby" }
+            ]
+        }
+    },
+    computed: {
         readyToShow() {
-            if(this.b1 && this.b2) {
+            if (this.b1 && this.b2) {
                 return false
             } else {
                 return true
             }
         },
-        size_b(){
-            let arr=['A','B','C','D','DD','E','F','FF','G','GG','H','HH','J','JJ','K']
-            if (Math.round((this.b1-8)/5)*5 && arr[Math.round((this.b2-this.b1)/2.54)-1]) return (Math.round((this.b1-8)/5)*5).toString()+arr[Math.round((this.b2-this.b1)/2.54)-1].toString();
+        size_b() {
+            let arr = ['A', 'B', 'C', 'D', 'DD', 'E', 'F', 'FF', 'G', 'GG', 'H', 'HH', 'J', 'JJ', 'K']
+            if (Math.round((this.b1 - 8) / 5) * 5 && arr[Math.round((this.b2 - this.b1) / 2.54) - 1]) return (Math.round((this.b1 - 8) / 5) * 5).toString() + arr[Math.round((this.b2 - this.b1) / 2.54) - 1].toString();
             else return null;
         },
         ...mapState(['sizes_search'])
@@ -490,7 +514,7 @@ export default {
     methods: {
         searchSize() {
             this.size = this.sizes_search[0].find(element => element.value === this.size_b)
-            if(!this.size) {
+            if (!this.size) {
                 this.size = this.sizes_search[1].find(element => element.value === this.size_b)
             }
         },
@@ -498,18 +522,18 @@ export default {
             sendMetrika('calculate_size', 'reachGoal')
             this.show = true
             this.searchSize()
-            if(this.size) {
+            if (this.size) {
                 this.filter["sizes"].attributeValueId = this.size.attributeValueId;
                 this.filter["sizes"].value = this.size.value;
                 this.to_search();
             }
             this.showProducts = true;
         },
-        to_size_models(){
-            if(!this.size) {
+        to_size_models() {
+            if (!this.size) {
                 this.searchSize()
             }
-            if(this.size) {
+            if (this.size) {
                 this.$router.push('/catalog/24402/sizes/' + this.size.attributeValueId)
             } else {
                 let msg = {}
@@ -520,13 +544,13 @@ export default {
         ...search
     },
     watch: {
-        b1: function() {
+        b1: function () {
             this.show = false;
             this.showProducts = false;
             this.products = null
             this.productsSearched = false
         },
-        b2: function() {
+        b2: function () {
             this.show = false;
             this.showProducts = false;
             this.products = null
@@ -540,20 +564,19 @@ export default {
 </script>
 
 <style lang="scss">
-.table-size-section
-{
+.table-size-section {
     padding: 2.4rem 0 15rem 0;
-    .main-section
-    {
+
+    .main-section {
         padding: 0 0 6rem 0
     }
 }
-.table-size__calc-wrap
-{
+
+.table-size__calc-wrap {
     margin-bottom: 3rem;
 }
-.table-size__label
-{
+
+.table-size__label {
     margin-bottom: 3.7rem;
     color: $primary;
     font-size: 4rem;
@@ -561,8 +584,8 @@ export default {
     line-height: 1.2em;
     letter-spacing: -0.4px;
 }
-.table-size__calc-label
-{
+
+.table-size__calc-label {
     margin-bottom: 2.4rem;
     color: #827F7D;
     font-size: 2rem;
@@ -570,29 +593,28 @@ export default {
     line-height: 1.4em;
     letter-spacing: -0.28px;
 }
-.table-size__calc
-{
+
+.table-size__calc {
     margin-bottom: 2.9rem;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     column-gap: 3.2rem;
-    &-item
-    {
-        img
-        {
+
+    &-item {
+        img {
             margin-bottom: 1.5rem;
             width: 100%;
             height: 20rem;
         }
     }
-    &-iframe
-    {
+
+    &-iframe {
         width: 100%;
         height: 35rem;
     }
 }
-.table-size__calc-error
-{
+
+.table-size__calc-error {
     padding: 5rem 0;
     display: flex;
     align-items: center;
@@ -601,13 +623,14 @@ export default {
     text-align: center;
     text-transform: uppercase;
 }
-table.table-size
-{
+
+table.table-size {
     width: 100%;
     margin-bottom: 5.3rem;
     border-collapse: collapse;
-    th,td
-    {
+
+    th,
+    td {
         padding: 1.9rem 2.38rem;
         border: 1px solid var(--foundation-black-g-50, #E9E9E9);
         font-size: 1.4rem;
@@ -616,9 +639,8 @@ table.table-size
         letter-spacing: -0.056px;
         text-wrap: nowrap;
     }
-    
-    th
-    {
+
+    th {
         color: $primary;
         font-size: 1.8rem;
         font-weight: 700;
@@ -626,32 +648,30 @@ table.table-size
         letter-spacing: -0.216px;
         text-align: left;
     }
-    td
-    {
+
+    td {
         text-align: center;
         width: 8.13rem;
         height: 5.81rem;
     }
-    td.first
-    {
+
+    td.first {
         text-align: left;
         width: 25.3rem;
     }
-    &.small
-    {
-        td
-        {
+
+    &.small {
+        td {
             width: 8.13rem;
             height: 5.81rem;
         }
-        td.first
-        {
+
+        td.first {
             width: 13.3rem;
         }
     }
-    
-    &__text
-    {
+
+    &__text {
         margin-bottom: 6.2rem;
         color: $primary;
         font-size: 1.6rem;
@@ -659,16 +679,16 @@ table.table-size
         letter-spacing: -0.128px;
     }
 }
-.table-size__text
-{
+
+.table-size__text {
     margin-bottom: 4.8rem;
     color: $primary;
     font-size: 1.6rem;
     line-height: 1.5em;
     letter-spacing: -0.128px;
 }
-.table-size__calc-result
-{
+
+.table-size__calc-result {
     display: flex;
     margin-top: 4rem;
     text-align: center;
@@ -677,91 +697,90 @@ table.table-size
     width: 100%;
     font-size: 2.4rem;
     line-height: 1.33em;
-    .btn
-    {
+
+    .btn {
         width: 45%;
     }
 }
+
 @media (max-width: 960px) {
-    .table-size-section
-    {
+    .table-size-section {
         padding: 32px 0 48px 0;
     }
-    .table-size__calc-wrap
-    {
-        .btn
-        {
+
+    .table-size__calc-wrap {
+        .btn {
             padding-top: 16px !important;
             padding-bottom: 16px !important;
         }
     }
-    .table-size__calc-label
-    {
+
+    .table-size__calc-label {
         margin-bottom: 16px;
         font-size: 16px;
     }
-    .table-size__calc
-    {
+
+    .table-size__calc {
         margin-bottom: 44px;
         grid-template-columns: repeat(1, 1fr);
         row-gap: 16px;
-        &-item
-        {
-            img
-            {
+
+        &-item {
+            img {
                 margin-bottom: 32px;
                 height: 172px;
             }
         }
-        &-iframe
-        {
+
+        &-iframe {
             margin-bottom: 44px;
             height: 210px;
         }
     }
-    .table-size_wrapper
-    {
+
+    .table-size_wrapper {
         overflow-x: scroll;
     }
-    table.table-size
-    {
+
+    table.table-size {
         margin-bottom: 24px;
-        th,td
-        {
+
+        th,
+        td {
             padding: 22px 27px;
             font-size: 14px;
             width: 64px;
             min-height: 64px;
         }
-        th
-        {
+
+        th {
             padding: 10px 8px;
             font-size: 16px;
         }
-        td
-        {
+
+        td {
             height: auto;
         }
-        td.first
-        {
+
+        td.first {
             padding: 22px 8px;
         }
     }
-    .table-size__text
-    {
+
+    .table-size__text {
         margin-bottom: 48px;
         font-size: 14px;
     }
 }
+
 @media (max-width: 960px) {
-    .table-size__calc-error
-    {
+    .table-size__calc-error {
         font-size: 24px;
     }
 }
+
 @media (max-width: 650px) {
-    .table-size__calc-result
-    {
+    .table-size__calc-result {
         font-size: 20px;
         text-align: center;
     }

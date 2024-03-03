@@ -38,6 +38,14 @@ export default {
     data() {
         return {};
     },
+    head() {
+        return {
+            title: "О нас | Caresse Crosby",
+            meta: [
+                { content: "О нас | Caresse Crosby" }
+            ]
+        }
+    },
 };
 </script>
 
