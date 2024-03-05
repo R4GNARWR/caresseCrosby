@@ -133,7 +133,7 @@ export default {
                 store.commit("set_snack_message", { msg: "Нужен пользователь с правами администратора!", type:'error' });
                 setTimeout(() => {this.$router.push('/');}, 2500);
             }
-        }, 1000);
+        }, 3000);
         this.theFrom = this.$route.query.from;
         this.forWho = this.$route.query.fw;
         this.emailToSend = this.$route.query.et;

@@ -36,7 +36,7 @@
                 </v-col>
                 <v-col md="5" cols="12" class="d-md-block d-none">
                     <div class="table-size__calc-label">Видео о том как правильно снять мерки</div>
-                    <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/D1-iP7rtnIg?si=я"
+                    <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/5GV3YvyF_eU"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowfullscreen></iframe>
@@ -52,7 +52,7 @@
                 </v-col>
                 <v-col cols="12" class="d-md-none d-block">
                     <div class="table-size__calc-label">Видео о том как правильно снять мерки</div>
-                    <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/D1-iP7rtnIg?si=я"
+                    <iframe class="table-size__calc-iframe" src="https://www.youtube.com/embed/5GV3YvyF_eU"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowfullscreen></iframe>
