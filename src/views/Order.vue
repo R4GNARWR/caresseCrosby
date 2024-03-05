@@ -328,8 +328,6 @@ export default {
             store.commit('setCdekDeliveryPrice', null)
             if (value === 'courier') {
                 store.commit('setCdekChosenPvz', null)
-            } else {
-                this.address = this.user_info.city || ''
             }
         },
         ...order, ...cart, ...productCard,

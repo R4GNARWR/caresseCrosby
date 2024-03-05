@@ -61,11 +61,11 @@ let routes = [
     component: Order,
   },
   {
-    path: '/order/success',
+    path: '/payment/:orderId/success',
     component: OrderSuccess,
   },
   {
-    path: '/order/error',
+    path: '/payment/:orderId/fail',
     component: OrderError,
   },
   {

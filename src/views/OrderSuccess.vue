@@ -1,5 +1,5 @@
 <template>
-    <section class="thank-page" :style="{minHeight: `calc(100vh - ${headerPadding}px)`}">
+    <section class="thank-page" :style="{ minHeight: `calc(100vh - ${headerPadding}px)` }">
         <v-container>
             <div class="thank-page__content">
                 <img src="/svg/logo-heart.svg" alt="">
@@ -7,7 +7,7 @@
                     Благодарим вас за заказ!
                 </div>
                 <div class="thank-page__content-text">
-                    В ближайшее время с вами свяжется менеджер  для уточнения деталей по заказу
+                    В ближайшее время с вами свяжется менеджер для уточнения деталей по заказу
                 </div>
                 <div class="thank-page__content-contacts">
                     <a href="">+7 (917) 747-15-61</a>
@@ -17,13 +17,13 @@
                     </span>
                 </div>
                 <div class="thank-page__content-end">
-                    Спасибо, что выбрали  Caresse Crosby!
+                    Спасибо, что выбрали Caresse Crosby!
                 </div>
-                <MainLink class-name="btn-gold" destitation="/">
+                <router-link class="btn btn-gold" to="/">
                     Вернутся на главную
-                </MainLink>
+                </router-link>
             </div>
-            
+
             <div class="thank-page__pattern thank-page__pattern-1">
                 <img src="/svg/pattern.svg" alt="">
             </div>
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import {mapState, mapMutations} from "vuex";
+import { mapState, mapMutations } from "vuex";
 import MainInput from '../components/UI/MainInput.vue';
 import MainBtn from '../components/UI/MainBtn.vue';
 import MainLink from '../components/UI/MainLink.vue';
@@ -46,7 +46,7 @@ export default {
         MainBtn,
         MainLink
     },
-    computed:{
+    computed: {
         ...mapState(['headerPadding',]
         ),
     },
@@ -65,39 +65,38 @@ export default {
 </script>
 
 <style lang="scss">
-.thank-page
-{
+.thank-page {
     position: relative;
     display: flex;
     align-items: center;
     background-color: #FFFEFC;
 }
-.thank-page__pattern
-{
+
+.thank-page__pattern {
     position: absolute;
     top: 0;
-    width:92rem;
+    width: 92rem;
     height: 68rem;
     z-index: 0;
-    img
-    {
+
+    img {
         width: 100%;
         height: 100%;
         object-fit: contain;
     }
-    &-1
-    {
+
+    &-1 {
         left: 0;
         transform: translateX(-50%);
     }
-    &-2
-    {
+
+    &-2 {
         right: 0;
         transform: translateX(50%);
     }
 }
-.thank-page__content
-{
+
+.thank-page__content {
     position: relative;
     width: 100%;
     height: 100%;
@@ -106,15 +105,15 @@ export default {
     align-items: center;
     justify-content: center;
     z-index: 1;
-    img
-    {
+
+    img {
         margin-bottom: 4rem;
         width: 6.8rem;
         height: 6.2rem;
         object-fit: contain;
     }
-    &-label
-    {
+
+    &-label {
         margin-bottom: 1.6rem;
         color: $primary;
         font-size: 4rem;
@@ -123,23 +122,23 @@ export default {
         letter-spacing: -0.4px;
         text-align: center;
     }
-    &-text
-    {
+
+    &-text {
         margin-bottom: 4rem;
-        color:#827F7D;
+        color: #827F7D;
         text-align: center;
         font-size: 1.7rem;
-        line-height: 1.4em; 
+        line-height: 1.4em;
         letter-spacing: -0.17px;
     }
-    &-contacts
-    {
+
+    &-contacts {
         margin-bottom: 4rem;
         display: flex;
         align-items: center;
         column-gap: 2.4rem;
-        a
-        {
+
+        a {
             color: #27231F;
             font-size: 2.4rem;
             font-weight: 500;
@@ -147,16 +146,16 @@ export default {
             letter-spacing: -0.384px;
             text-decoration: none;
         }
-        span
-        {
+
+        span {
             color: #827F7D;
             font-size: 1.4rem;
             line-height: 1.4em;
             letter-spacing: -0.056px;
         }
     }
-    &-end
-    {
+
+    &-end {
         margin-bottom: 4rem;
         color: #27231F;
         font-size: 1.7rem;
@@ -166,56 +165,53 @@ export default {
 }
 
 @media (max-width: 600px) {
-    .thank-page__pattern
-    {
+    .thank-page__pattern {
         width: 532.356px;
         height: 400.966px;
 
-        &-1
-        {
+        &-1 {
             left: 0;
             transform: translateX(-65%);
         }
-        &-2
-        {
+
+        &-2 {
             display: none;
         }
     }
-    .thank-page__content
-    {
-        img
-        {
+
+    .thank-page__content {
+        img {
             margin-bottom: 24px;
             width: 68px;
             height: 62px;
         }
-        &-label
-        {
+
+        &-label {
             margin-bottom: 40px;
             font-size: 32px;
         }
-        &-text
-        {
+
+        &-text {
             margin-bottom: 24px;
             font-size: 14px;
         }
-        &-contacts
-        {
+
+        &-contacts {
             flex-direction: column;
             margin-bottom: 24px;
             column-gap: 0;
             row-gap: 8px;
-            a
-            {
+
+            a {
                 font-size: 20px;
             }
-            span
-            {
+
+            span {
                 font-size: 12px;
             }
         }
-        &-end
-        {
+
+        &-end {
             margin-bottom: 24px;
             font-size: 14px;
         }

@@ -6,14 +6,13 @@ export default {
     make_the_order() {
         let adminComment = ''
         if(this.deliveryType === 'courier'){
-            adminComment += 'Доставка курьером, '
+            adminComment += 'Доставка курьером СДЭК, '
         } else {
-            adminComment += 'Самовывоз, '
+            adminComment += 'Самовывоз из пункта выдачи, '
         }
         if(this.delivery_date) {
-            adminComment += new Date(this.delivery_date).toLocaleDateString('ru-RU')
+            adminComment += Number(this.cdek_min_time) + '-' + Number(this.cdek_min_time + 2)  + ' ' + this.daysComputed
         }
-        // this.$metrika.reachGoal('offer');
         let s, to_send;
         s = '';
         this.c_s ? s += 'sms; ' : '';

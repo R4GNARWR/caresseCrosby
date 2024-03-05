@@ -114,7 +114,6 @@ export default  {
     saveUserData(to_send) {
         this.axios.put("account", to_send, {headers: {'Content-Type': 'application/json'}})
             .then(value => {
-                console.log(value)
                 if (value.data.success) {
                     let msg = {}; msg.msg = 'Данные успешно сохранены!'; msg.color = '#d7c6b0'; store.commit('set_snack_message', msg);
                 }
@@ -166,6 +165,7 @@ export default  {
         lid.phoneFrom ? params.phoneFrom = lid.phoneFrom.replace(/\D/g, '') : null
         lid.cost ? params.cost = lid.cost : null
         lid.whenSend ? params.whenSend = new Date(lid.whenSend).toLocaleDateString('ru-RU') : null
+        lid.text ? params.text = lid.text : null
 
         return this.axios.post("auth/lid", params)
     },

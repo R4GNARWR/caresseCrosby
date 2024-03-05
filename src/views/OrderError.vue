@@ -15,9 +15,9 @@
                         по Московскому времени
                     </span>
                 </div>
-                <MainLink class-name="btn-gold" destitation="/">
+                <router-link class="btn btn-gold" to="/">
                     Вернутся на главную
-                </MainLink>
+                </router-link>
             </div>
             
             <div class="thank-page__pattern thank-page__pattern-1">

@@ -74,6 +74,8 @@
                             </MainInput>
                             <MainInput :placeholder="'Когда отправить сертификат получателю'" v-model="lid.whenSend"
                                 class="inline" input-type="date" :min="minDate" validation-type="date"></MainInput>
+                            <MainInput :placeholder="'Ваше пожелание получателю'" v-model="lid.text"
+                                class="inline" input-type="text" max="1000"></MainInput>
                         </div>
                         <div class="gift-card__execution-content__form-bottom">
                             Если у вас возникнут вопросы, звоните в службу поддержки по телефону: <a href="">+7 (917)
@@ -129,6 +131,7 @@ export default {
                 phonefor: '',
                 cost: '',
                 whenSend: '',
+                text: '',
             },
             products: [],
             sendStatus: true,
