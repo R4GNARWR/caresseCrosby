@@ -29,7 +29,7 @@ export default {
             deliveryTime: '10:00',
             deliveryDate: this.delivery_date,
             promocode: this.promocodeString,
-            comission: this.cdek_delivery_price ?? 0,
+            commission: this.cdek_delivery_price ?? 0,
             canals: s.length > 0 ? " Для связи с клиетом желательно использовать: " + s : '',
         };
         this.$API.makeOrder(to_send).then(value => {

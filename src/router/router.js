@@ -69,6 +69,10 @@ let routes = [
     component: OrderError,
   },
   {
+    path: '/cert/success/:certID',
+    component: OrderSuccess,
+  },
+  {
     path: '/Favorite',
     component: Favorite,
   },

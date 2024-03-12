@@ -19,7 +19,12 @@
                 <div class="thank-page__content-end">
                     Спасибо, что выбрали Caresse Crosby!
                 </div>
-                <router-link class="btn btn-gold" to="/">
+              <a v-if="certID" class="btn btn-gold" style="margin-bottom: 20px"
+                 :href="'https://static.ccrosby.ru/promocodes/'+certID+'.pdf'" target="_blank">
+                Скачать сертификат!
+              </a>
+
+              <router-link class="btn btn-gold" to="/">
                     Вернутся на главную
                 </router-link>
             </div>
@@ -47,6 +52,7 @@ export default {
         MainLink
     },
     computed: {
+      certID(){return this.$route.params.certID},
         ...mapState(['headerPadding',]
         ),
     },

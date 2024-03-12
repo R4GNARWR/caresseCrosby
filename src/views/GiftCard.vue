@@ -47,10 +47,10 @@
                             Оформить сертификат
                         </div>
                         <v-row class="gift-card__execution-content__row">
-                            <v-col md="6" cols="12">
+                            <v-col md="12" cols="12">
                                 <div class="gift-card__execution-content__row-col">
-                                    <h3>Отправитель</h3>
-                                    <MainInput :placeholder="'Имя*'" v-model="lid.from" ref="firstInput" :required="true">
+<!--                                    <h3>Отправитель</h3>-->
+                                    <MainInput :placeholder="'Ваше имя*'" v-model="lid.from" ref="firstInput" :required="true" validation-type="name">
                                     </MainInput>
                                     <MainInput :placeholder="'Телефон*'" v-model="lid.phoneFrom" :required="true"
                                         input-type="tel" validation-type="phone"></MainInput>
@@ -58,22 +58,22 @@
                                         validation-type="email"></MainInput>
                                 </div>
                             </v-col>
-                            <v-col md="6" cols="12">
-                                <div class="gift-card__execution-content__row-col">
-                                    <h3>Получатель</h3>
-                                    <MainInput :placeholder="'Имя*'" v-model="lid.for" :required="true"></MainInput>
-                                    <MainInput :placeholder="'Телефон*'" v-model="lid.phonefor" :required="true"
-                                        input-type="tel" validation-type="phone"></MainInput>
-                                    <MainInput :placeholder="'E-mail'" input-type="email" v-model="lid.emailToSend"
-                                        validation-type="email"></MainInput>
-                                </div>
-                            </v-col>
+<!--                            <v-col md="6" cols="12">-->
+<!--                                <div class="gift-card__execution-content__row-col">-->
+<!--                                    <h3>Получатель</h3>-->
+<!--                                    <MainInput :placeholder="'Имя*'" v-model="lid.for" :required="true"></MainInput>-->
+<!--                                    <MainInput :placeholder="'Телефон*'" v-model="lid.phonefor" :required="true"-->
+<!--                                        input-type="tel" validation-type="phone"></MainInput>-->
+<!--                                    <MainInput :placeholder="'E-mail'" input-type="email" v-model="lid.emailToSend"-->
+<!--                                        validation-type="email"></MainInput>-->
+<!--                                </div>-->
+<!--                            </v-col>-->
                         </v-row>
                         <div class="gift-card__execution-content__form">
-                            <MainInput :placeholder="'Номинал в рублях'" v-model="lid.cost" :required="true" class="inline">
+                            <MainInput :placeholder="'Номинал в рублях'" v-model="lid.cost" :required="true" class="inline" input-type="number">
                             </MainInput>
-                            <MainInput :placeholder="'Когда отправить сертификат получателю'" v-model="lid.whenSend"
-                                class="inline" input-type="date" :min="minDate" validation-type="date"></MainInput>
+<!--                            <MainInput :placeholder="'Когда отправить сертификат получателю'" v-model="lid.whenSend"-->
+<!--                                class="inline" input-type="date" :min="minDate" validation-type="date"></MainInput>-->
                             <MainInput :placeholder="'Ваше пожелание получателю'" v-model="lid.text"
                                 class="inline" input-type="text" max="1000"></MainInput>
                         </div>
@@ -173,10 +173,11 @@ export default {
                     sendMetrika('make_gift_card', 'reachGoal')
                     this.v$.$reset()
                     this.resetLid()
-                    store.commit('set_snack_message', { msg: 'Мы получили Вашу заявку и свяжемся с Вами в ближайшее время!' })
+                    store.commit('set_snack_message', { msg: 'Все готово! Переходим на страницу оплаты )' })
                     this.sendStatus = true
                     setTimeout(() => {
-                        this.$router.push('/')
+                      console.log(value.data.link)
+                        window.location.href = value.data.link
                     }, 2500)
 
                 } else {
