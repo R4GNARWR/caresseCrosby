@@ -43,7 +43,7 @@
                             </div>
                         </div>
                         <div class="cart-summary__input">
-                            <MainInput placeholder="Промокод" v-model="promocodeString"></MainInput>
+                            <MainInput placeholder="Промокод" v-model="promocodeString" @onInputEvent="resetPromocode()"></MainInput>
                         </div>
                         <div class="cart-summary__promocode-error" v-if="promocodeError">
                             {{ promocodeError }}
@@ -68,7 +68,7 @@
         </v-container>
     </section>
 </template>
-    
+
 <script>
 import MainBtn from '../components/UI/MainBtn.vue';
 import MainInput from '../components/UI/MainInput.vue';
@@ -92,7 +92,6 @@ export default {
             promocodeString: '',
             commission: 0, dates_available: [], hours: {},
             the_error: '',
-            promocodeStatus: false,
         }
     },
     head() {
@@ -120,6 +119,13 @@ export default {
                 } else if (days % 10 === 1) {
                     return 'день'
                 }
+            }
+        },
+        promocodeStatus() {
+            if (this.promocodeDiscount || this.promocodeError) {
+                return true
+            } else {
+                return false
             }
         },
         full_address() { return (this.address.index ? this.address.index + ' ' : '') + (this.address.city ? this.address.city + ' ' : '') + (this.address.street ? this.address.street + ' ' : '') + (this.address.building ? this.address.building : '') },
@@ -194,12 +200,16 @@ export default {
         handlePromocode() {
             this.checkPromocode(this.promocodeString)
         },
+        resetPromocode() {
+            store.commit('setPromocode', null)
+            store.commit('setPromocodeDiscount', null)
+            store.commit('setPromocodeError', null)
+        },
         ...order
     },
     watch: {
         promocodeString: {
             handler() {
-                this.promocodeStatus = false
                 store.commit('setPromocodeError', null)
             },
             deep: true,
@@ -213,9 +223,6 @@ export default {
     },
     mounted() {
         sendMetrika('open_cart', 'reachGoal')
-        if (this.promocodeDiscount) {
-            this.promocodeStatus = true
-        }
         if (this.promocode) {
             this.promocodeString = this.promocode
         }

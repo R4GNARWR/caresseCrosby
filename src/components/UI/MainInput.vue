@@ -8,9 +8,9 @@
         :required="required"
         :id="inputId"
         :min="min"
-        :autocomplete="inputType === 'email' ? 'email': ''"
+        :autocomplete="autocomplete"
         v-if="inputType !== 'tel' && inputType !== 'date'"
-        @input="$emit('update:modelValue', $event.target.value)"
+        @input="onInput($event)"
         @blur="$emit('blurEvent')">
         <input class="form-control tel"
         :type="inputType"
@@ -30,6 +30,7 @@
         :required="required"
         :id="inputId"
         :min="min"
+        :autocomplete="autocomplete"
         @focus="this.showPicker($event.target)"
         @input="$emit('update:modelValue', $event.target.value)"
         v-if="inputType === 'date'">
@@ -52,6 +53,7 @@ export default {
         validationType: String,
         modelValue: String,
         placeholder: String,
+        autocomplete: String,
         required: {
             type: Boolean,
             default: false
@@ -69,6 +71,7 @@ export default {
             v$: useVuelidate()
         }
     },
+    emits: ['update:modelValue', 'blurEvent', 'onInputEvent'],
     validations() {
         if(this.required && this.validationType){
             switch(this.validationType) {
@@ -126,6 +129,7 @@ export default {
         onInput(event) {
             let string = event.target.value
             this.$emit('update:modelValue', string);
+            this.$emit('onInputEvent', string);
         },
         showPicker(item) {
             item.showPicker()

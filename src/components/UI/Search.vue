@@ -121,7 +121,7 @@ export default {
     z-index: 2;
     input
     {
-        padding: .4rem 1.2rem .4rem 4.4rem;
+        padding: .6rem 1.2rem .6rem 4.4rem;
         width: 100%;
         height: 100%;
         background-color: #F4F4F4;

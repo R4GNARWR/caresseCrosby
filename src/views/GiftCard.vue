@@ -13,7 +13,8 @@
                         <div class="gift-card__banner-content">
                             <div class="gift-card__banner-content__label d-lg-block d-none">Отличный подарок близкому
                                 человеку, особенно если он далеко.</div>
-                            <div class="gift-card__banner-content__label d-lg-none d-block">Что подарить подруге, маме или
+                            <div class="gift-card__banner-content__label d-lg-none d-block">Что подарить подруге, маме
+                                или
                                 пышногрудой коллеге на праздник?</div>
                             <ul class="gift-card__banner-content__list">
                                 <li>Подарив сертификат, вы точно не ошибетесь с размером</li>
@@ -22,9 +23,9 @@
                                 <li>Срок действия сертификата не ограничен.</li>
                                 <li>Использовать сертификат можно в <br> интернет-магазине и шоу-руме.</li>
                             </ul>
-                            <div class="gift-card__banner-content__btn">
+                            <!-- <div class="gift-card__banner-content__btn">
                                 <a class="btn btn-primary w-ft" href="#sendCard">Оформить карту</a>
-                            </div>
+                            </div> -->
                         </div>
                     </v-col>
                 </v-row>
@@ -37,7 +38,8 @@
                 </v-col>
                 <v-col md="7" cols="12" id="sendCard">
                     <form class="gift-card__execution-content">
-                        <div class="gift-card__execution-content__label">Отличный подарок близкому человеку, особенно если
+                        <div class="gift-card__execution-content__label">Отличный подарок близкому человеку, особенно
+                            если
                             он далеко.</div>
                         <div class="gift-card__execution-content__text">
                             Нечаянная радость может случиться в любой момент. Для этого совсем не нужен повод. Это легко
@@ -49,38 +51,41 @@
                         <v-row class="gift-card__execution-content__row">
                             <v-col md="12" cols="12">
                                 <div class="gift-card__execution-content__row-col">
-<!--                                    <h3>Отправитель</h3>-->
-                                    <MainInput :placeholder="'Ваше имя*'" v-model="lid.from" ref="firstInput" :required="true" validation-type="name">
+                                    <!--                                    <h3>Отправитель</h3>-->
+                                    <MainInput :placeholder="'Ваше имя*'" autocomplete="name" v-model="lid.from"
+                                        ref="firstInput" :required="true" validation-type="name">
                                     </MainInput>
-                                    <MainInput :placeholder="'Телефон*'" v-model="lid.phoneFrom" :required="true"
-                                        input-type="tel" validation-type="phone"></MainInput>
-                                    <MainInput :placeholder="'E-mail'" input-type="email" v-model="lid.emailFrom"
-                                        validation-type="email"></MainInput>
+                                    <MainInput :placeholder="'Телефон*'" autocomplete="tel" v-model="lid.phoneFrom"
+                                        :required="true" input-type="tel" validation-type="phone"></MainInput>
+                                    <MainInput :placeholder="'E-mail'" autocomplete="email" input-type="email"
+                                        v-model="lid.emailFrom" validation-type="email"></MainInput>
                                 </div>
                             </v-col>
-<!--                            <v-col md="6" cols="12">-->
-<!--                                <div class="gift-card__execution-content__row-col">-->
-<!--                                    <h3>Получатель</h3>-->
-<!--                                    <MainInput :placeholder="'Имя*'" v-model="lid.for" :required="true"></MainInput>-->
-<!--                                    <MainInput :placeholder="'Телефон*'" v-model="lid.phonefor" :required="true"-->
-<!--                                        input-type="tel" validation-type="phone"></MainInput>-->
-<!--                                    <MainInput :placeholder="'E-mail'" input-type="email" v-model="lid.emailToSend"-->
-<!--                                        validation-type="email"></MainInput>-->
-<!--                                </div>-->
-<!--                            </v-col>-->
+                            <!--                            <v-col md="6" cols="12">-->
+                            <!--                                <div class="gift-card__execution-content__row-col">-->
+                            <!--                                    <h3>Получатель</h3>-->
+                            <!--                                    <MainInput :placeholder="'Имя*'" v-model="lid.for" :required="true"></MainInput>-->
+                            <!--                                    <MainInput :placeholder="'Телефон*'" v-model="lid.phonefor" :required="true"-->
+                            <!--                                        input-type="tel" validation-type="phone"></MainInput>-->
+                            <!--                                    <MainInput :placeholder="'E-mail'" input-type="email" v-model="lid.emailToSend"-->
+                            <!--                                        validation-type="email"></MainInput>-->
+                            <!--                                </div>-->
+                            <!--                            </v-col>-->
                         </v-row>
                         <div class="gift-card__execution-content__form">
-                            <MainInput :placeholder="'Номинал в рублях'" v-model="lid.cost" :required="true" class="inline" input-type="number">
+                            <MainInput :placeholder="'Номинал в рублях'" v-model="lid.cost" :required="true"
+                                class="inline" input-type="number">
                             </MainInput>
-<!--                            <MainInput :placeholder="'Когда отправить сертификат получателю'" v-model="lid.whenSend"-->
-<!--                                class="inline" input-type="date" :min="minDate" validation-type="date"></MainInput>-->
-                            <MainInput :placeholder="'Ваше пожелание получателю'" v-model="lid.text"
-                                class="inline" input-type="text" max="1000"></MainInput>
+                            <!--                            <MainInput :placeholder="'Когда отправить сертификат получателю'" v-model="lid.whenSend"-->
+                            <!--                                class="inline" input-type="date" :min="minDate" validation-type="date"></MainInput>-->
+                            <MainInput :placeholder="'Ваше пожелание получателю'" v-model="lid.text" class="inline"
+                                input-type="text" max="1000"></MainInput>
                         </div>
                         <div class="gift-card__execution-content__form-bottom">
                             Если у вас возникнут вопросы, звоните в службу поддержки по телефону: <a href="">+7 (917)
                                 747-15-61</a> <br>
-                            Нажимая кнопку «Отправить», я подтверждаю свою дееспособность, даю согласие на обработку моих
+                            Нажимая кнопку «Отправить», я подтверждаю свою дееспособность, даю согласие на обработку
+                            моих
                             персональных данных в соответствии с <a href="">политикой конфиденциальности</a>
                         </div>
                         <MainBtn class-name="btn-primary" type="submit" @click.prevent="handleSubmit"
@@ -111,6 +116,7 @@ import MainBtn from '../components/UI/MainBtn.vue';
 import MainLink from '../components/UI/MainLink.vue';
 import SwiperCards from '../components/SwiperCards.vue'
 import { sendMetrika } from '../utils/metrika';
+import { isObject } from '@vueuse/core';
 
 export default {
     components: {
@@ -176,7 +182,7 @@ export default {
                     store.commit('set_snack_message', { msg: 'Все готово! Переходим на страницу оплаты )' })
                     this.sendStatus = true
                     setTimeout(() => {
-                      console.log(value.data.link)
+                        console.log(value.data.link)
                         window.location.href = value.data.link
                     }, 2500)
 
@@ -184,13 +190,18 @@ export default {
                     let msg = {}
                     msg.msg = ''
                     msg.color = 'red'
-                    for (let e of Object.keys(value.data.errors)) {
-                        msg.msg += value.data.errors[e] + ' ';
+                    console.log(value.data.errors)
+                    if (value.data.errors) {
+                        for (let e of Object.keys(value.data.errors)) {
+                            msg.msg += value.data.errors[e] + ' ';
+                        }
+                    } else if (value.data.error) {
+                        msg.msg = "Номинал сертификата не соответствует политике компании."
+
                     }
                     store.commit('set_snack_message', msg)
                     this.sendStatus = true
                 }
-
             })
         },
         async getProducts() {
@@ -468,9 +479,9 @@ export default {
     .gift-card {
         &__banner {
             margin-bottom: 50px;
-            height: 880px;
+            height: 500px;
             background-image: url('/img/gift-card-banner-mobile.png');
-            background-position: bottom;
+            background-position: top;
         }
     }
 

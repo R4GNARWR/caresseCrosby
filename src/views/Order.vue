@@ -18,8 +18,8 @@
                                 </ul>
                                 <div class="order-products__wrap-item-price">
                                     {{ Number((item.q * item.price)).toLocaleString() }}{{ !(item.q
-                                        * item.price).toString().split('.')[1] ? '' : (item.q
-                                            * item.price).toString().split('.')[1].length === 1 ? '' : '' }} ₽
+                                * item.price).toString().split('.')[1] ? '' : (item.q
+                                    * item.price).toString().split('.')[1].length === 1 ? '' : '' }} ₽
                                 </div>
                             </a>
                         </div>
@@ -32,12 +32,14 @@
                         <div class="order-type">
                             <div class="order-type__item" :class="{ 'active': deliveryType === 'courier' }"
                                 @click="changeDeliveryType('courier')" role="button">
-                                <img :src="deliveryType === 'courier' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
+                                <img :src="deliveryType === 'courier' ? '/svg/radio-active.svg' : '/svg/radio.svg'"
+                                    alt="">
                                 Курьером
                             </div>
                             <div class="order-type__item" :class="{ 'active': deliveryType === 'pickup' }"
                                 @click="changeDeliveryType('pickup')" role="button">
-                                <img :src="deliveryType === 'pickup' ? '/svg/radio-active.svg' : '/svg/radio.svg'" alt="">
+                                <img :src="deliveryType === 'pickup' ? '/svg/radio-active.svg' : '/svg/radio.svg'"
+                                    alt="">
                                 Самовывоз
                             </div>
                         </div>
@@ -51,20 +53,22 @@
                         </div>
 
                         <div class="order-delivery__form">
-                            <v-autocomplete label="Выберите город" v-if="cdek_cities" v-show="deliveryType === 'courier'"
-                                :items="cdek_cities" item-title="city" no-data-text="Нет подходящих городов"
-                                item-value="city" v-model="chosenCity"
+                            <v-autocomplete label="Выберите город" v-if="cdek_cities"
+                                v-show="deliveryType === 'courier'" :items="cdek_cities" item-title="city"
+                                no-data-text="Нет подходящих городов" item-value="city" v-model="chosenCity"
                                 @update:modelValue="(event) => updateRegion(event)"></v-autocomplete>
-                            <MainInput class="inline" placeholder="Адрес доставки*" v-model="address"
+                            <MainInput class="inline" placeholder="Адрес доставки*"
+                                autocomplete="shipping street-address" v-model="address"
                                 :required="deliveryType === 'courier'" inputId="suggest" @blurEvent="blurAdressEvent"
                                 v-show="deliveryType === 'courier'">
                             </MainInput>
-                            <MainInput class="" placeholder="Имя*" v-model="name" :required="true"></MainInput>
-                            <MainInput class="" placeholder="Фамилия"></MainInput>
-                            <MainInput placeholder="Телефон*" validation-type="phone" v-model="phone" inputType="tel"
+                            <MainInput class="" placeholder="Имя*" autocomplete="name" name="name" v-model="name"
                                 :required="true"></MainInput>
-                            <MainInput class="" placeholder="E-mail*" validationType="email" input-type="email"
-                                v-model="email" :required="true"></MainInput>
+                            <MainInput class="" placeholder="Фамилия" autocomplete="family" name="surname"></MainInput>
+                            <MainInput placeholder="Телефон*" autocomplete="tel" validation-type="phone" v-model="phone"
+                                inputType="tel" :required="true"></MainInput>
+                            <MainInput class="" placeholder="E-mail*" autocomplete="email" validationType="email"
+                                input-type="email" v-model="email" :required="true"></MainInput>
                         </div>
                     </div>
                 </v-col>
@@ -80,7 +84,8 @@
                                 Доставка
                                 <span v-if="cdek_delivery_price && cartSum < 10000">{{ cdek_delivery_price }}</span>
                                 <span v-if="cartSum > 10000">Бесплатно</span>
-                                <span class="waiting" v-if="!cdek_delivery_price && cartSum < 10000">Рассчитывается</span>
+                                <span class="waiting"
+                                    v-if="!cdek_delivery_price && cartSum < 10000">Рассчитывается</span>
                             </div>
                             <div class="cart-summary__item" v-if="cdek_delivery_price && cdek_min_time">
                                 Сроки доставки
@@ -93,7 +98,7 @@
                             </div>
                         </div>
                         <div class="cart-summary__input">
-                            <MainInput placeholder="Промокод" v-model="promocodeString"></MainInput>
+                            <MainInput placeholder="Промокод" v-model="promocodeString" @onInputEvent="resetPromocode()"></MainInput>
                         </div>
                         <div class="cart-summary__promocode-error" v-if="promocodeError">
                             {{ promocodeError }}
@@ -148,7 +153,6 @@ export default {
             phone: '', name: '', surname: '', address: '', email: '',
             comment: '',
             promocodeString: '',
-            promocodeStatus: false,
             commission: 0,
             dates_available: [],
             hours: {},
@@ -156,7 +160,6 @@ export default {
             deliveryType: null,
             suggestView: null,
             addressInterval: null,
-            promocodeStatus: false,
             chosenCity: '',
         }
     },
@@ -196,7 +199,7 @@ export default {
             if (this.deliveryType === 'courier') {
                 return this.address
             } else if (this.cdek_chozen_pvz) {
-                return 'Код пункта CDEK:' + this.cdek_chozen_pvz.code
+                return 'Адрес пункта CDEK: ' + this.cdek_chozen_pvz.location.address + '; Код отделения:' + this.cdek_chozen_pvz.code
             }
         },
         delivery_date() { return new Date() },
@@ -261,6 +264,13 @@ export default {
                 return 'товаров'
             }
         },
+        promocodeStatus() {
+            if (this.promocodeDiscount || this.promocodeError) {
+                return true
+            } else {
+                return false
+            }
+        },
         ...mapState(['cart', 'project_params', 'user_info', 'loggedIn', 'favorites', 'cdek_delivery_price', 'cdek_min_time', 'cdek_cities', 'cdek_pvz', 'cdek_chozen_pvz', 'promocode', 'promocodeDiscount', 'promocodeError'])
     },
     methods: {
@@ -270,6 +280,11 @@ export default {
             } else {
                 this.delFavor(id)
             }
+        },
+        resetPromocode() {
+            store.commit('setPromocode', null)
+            store.commit('setPromocodeDiscount', null)
+            store.commit('setPromocodeError', null)
         },
         the_heart(item) {
             for (let f of this.favorites)
@@ -294,7 +309,7 @@ export default {
             var validationResult = await this.v$.$validate();
 
             if (!validationResult) {
-                store.commit('set_snack_message', { msg: 'Проверьте правильность введенных данных', type:'error'})
+                store.commit('set_snack_message', { msg: 'Проверьте правильность введенных данных', type: 'error' })
                 return;
             }
             this.make_the_order()
@@ -333,15 +348,6 @@ export default {
         ...order, ...cart, ...productCard,
         ...mapMutations(['clearCart', 'cartItemChangeQ', 'cartItemSetQ', 'removeFromCart']),
     },
-    watch: {
-        promocodeString: {
-            handler() {
-                this.promocodeStatus = false
-                store.commit('setPromocodeError', null)
-            },
-            deep: true,
-        },
-    },
     created() {
         if (!document.head.querySelector('#ymaps')) {
             const script = document.createElement('script');
@@ -379,19 +385,14 @@ export default {
         if (this.$route.query && this.$route.query.deliveryType) {
             this.deliveryType = this.$route.query.deliveryType
         }
-
-        if (this.promocodeDiscount) {
-            this.promocodeStatus = true
-        }
         if (this.promocode) {
             this.promocodeString = this.promocode
         }
         store.commit('setPromocodeError', null)
     },
     beforeRouteLeave(to, from, next) {
-        if (to.fullPath !== '/cart') {
-            store.commit('setPromocode', null)
-            store.commit('setPromocodeDiscount', null)
+        if (to.fullPath !== '/cart' && to.fullPath !== '/pick-point') {
+            this.resetPromocode()
         }
         next();
     },
@@ -518,17 +519,18 @@ export default {
                 line-height: 1.5em;
                 opacity: 1 !important;
             }
-            .v-field__outline
-            {
-                
-            }
+
+            .v-field__outline {}
+
             .v-field__outline::after {
                 display: none;
             }
+
             .v-field__outline::before {
                 border-color: #A6A5A3 !important;
                 opacity: 1 !important;
             }
+
             .v-field__input {
                 font-size: 1.6rem;
                 line-height: 1.5em;
@@ -537,8 +539,8 @@ export default {
                 padding-inline-start: 0;
 
             }
-            .v-label.v-field-label.v-field-label--floating
-            {
+
+            .v-label.v-field-label.v-field-label--floating {
                 top: 0;
             }
         }
@@ -762,4 +764,5 @@ export default {
     .order-products__wrap {
         grid-template-columns: repeat(3, 1fr);
     }
-}</style>
+}
+</style>

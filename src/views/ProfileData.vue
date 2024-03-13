@@ -18,16 +18,16 @@
                 <v-col md="7" cols="12">
                     <form action="" class="profile-data__form" v-if="user">
                         <div class="profile-data__form-line">
-                            <MainInput placeholder="Адрес доставки*" inputId="suggest" validation-type="adress" v-model="user.city" :required="true"></MainInput>
+                            <MainInput placeholder="Адрес доставки*" autocomplete="shipping street-address" inputId="suggest" validation-type="adress" v-model="user.city" :required="true"></MainInput>
                         </div>
-                        <MainInput placeholder="Имя*"  validation-type="name" v-model="user.name" :required="true"></MainInput>
+                        <MainInput placeholder="Имя*"  validation-type="name" autocomplete="name" v-model="user.name" :required="true"></MainInput>
     
                         <div class="input-confirm">
-                            <MainInput placeholder="Телефон*" validation-type="phone" v-model="user.phone" inputType="tel" :required="true"></MainInput>
+                            <MainInput placeholder="Телефон*" validation-type="phone" autocomplete="tel" v-model="user.phone" inputType="tel" :required="true"></MainInput>
                             <!-- <MainBtn v-show="!phoneConfirmed" class-name="btn-primary" data-fancybox data-src="#phoneAprovalModal">Подтвердить</MainBtn> -->
                         </div>
                         <div class="input-confirm">
-                            <MainInput placeholder="Email" name="emailInput" validation-type="email" inputType="email" v-model="user.email" :required="true"></MainInput>
+                            <MainInput placeholder="Email" name="emailInput" validation-type="email" autocomplete="email" inputType="email" v-model="user.email" :required="true"></MainInput>
                             <!-- <MainBtn v-show="!emailConfirmed" class-name="btn-primary" data-fancybox data-src="#emailAprovalModal">Подтвердить</MainBtn> -->
                         </div>
                         <div class="profile-data__form-line" :key="index" v-if="sizes_search">

@@ -1,17 +1,18 @@
 import store from "../store/store";
 import api from "./api";
 import { sendMetrika } from "../utils/metrika";
+import { isObject } from "@vueuse/core";
 
 export default {
     make_the_order() {
         let adminComment = ''
-        if(this.deliveryType === 'courier'){
+        if (this.deliveryType === 'courier') {
             adminComment += 'Доставка курьером СДЭК, '
         } else {
             adminComment += 'Самовывоз из пункта выдачи, '
         }
-        if(this.delivery_date) {
-            adminComment += Number(this.cdek_min_time) + '-' + Number(this.cdek_min_time + 2)  + ' ' + this.daysComputed
+        if (this.delivery_date) {
+            adminComment += Number(this.cdek_min_time) + '-' + Number(this.cdek_min_time + 2) + ' ' + this.daysComputed
         }
         let s, to_send;
         s = '';
@@ -55,10 +56,15 @@ export default {
                 }
                 store.commit('set_snack_message', msg, 'success')
             } else {
-                if (value.data.errors)
-                    for (let e of Object.keys(value.data.errors)) this.the_error = value.data.errors[e];
+                if (value.data.errors) {
+                    if(isObject(value.data.errors)) {
+                        for (let e of Object.keys(value.data.errors)) this.the_error = value.data.errors[e];
+                    } else {
+                        this.the_error = value.data.errors;
+                    }
+                }
                 else this.the_error = "Неизвестная ошибка"
-                store.commit('set_snack_message', {msg: this.the_error, type: 'error'})
+                store.commit('set_snack_message', { msg: this.the_error, type: 'error' })
             }
         });
     },

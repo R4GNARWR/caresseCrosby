@@ -7,16 +7,16 @@
         <div class="modal-approval__text" >Мы отправим код для авторизации</div>
         <div class="modal-approval__input" v-if="!smsSended">
             <div class="modal-approval__input-text"></div>
-            <MainInput placeholder="Телефон" input-type="tel" :validation-type="phone.length > 0 ? 'phone' : ''" v-model="phone"></MainInput>
+            <MainInput placeholder="Телефон" autocomplete="tel" input-type="tel" :validation-type="phone.length > 0 ? 'phone' : ''" v-model="phone"></MainInput>
         </div>
         <div class="modal-approval__divide modal-approval__text" v-if="!smsSended">или</div>
         <div class="modal-approval__input" v-if="!smsSended">
             <div class="modal-approval__input-text"></div>
-            <MainInput placeholder="E-mail" v-model="email" input-type="email" :validation-type="email.length > 0 ? 'email' : ''" :required="phone.length === 0"></MainInput>
+            <MainInput placeholder="E-mail" autocomplete="email" v-model="email" input-type="email" :validation-type="email.length > 0 ? 'email' : ''" :required="phone.length === 0"></MainInput>
         </div>
         <div class="modal-approval__input" v-if="smsSended">
             <div class="modal-approval__input-text"></div>
-            <MainInput placeholder="Пароль" v-model="password"></MainInput>
+            <MainInput placeholder="Пароль" v-model="password" autocomplete="one-time-code"></MainInput>
         </div>
         <MainBtn class-name="btn-primary w-100" type="submit" @click.prevent="login()" v-if="smsSended">Войти</MainBtn>
         <MainBtn class-name="btn-primary w-100" type="submit" @click.prevent="handleSubmit()" v-else>Отправить код</MainBtn>
