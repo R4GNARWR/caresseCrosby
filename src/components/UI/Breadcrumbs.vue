@@ -6,20 +6,20 @@
       <div class="breadcrumbs-divider">/</div>
       <a class="breadcrumbs-item" href="">Нижнее белье</a>
       <div class="breadcrumbs-divider">/</div>
-      <a class="breadcrumbs-item" href="">Бюстгалтеры</a>
+      <a class="breadcrumbs-item" href="">Бюстгальтеры</a>
     </div>
 </template>
 <script>
 export default {
   props: {
   },
-  
+
   computed: {
     crumbs() {
       const fullPath = this.$route.fullPath
       const params = fullPath.split('/').filter(segment => segment !== '');
       const crumbs = []
-      
+
       return params
     },
   },

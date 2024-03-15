@@ -28,7 +28,7 @@
                         <router-link to="/catalogAll" class="footer-links__label">КАТАЛОГ</router-link>
                         <ul class="footer-links__list">
                             <!-- <li><router-link to="/#hits">Хиты продаж</router-link></li> -->
-                            <li><router-link to="/catalog/24402">Бюстгалтеры</router-link></li>
+                            <li><router-link to="/catalog/24402">Бюстгальтеры</router-link></li>
                             <li><router-link to="/catalog/24403">Трусики</router-link></li>
                             <li><router-link to="/catalog/25035">Средства ухода</router-link></li>
                             <li><router-link to="/catalog/search/?query=купальник">Купальники</router-link></li>
@@ -179,7 +179,7 @@ footer
             font-family: 'Inter';
             font-size: 1.8rem;
             line-height: 110%;
-            letter-spacing: -0.18px; 
+            letter-spacing: -0.18px;
             text-transform: uppercase;
             text-decoration: none;
         }
@@ -303,7 +303,7 @@ footer
             margin-top: 0;
             align-items: center;
             order: 1;
-            a img 
+            a img
             {
                 width: 32px;
                 height: 32px;
