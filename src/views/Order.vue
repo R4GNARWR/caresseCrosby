@@ -56,7 +56,7 @@
                             <v-autocomplete label="Выберите город" v-if="cdek_cities"
                                 v-show="deliveryType === 'courier'" :items="cdek_cities" item-title="city"
                                 no-data-text="Нет подходящих городов" item-value="city" v-model="chosenCity"
-                                @update:modelValue="(event) => updateRegion(event)"></v-autocomplete>
+                                @update:modelValue="(event) => updateRegion(event)" auto-select-first></v-autocomplete>
                             <MainInput class="inline" placeholder="Адрес доставки*"
                                 autocomplete="shipping street-address" v-model="address"
                                 :required="deliveryType === 'courier'" inputId="suggest" @blurEvent="blurAdressEvent"
@@ -519,8 +519,6 @@ export default {
                 line-height: 1.5em;
                 opacity: 1 !important;
             }
-
-            .v-field__outline {}
 
             .v-field__outline::after {
                 display: none;

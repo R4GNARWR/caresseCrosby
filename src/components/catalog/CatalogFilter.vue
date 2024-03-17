@@ -100,7 +100,12 @@ export default {
             if (this.$refs.catalogFilter && this.filtersHeight !== this.$refs.catalogFilter.offsetHeight) {
                 this.filtersHeight = this.$refs.catalogFilter.offsetHeight;
             }
-
+            if (this.filtersBounds.top < newScroll) {
+                this.filterPosition = 'fixed'
+                this.filterTop = 'auto'
+                this.filterBottom = '40px'
+                this.filterScroll = 'bottom'
+            }
             if (newScroll > this.currentScroll) {
                 // листаем вниз
                 if (this.filtersBounds.bottom - this.windowHeight + 40 <= 0 && this.filterScroll === 'unset') {

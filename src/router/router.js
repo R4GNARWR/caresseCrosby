@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory  } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Catalog from '../views/Catalog.vue'
 import CatalogAll from '../views/CatalogAll.vue'
@@ -30,6 +30,8 @@ import BlogEdit from '../views/BlogEdit.vue'
 import EditOrder from '../views/EditOrder.vue'
 import OrderToPay from '../views/OrderToPay.vue'
 import CreateCertificate from '../views/CreateCertificate.vue'
+
+import store from '../store/store'
 
 let routes = [
   {
@@ -160,16 +162,16 @@ let toArray = ['Catalog', 'CatalogAll', 'Home']
 export default createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: routes,
-  scrollBehavior(to, from, savedPosition) {
-    if (toArray.includes(to.name) && from.name === 'Product' && savedPosition) {
-      setTimeout(() => {
-        window.scroll({
-          top: savedPosition.top,
-          behavior: "smooth",
-        });
-      }, 250);
+  scrollBehavior(to, from) {
+    if (toArray.includes(to.name) && from.name === 'Product' && store.getters.getSavedPosition.top && store.getters.getSavedPosition.path) {
+      if (store.getters.getSavedPosition.path === to.path) {
+        return { top: store.getters.getSavedPosition.top }
+      } else {
+        store.commit('setSavedPosition', null)
+        return { top: 0 }
+      }
     } else {
-      window.scrollTo(0, 0);
+      return { top: 0 }
     }
   }
 })

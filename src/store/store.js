@@ -64,6 +64,7 @@ export default new Vuex.Store({
     search_result: {},
     saved_search_filters: [],
     saved_search_path: '',
+    saved_position: null,
     search_settings: {},
     addToOrder: null,
     cdek_cities: null,
@@ -74,6 +75,9 @@ export default new Vuex.Store({
     cdek_has_errors: false,
     mainBanners: null,
     blogsList: null,
+  },
+  getters: {
+    getSavedPosition: state => state.saved_position
   },
   mutations: {
     setHeaderPadding(state, value) {
@@ -236,6 +240,7 @@ export default new Vuex.Store({
     setBlogs(state, blogs) { state.blogsList = blogs },
     setPromocode(state, value) { state.promocode = value },
     setPromocodeDiscount(state, value) { state.promocodeDiscount = value },
-    setPromocodeError(state, value) { state.promocodeError = value }
+    setPromocodeError(state, value) { state.promocodeError = value },
+    setSavedPosition(state, position) { state.saved_position = position },
   },
 })

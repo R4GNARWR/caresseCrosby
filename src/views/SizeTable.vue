@@ -23,11 +23,11 @@
                                 <MainInput :placeholder="'Обхват под грудью, см'" v-model="b1"></MainInput>
                             </div>
                         </div>
-                        <MainBtn class="btn-primary w-100" @click="showSize()" :disabled="readyToShow">Рассчитать размер
+                        <MainBtn class="btn-primary w-100" @click="showSize()" :disabled="readyToShow || this.show && (!this.products || this.products.length === 0)">Рассчитать размер
                         </MainBtn>
                         <div class="table-size__calc-result" v-if="size_b && show">
                             Ваш размер: {{ size_b }}
-                            <MainBtn @click="to_size_models" class="btn btn-white outline">Показать модели</MainBtn>
+                            <MainBtn @click="to_size_models" class="btn btn-white outline" :disabled="!this.products || this.products.length === 0">Показать модели</MainBtn>
                         </div>
                         <div class="table-size__calc-result" v-if="!size_b && show">
                             Невозможно расчитать размер, укажите правильные размеры

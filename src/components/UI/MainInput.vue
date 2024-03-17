@@ -20,7 +20,8 @@
         :id="inputId"
         :min="min"
         maxlength="18"
-        autocomplete="tel"
+        autocomplete="on"
+        ref="inputEl"
         v-if="inputType === 'tel'"
         @input="onInput($event)">
         <input class="form-control"
