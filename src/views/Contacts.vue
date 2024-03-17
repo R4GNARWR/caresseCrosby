@@ -12,7 +12,8 @@
                     <img src="/svg/phone.svg" alt="">
                     <div class="contacts-props__item-content">
                         <a href="tel:79177471561:">+7 (917) 747-15-61</a>
-                        <span>Пн. – Вс.: с 9:00 до 18:00</span>
+                        <span>Пн - пт 11:00-20:00</span><br>
+                        <span>Сб, вск 11:00-19:00</span>
                     </div>
                 </div>
                 <div class="contacts-props__item">

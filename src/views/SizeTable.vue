@@ -7,7 +7,7 @@
                 <a class="breadcrumbs-item active">Таблица размеров</a>
             </div>
             <div class="table-size__label">
-                Узнайте точный размер бюстгалтера
+                Узнайте точный размер бюстгальтера
             </div>
             <v-row>
                 <v-col md="7" cols="12">
