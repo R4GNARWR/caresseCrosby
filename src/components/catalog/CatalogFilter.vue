@@ -9,7 +9,7 @@
         }" ref="catalogFilter">
             <div class="catalog__filter-head">
                 Фильтры
-                <div class="catalog__filter-close" @click="$emit('updateFilterStatus')">
+                <div class="catalog__filter-close" @click="emit('updateFilterStatus')">
                     <img src="/svg/close.svg" alt="">
                 </div>
             </div>
@@ -22,165 +22,189 @@
                     v-if="colors_search && colors_search.length > 0"></FilterItem>
             </div>
             <div class="catalog__filter-action">
-                <MainBtn class-name="btn-primary" @click="$emit('updateFilterStatus')">Фильтровать</MainBtn>
+                <MainBtn class-name="btn-primary" @click="emit('updateFilterStatus')">Фильтровать</MainBtn>
             </div>
         </div>
     </div>
 </template>
-<script>
+<script setup>
+import { ref, computed, onUnmounted, onMounted, watch, onUpdated } from 'vue';
+import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 import search from '../../api/search'
-import { mapState } from "vuex";
+
 import FilterItem from '../UI/FilterItem.vue';
 import MainBtn from '../UI/MainBtn.vue'
-export default {
-    components: {
-        FilterItem,
-        MainBtn
-    },
-    data() {
-        return {
-            catalogOffsetTop: 0,
-            currentScroll: 0,
-            windowHeight: 0,
-            filtersHeight: null,
-            filtersBounds: null,
-            filterPosition: 'static',
-            savedTop: 0,
-            savedTopOffset: 0,
-            filterTop: 0,
-            filterBottom: 'auto',
-            filterScroll: 'top',
-        }
-    },
-    computed: {
-        isMobile() { return window.innerWidth < 960; },
-        ...mapState(['headerPadding',]),
-    },
-    props: {
-        filterStatus: Boolean,
-        brands_search: Array,
-        sizes_search: Array,
-        colors_search: Array,
-        catalogListHeight: Number,
-    },
-    methods: {
-        setCatalogPadding() {
-            if (window.innerWidth < 960) {
-                this.catalogOffsetTop = this.paddingTop;
-            } else {
-                this.catalogOffsetTop = 0;
-            }
-            this.setFilterValues()
-            this.setFilterPositioning()
-        },
-        updateFilters(filter) {
-            this.$emit('updateFilter', filter)
-        },
-        setFilterValues() {
-            this.windowHeight = window.innerHeight;
-            if (this.$refs.catalogFilter) {
-                this.filtersBounds = this.$refs.catalogFilter.getBoundingClientRect()
-                if (this.$refs.catalogFilterWrap) {
-                    this.savedTopOffset = this.$refs.catalogFilterWrap.offsetTop;
-                }
-                this.filtersHeight = this.$refs.catalogFilter.offsetHeight;
-            }
-        },
-        setFilterPositioning() {
-            if (this.catalogListHeight < this.filtersHeight) {
-                this.filterPosition = 'static'
-                return false
-            }
-            let newScroll = window.scrollY;
 
-            if (this.$refs.catalogFilter) {
-                this.filtersBounds = this.$refs.catalogFilter.getBoundingClientRect()
-            }
-            if (this.$refs.catalogFilter && this.filtersHeight !== this.$refs.catalogFilter.offsetHeight) {
-                this.filtersHeight = this.$refs.catalogFilter.offsetHeight;
-            }
-            if (this.filtersBounds.top < newScroll) {
-                this.filterPosition = 'fixed'
-                this.filterTop = 'auto'
-                this.filterBottom = '40px'
-                this.filterScroll = 'bottom'
-            }
-            if (newScroll > this.currentScroll) {
-                // листаем вниз
-                if (this.filtersBounds.bottom - this.windowHeight + 40 <= 0 && this.filterScroll === 'unset') {
-                    this.filterPosition = 'fixed'
-                    this.filterTop = 'auto'
-                    this.filterBottom = '40px'
-                    this.filterScroll = 'bottom'
-                }
-                if (this.filterScroll === 'top') {
-                    this.filterPosition = 'absolute'
-                    this.filterTop = this.savedTop
-                    this.filterBottom = 'auto'
-                    this.filterScroll = 'unset'
-                }
-                if (newScroll + this.windowHeight - this.headerPadding + 40 >= this.catalogListHeight + this.savedTopOffset && this.catalogListHeight !== 0) {
-                    this.filterPosition = 'absolute'
-                    this.filterTop = 'auto'
-                    this.filterBottom = '0'
-                    this.filterScroll = 'unset'
-                }
-                if (this.filterScroll === 'bottom') {
-                    this.savedTop = newScroll - this.filtersHeight / 2.4 - 40
-                }
-            } else {
-                // листаем вверх
-                if (this.filterScroll === 'bottom') {
-                    this.filterPosition = 'absolute'
-                    this.filterTop = this.savedTop
-                    this.filterBottom = 'auto'
-                    this.filterScroll = 'unset'
-                }
-                if (this.filtersBounds.top - 40 - this.headerPadding >= 0 && this.filterScroll === 'unset') {
-                    this.filterPosition = 'fixed'
-                    this.filterTop = this.headerPadding + 40
-                    this.filterBottom = 'auto'
-                    this.filterScroll = 'top'
-                }
-                if (newScroll + this.headerPadding <= this.savedTopOffset && this.filterScroll === 'top') {
-                    this.filterPosition = 'absolute'
-                    this.filterTop = 0
-                    this.filterBottom = 'auto'
-                    this.filterScroll = 'unset'
-                }
-                if (this.filterScroll === 'top') {
-                    this.savedTop = newScroll - this.headerPadding
-                }
-            }
-            this.currentScroll = newScroll;
-        },
-        ...search,
-    },
-    created() {
-        window.addEventListener('scroll', this.setFilterPositioning);
-        window.addEventListener('resize', this.setCatalogPadding);
-    },
-    watch: {
-        '$route.params': function () {
-            this.setCatalogPadding()
-        },
-        '$route.query.query': function () {
-            this.setCatalogPadding()
-        },
-    },
-    mounted() {
-        if (window.innerWidth > 960) {
-            this.setCatalogPadding()
-        } else {
-            this.filterPosition = 'fixed'
-        }
-    },
-    beforeUnmount() {
-        window.removeEventListener('scroll', this.setFilterPositioning);
-        window.removeEventListener('resize', this.setCatalogPadding);
-    },
+const catalogFilter = ref(null);
+const catalogFilterWrap = ref(null);
+
+const catalogOffsetTop = ref(0);
+const currentScroll = ref(0);
+const windowHeight = ref(0);
+const filtersHeight = ref(null);
+const filtersBounds = ref(null);
+const filterPosition = ref('static');
+const savedTop = ref(0);
+const savedTopOffset = ref(0);
+const filterTop = ref(0);
+const filterBottom = ref('auto');
+const filterScroll = ref('top');
+
+const router = useRouter();
+const route = useRoute();
+const store = useStore();
+
+const isMobile = computed(() => {
+    return window.innerWidth < 960;
+});
+
+const headerPadding = computed(() => store.state.headerPadding);
+
+const emit = defineEmits(['updateFilter', 'updateFilterStatus']);
+
+const props = defineProps({
+    filterStatus: Boolean,
+    brands_search: Array,
+    sizes_search: Array,
+    colors_search: Array,
+    catalogListHeight: Number,
+});
+
+const setCatalogPadding = () => {
+    if (window.innerWidth < 960) {
+        catalogOffsetTop.value = paddingTop;
+    } else {
+        catalogOffsetTop.value = 0;
+    }
+    setFilterValues()
+    setFilterPositioning()
 }
+
+const updateFilters = (filter) => {
+    emit('updateFilter', filter)
+}
+
+const setFilterValues = () => {
+    windowHeight.value = window.innerHeight;
+    if (catalogFilter.value) {
+        filtersBounds.value = catalogFilter.value.getBoundingClientRect()
+        if (catalogFilterWrap.value) {
+            savedTopOffset.vaue = catalogFilterWrap.value.offsetTop;
+        }
+        filtersHeight.value = catalogFilter.value.offsetHeight;
+    }
+}
+
+const setFilterPositioning = () => {
+    if (props.catalogListHeight < filtersHeight.value) {
+        filterPosition.value = 'static'
+        return false
+    }
+    if (!filtersBounds.value) {
+        return false
+    }
+    let newScroll = window.scrollY;
+
+    if (catalogFilter.value) {
+        filtersBounds.value = catalogFilter.value.getBoundingClientRect()
+    }
+    if (catalogFilter.value && filtersHeight.value !== catalogFilter.value.offsetHeight) {
+        filtersHeight.value = catalogFilter.value.offsetHeight;
+    }
+    if (filtersBounds.value.top < newScroll) {
+        filterPosition.value = 'fixed'
+        filterTop.value = 'auto'
+        filterBottom.value = '40px'
+        filterScroll.value = 'bottom'
+    }
+    if (newScroll > currentScroll.value) {
+        // листаем вниз
+        if (filtersBounds.value.bottom - windowHeight.value + 40 <= 0 && filterScroll.value === 'unset') {
+            filterPosition.value = 'fixed'
+            filterTop.value = 'auto'
+            filterBottom.value = '40px'
+            filterScroll.value = 'bottom'
+        }
+        if (filterScroll.value === 'top') {
+            filterPosition.value = 'absolute'
+            filterTop.value = savedTop.value
+            filterBottom.value = 'auto'
+            filterScroll.value = 'unset'
+        }
+        if (newScroll + windowHeight.value - headerPadding.value + 40 >= props.catalogListHeight + savedTop.valueOffset && props.catalogListHeight !== 0) {
+            filterPosition.value = 'absolute'
+            filterTop.value = 'auto'
+            filterBottom.value = '0'
+            filterScroll.value = 'unset'
+        }
+        if (filterScroll.value === 'bottom') {
+            savedTop.value = newScroll - filtersHeight.value / 2.4 - 40
+        }
+    } else {
+        // листаем вверх
+        if (filterScroll.value === 'bottom') {
+            filterPosition.value = 'absolute'
+            filterTop.value = savedTop.value
+            filterBottom.value = 'auto'
+            filterScroll.value = 'unset'
+        }
+        if (filtersBounds.value.top - 40 - headerPadding.value >= 0 && filterScroll.value === 'unset') {
+            filterPosition.value = 'fixed'
+            filterTop.value = headerPadding.value + 40
+            filterBottom.value = 'auto'
+            filterScroll.value = 'top'
+        }
+        if (newScroll + headerPadding.value <= savedTop.valueOffset && filterScroll.value === 'top') {
+            filterPosition.value = 'absolute'
+            filterTop.value = 0
+            filterBottom.value = 'auto'
+            filterScroll.value = 'unset'
+        }
+        if (filterScroll.value === 'top') {
+            savedTop.value = newScroll - headerPadding.value
+        }
+    }
+    currentScroll.value = newScroll;
+}
+
+watch(() => route.params, () => {
+    setCatalogPadding()
+})
+
+watch(() => route.query.query, () => {
+    setCatalogPadding()
+})
+onUpdated(() => {
+    if (window.innerWidth > 960) {
+        setCatalogPadding()
+    }
+})
+
+onMounted(() => {
+    if (window.innerWidth > 960) {
+        setCatalogPadding()
+    } else {
+        filterPosition.value = 'fixed'
+    }
+    if (typeof setFilterPositioning === 'function') {
+        window.addEventListener('scroll', setFilterPositioning);
+    }
+    if (typeof setCatalogPadding === 'function') {
+        window.addEventListener('resize', setCatalogPadding);
+    }
+})
+onUnmounted(() => {
+    if (setFilterPositioning) {
+        window.removeEventListener('scroll', setFilterPositioning);
+    }
+    if (setCatalogPadding) {
+        window.removeEventListener('resize', setCatalogPadding);
+    }
+})
+
 </script>
 <style lang="scss">
 .catalog__filter-wrap {

@@ -1,40 +1,15 @@
 <template>
-    <div class="form-control__wrap" :class="{'error': v$.$errors.length > 0}">
+    <div class="form-control__wrap" :class="{ 'error': v$.$errors.length > 0 }">
         <label class="form-control__label">{{ placeholder }}</label>
-        <input class="form-control"
-        :type="inputType"   
-        :name="name"
-        :value="modelValue"
-        :required="required"
-        :id="inputId"
-        :min="min"
-        :autocomplete="autocomplete"
-        v-if="inputType !== 'tel' && inputType !== 'date'"
-        @input="onInput($event)"
-        @blur="$emit('blurEvent')">
-        <input class="form-control tel"
-        :type="inputType"
-        :name="name"
-        :value="modelValue"
-        :required="required"
-        :id="inputId"
-        :min="min"
-        maxlength="18"
-        autocomplete="on"
-        ref="inputEl"
-        v-if="inputType === 'tel'"
-        @input="onInput($event)">
-        <input class="form-control"
-        :type="inputType"
-        :name="name"
-        :value="modelValue"
-        :required="required"
-        :id="inputId"
-        :min="min"
-        :autocomplete="autocomplete"
-        @focus="this.showPicker($event.target)"
-        @input="$emit('update:modelValue', $event.target.value)"
-        v-if="inputType === 'date'">
+        <input class="form-control" :type="inputType" :name="name" :value="modelValue" :required="required"
+            :id="inputId" :min="min" :autocomplete="autocomplete" v-if="inputType !== 'tel' && inputType !== 'date'"
+            @input="onInput($event)" @blur="$emit('blurEvent')">
+        <input class="form-control tel" :type="inputType" :name="name" :value="modelValue" :required="required"
+            :id="inputId" :min="min" maxlength="18" autocomplete="on" ref="inputEl" v-maska:[options] v-if="inputType === 'tel'"
+            @input="onInput($event)">
+        <input class="form-control" :type="inputType" :name="name" :value="modelValue" :required="required"
+            :id="inputId" :min="min" :autocomplete="autocomplete" @focus="this.showPicker($event.target)"
+            @input="$emit('update:modelValue', $event.target.value)" v-if="inputType === 'date'">
         <div class="form-control__errors" v-for="error of v$.$errors" :key="error.$uid">
             <div class="form-control__errors-item">{{ error.$message }}</div>
         </div>
@@ -43,7 +18,7 @@
 <script>
 import { useVuelidate } from '@vuelidate/core'
 import { vMaska, MaskInput } from "maska"
-import { required, helpers, email, minLength} from '@vuelidate/validators'
+import { required, helpers, email, minLength } from '@vuelidate/validators'
 export default {
     props: {
         inputType: {
@@ -60,71 +35,80 @@ export default {
             default: false
         },
         min: null,
-        inputId:String,
+        inputId: String,
     },
     directives: { maska: vMaska },
     data() {
         return {
+            options: {
+                mask: (value) => {
+                    if (value.startsWith('7') || value.startsWith('+7') || value.startsWith('9')) {
+                        return '+7 (###) ###-##-##'
+                    } else {
+                        return '+################'
+                    }
+                },
+                preProcess: (value) => value.startsWith('8') ? 7 + value.substring(1) : value
+            }
         }
     },
-    setup () {
+    setup() {
         return {
             v$: useVuelidate()
         }
     },
     emits: ['update:modelValue', 'blurEvent', 'onInputEvent'],
     validations() {
-        if(this.required && this.validationType){
-            switch(this.validationType) {
+        if (this.required && this.validationType) {
+            switch (this.validationType) {
                 case 'name':
-                return {
-                    modelValue: {
-                        minLength: helpers.withMessage("Пожалуйста, введите полное имя", minLength(2)),
-                        required: helpers.withMessage("Пожалуйста, введите ваше имя", required),
-                    }
-                };
+                    return {
+                        modelValue: {
+                            minLength: helpers.withMessage("Пожалуйста, введите полное имя", minLength(2)),
+                            required: helpers.withMessage("Пожалуйста, введите ваше имя", required),
+                        }
+                    };
                 case 'surname':
-                return {
-                    modelValue: {
-                        required: helpers.withMessage("Пожалуйста, введите вашу фамилию", required),
-                    }
-                };
+                    return {
+                        modelValue: {
+                            required: helpers.withMessage("Пожалуйста, введите вашу фамилию", required),
+                        }
+                    };
                 case 'phone':
-                return {
-                    modelValue: {
-                        minLength: helpers.withMessage("Пожалуйста введите телефон полностью", minLength(17)),
-                        required: helpers.withMessage("Пожалуйста, введите ваш телефон", required),
-                    }
-                };
+                    return {
+                        modelValue: {
+                            minLength: helpers.withMessage("Пожалуйста введите телефон полностью", minLength(17)),
+                            required: helpers.withMessage("Пожалуйста, введите ваш телефон", required),
+                        }
+                    };
                 case 'email':
-                return {
-                    modelValue: {
-                        required: helpers.withMessage("Пожалуйста, введите вашу электронную почту", required),
-                        email: helpers.withMessage("Неправильный формат почты", email),
-                    }
-                };
+                    return {
+                        modelValue: {
+                            required: helpers.withMessage("Пожалуйста, введите вашу электронную почту", required),
+                            email: helpers.withMessage("Неправильный формат почты", email),
+                        }
+                    };
                 case 'date':
-                return {
-                    modelValue: {
-                        required: helpers.withMessage("Пожалуйста, введите вашу дату рождения", required),
-                    }
-                };
+                    return {
+                        modelValue: {
+                            required: helpers.withMessage("Пожалуйста, введите вашу дату рождения", required),
+                        }
+                    };
                 case 'adress':
-                return {
-                    modelValue: {
-                        required: helpers.withMessage("Пожалуйста, введите адрес доставки", required),
-                    }
-                };
+                    return {
+                        modelValue: {
+                            required: helpers.withMessage("Пожалуйста, введите адрес доставки", required),
+                        }
+                    };
             }
-        } else if(this.required && !this.validationType)
-        {
+        } else if (this.required && !this.validationType) {
             return {
                 modelValue: {
                     required: helpers.withMessage("Поле должно быть заполнено", required),
                 }
             };
         }
-        
+
     },
     methods: {
         onInput(event) {
@@ -136,80 +120,67 @@ export default {
             item.showPicker()
         }
     },
-    mounted() {
-        new MaskInput(".tel", {
-            mask: (value) => {
-                if(value.startsWith('7') || value.startsWith('+7') || value.startsWith('9')) {
-                    return '+7 (###) ###-##-##'
-                } else {
-                    return '+################'
-                }
-            },
-            preProcess: (value) => value.startsWith('8') ? 7 + value.substring(1) : value
-        })
-    }
 }   
 </script>
 <style lang="scss">
-.form-control__wrap
-{
+.form-control__wrap {
     width: 100%;
-    &.error
-    {
+
+    &.error {
         padding: inherit;
-        .form-control
-        {
-            border-bottom:1px solid #C11D1D;
+
+        .form-control {
+            border-bottom: 1px solid #C11D1D;
         }
     }
 }
-.form-control__label
-{
+
+.form-control__label {
     margin-bottom: .5em;
-    color:#A6A5A3;
+    color: #A6A5A3;
     font-size: 1.6rem;
     line-height: 1.5em;
     letter-spacing: -0.128px;
 }
-.form-control
-{
+
+.form-control {
     padding: .4rem 0 1.8rem 0;
     width: 100%;
     background-color: transparent;
-    border-bottom:1px solid #A6A5A3;
+    border-bottom: 1px solid #A6A5A3;
     outline: 0;
-    color:$primary;
+    color: $primary;
     font-size: 1.6rem;
     line-height: 1.5em;
     letter-spacing: -0.128px;
 }
-.form-control__errors
-{
+
+.form-control__errors {
     margin-top: .8rem;
-    .form-control__errors-item
-    {
+
+    .form-control__errors-item {
         color: #C11D1D;
         font-size: 1.1rem;
         line-height: 1.45em;
         letter-spacing: 0.055px;
     }
 }
+
 @media (max-width: 960px) {
-    .form-control
-    {
+    .form-control {
         padding: 4px 0 16px 0;
         font-size: 14px;
-        
+
     }
-    .form-control__label
-    {
+
+    .form-control__label {
         font-size: 14px;
     }
-    .form-control__errors
-    {
+
+    .form-control__errors {
         margin-top: 8px;
-        .form-control__errors-item
-        {
+
+        .form-control__errors-item {
             font-size: 11px;
         }
     }

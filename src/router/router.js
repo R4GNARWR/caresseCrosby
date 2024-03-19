@@ -165,7 +165,7 @@ export default createRouter({
   scrollBehavior(to, from) {
     if (toArray.includes(to.name) && from.name === 'Product' && store.getters.getSavedPosition.top && store.getters.getSavedPosition.path) {
       if (store.getters.getSavedPosition.path === to.path) {
-        return { top: store.getters.getSavedPosition.top }
+        return { top: store.getters.getSavedPosition.top, }
       } else {
         store.commit('setSavedPosition', null)
         return { top: 0 }
