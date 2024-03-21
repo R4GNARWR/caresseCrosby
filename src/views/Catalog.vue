@@ -29,7 +29,7 @@
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col md="3" cols="12">
+                    <v-col md="3" cols="12" class="stickyContainer">
                         <CatalogFilter :filterStatus="showFilters" :brands_search="brandFilters"
                             :colors_search="colorFilter" :sizes_search="sizesFilter" :catalogListHeight="catalogHeight"
                             @updateFilter="updateFilter" @updateFilterStatus="changeFilterVisibility()"></CatalogFilter>
@@ -97,7 +97,7 @@ export default {
         CatalogFilter,
         CatalogList,
         Dropdown,
-        ArrowScrollUp
+        ArrowScrollUp,
     },
     data() {
         return {

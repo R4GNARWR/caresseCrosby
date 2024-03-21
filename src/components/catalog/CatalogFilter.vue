@@ -1,15 +1,24 @@
 <template>
-    <div class="catalog__filter-wrap"
-        :style="{ paddingTop: catalogOffsetTop + 'px', minHeight: !isMobile ? catalogListHeight + 'px' : 0 }"
-        :class="{ 'active': filterStatus }" ref="catalogFilterWrap">
-        <div class="catalog__filter" :style="{
-            position: !isMobile ? filterPosition : 'static',
-            top: filterTop !== 'auto' ? filterTop + 'px' : filterTop,
-            bottom: filterBottom
-        }" ref="catalogFilter">
+    <Vue3StickySidebar containerSelector=".stickyContainer" :topSpacing="headerPadding + 40" :bottomSpacing="40"
+        innerWrapperSelector=".catalog__filter-wrap" v-if="!isMobile">
+        <div class="catalog__filter-wrap">
+            <div class="catalog__filter">
+                <div class="catalog__filter-filters">
+                    <FilterItem @update-filters="updateFilters" :filterObject="brands_search" :filterName="'Бренды'"
+                        v-if="brands_search && brands_search.length > 0"></FilterItem>
+                    <FilterItem @update-filters="updateFilters" :filterObject="sizes_search" :filterName="'Размеры'"
+                        v-if="sizes_search && sizes_search.length > 0"></FilterItem>
+                    <FilterItem @update-filters="updateFilters" :filterObject="colors_search" :filterName="'Цвета'"
+                        v-if="colors_search && colors_search.length > 0"></FilterItem>
+                </div>
+            </div>
+        </div>
+    </Vue3StickySidebar>
+    <div class="catalog__filter-wrap" v-else  :class="{ 'active': filterStatus }">
+        <div class="catalog__filter">
             <div class="catalog__filter-head">
                 Фильтры
-                <div class="catalog__filter-close" @click="emit('updateFilterStatus')">
+                <div class="catalog__filter-close" @click="$emit('updateFilterStatus')">
                     <img src="/svg/close.svg" alt="">
                 </div>
             </div>
@@ -22,12 +31,13 @@
                     v-if="colors_search && colors_search.length > 0"></FilterItem>
             </div>
             <div class="catalog__filter-action">
-                <MainBtn class-name="btn-primary" @click="emit('updateFilterStatus')">Фильтровать</MainBtn>
+                <MainBtn class-name="btn-primary" @click="$emit('updateFilterStatus')">Фильтровать</MainBtn>
             </div>
         </div>
     </div>
 </template>
 <script>
+import Vue3StickySidebar from "vue3-sticky-sidebar";
 import search from '../../api/search'
 import { mapState } from "vuex";
 import { useRouter } from 'vue-router';
@@ -36,24 +46,10 @@ import MainBtn from '../UI/MainBtn.vue'
 export default {
     components: {
         FilterItem,
-        MainBtn
+        MainBtn,
+        Vue3StickySidebar
     },
-    data() {
-        return {
-            catalogOffsetTop: 0,
-            currentScroll: 0,
-            windowHeight: 0,
-            filtersHeight: null,
-            filtersBounds: null,
-            filterPosition: 'static',
-            savedTop: 0,
-            savedTopOffset: 0,
-            filterTop: 0,
-            filterBottom: 'auto',
-            filterScroll: 'top',
-            positioningCalled: false
-        }
-    },
+    emits: ['updateFilter', 'updateFilterStatus'],
     computed: {
         isMobile() { return window.innerWidth < 960; },
         ...mapState(['headerPadding',]),
@@ -63,127 +59,12 @@ export default {
         brands_search: Array,
         sizes_search: Array,
         colors_search: Array,
-        catalogListHeight: Number,
     },
     methods: {
-        setCatalogPadding() {
-            if (window.innerWidth < 960) {
-                this.catalogOffsetTop = this.paddingTop;
-            } else {
-                this.catalogOffsetTop = 0;
-            }
-            this.setFilterValues()
-            this.setFilterPositioning()
-        },
         updateFilters(filter) {
             this.$emit('updateFilter', filter)
         },
-        changeCurrentScroll() {
-            this.currentScroll = window.scrollY
-        },
-        setFilterValues() {
-            this.windowHeight = window.innerHeight;
-            if (this.$refs.catalogFilter) {
-                this.filtersBounds = this.$refs.catalogFilter.getBoundingClientRect()
-                if (this.$refs.catalogFilterWrap) {
-                    this.savedTopOffset = this.$refs.catalogFilterWrap.offsetTop;
-                }
-                this.filtersHeight = this.$refs.catalogFilter.offsetHeight;
-            }
-        },
-        setFilterPositioning() {
-            this.positioningCalled = true
-            if (this.catalogListHeight < this.filtersHeight) {
-                this.filterPosition = 'static'
-                return false
-            }
-            let newScroll = window.scrollY;
-
-            if (this.$refs.catalogFilter) {
-                this.filtersBounds = this.$refs.catalogFilter.getBoundingClientRect()
-            }
-            if (this.$refs.catalogFilter && this.filtersHeight !== this.$refs.catalogFilter.offsetHeight) {
-                this.filtersHeight = this.$refs.catalogFilter.offsetHeight;
-            }
-            if (this.filtersBounds.top < newScroll) {
-                this.filterPosition = 'fixed'
-                this.filterTop = 'auto'
-                this.filterBottom = '40px'
-                this.filterScroll = 'bottom'
-            }
-            if (newScroll > this.currentScroll) {
-                // листаем вниз
-                if (this.filtersBounds.bottom - this.windowHeight + 40 <= 0 && this.filterScroll === 'unset') {
-                    this.filterPosition = 'fixed'
-                    this.filterTop = 'auto'
-                    this.filterBottom = '40px'
-                    this.filterScroll = 'bottom'
-                }
-                if (this.filterScroll === 'top') {
-                    this.filterPosition = 'absolute'
-                    this.filterTop = this.savedTop
-                    this.filterBottom = 'auto'
-                    this.filterScroll = 'unset'
-                }
-                if (newScroll + this.windowHeight - this.headerPadding + 40 >= this.catalogListHeight + this.savedTopOffset && this.catalogListHeight !== 0) {
-                    this.filterPosition = 'absolute'
-                    this.filterTop = 'auto'
-                    this.filterBottom = '0'
-                    this.filterScroll = 'unset'
-                }
-                if (this.filterScroll === 'bottom') {
-                    this.savedTop = newScroll - this.filtersHeight / 2.4 - 40
-                }
-            } else {
-                // листаем вверх
-                if (this.filterScroll === 'bottom') {
-                    this.filterPosition = 'absolute'
-                    this.filterTop = this.savedTop
-                    this.filterBottom = 'auto'
-                    this.filterScroll = 'unset'
-                }
-                if (this.filtersBounds.top - 40 - this.headerPadding >= 0 && this.filterScroll === 'unset') {
-                    this.filterPosition = 'fixed'
-                    this.filterTop = this.headerPadding + 40
-                    this.filterBottom = 'auto'
-                    this.filterScroll = 'top'
-                }
-                if (newScroll + this.headerPadding <= this.savedTopOffset && this.filterScroll === 'top') {
-                    this.filterPosition = 'absolute'
-                    this.filterTop = 0
-                    this.filterBottom = 'auto'
-                    this.filterScroll = 'unset'
-                }
-                if (this.filterScroll === 'top') {
-                    this.savedTop = newScroll - this.headerPadding
-                }
-            }
-            this.currentScroll = newScroll;
-        },
         ...search,
-    },
-    created() {
-        window.addEventListener('scroll', this.setFilterPositioning);
-        window.addEventListener('resize', this.setCatalogPadding);
-    },
-    watch: {
-        '$route.params': function () {
-            this.setCatalogPadding()
-        },
-        '$route.query.query': function () {
-            this.setCatalogPadding()
-        },
-    },
-    mounted() {
-        if (window.innerWidth > 960) {
-            this.setCatalogPadding()
-        } else {
-            this.filterPosition = 'fixed'
-        }
-    },
-    beforeUnmount() {
-        window.removeEventListener('scroll', this.setFilterPositioning);
-        window.removeEventListener('resize', this.setCatalogPadding);
     },
 }
 </script>
