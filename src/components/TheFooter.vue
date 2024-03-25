@@ -59,7 +59,7 @@
                             <div class="footer-socials">
                                 <a target="_blank" href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:" @click="clickWhatsapp()"><img src="/svg/whatsapp.svg" alt=""></a>
                                 <a target="_blank" href="https://vk.com/ccrosby"><img src="/svg/vk.svg" alt=""></a>
-                                <a target="_blank" href="https://t.me/+79177471561"><img src="/svg/telegram.svg" alt=""></a>
+                                <a target="_blank" href="https://t.me/ccrosby_ufa"><img src="/svg/telegram.svg" alt=""></a>
                             </div>
 
                             <div class="footer-ip">

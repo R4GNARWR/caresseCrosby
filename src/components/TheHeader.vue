@@ -278,7 +278,7 @@ export default {
                 children: []
             };
             for (let category of this.categoriesTree) {
-                if (category.id !== 24473) {
+                if (category.id !== 24473 && category.id !== 25041 && category.name !== "Средства Ухода") {
                     if (category.name === 'Купальники Раздельные' || category.name === "Купальники Слитные") {
                         lm_swimsuit.children.push({ name: category.name, link: '/catalog/' + category.id })
                     } else if (category.name === 'Трусики'
@@ -309,16 +309,18 @@ export default {
                     { name: 'Избранные товары', link: '/favorite' },
                 ]
             } else {
-                lm = !this.loggedIn
-                    ? [
+                if (!this.loggedIn) {
+                    lm_catalog = lm_catalog.filter(item => item.name !== 'Подарочные сертификаты')
+                    lm = [
+                        { name: 'Подарочные сертификаты', link: '/giftCard' },
+                        lm_underwear,
+                        lm_swimsuit,
+                        { name: 'Бренды', link: '/Brands' },
+                        ...lm_catalog,
                         {
                             name: 'Войти в личный кабинет',
                             action: this.showLoginForm,
                         },
-                        { name: 'Бренды', link: '/Brands' },
-                        lm_underwear,
-                        lm_swimsuit,
-                        ...lm_catalog,
                         { name: 'О нас', link: '/About' },
                         { name: 'Избранные товары', link: '/favorite' },
                         { name: 'Контакты', link: '/contacts' },
@@ -326,22 +328,26 @@ export default {
                         { name: 'Статьи', link: '/articles' },
                         { name: 'Доставка', link: '/delivery' },
                     ]
-                    : [
+                } else {
+                    lm_catalog = lm_catalog.filter(item => item.name !== 'Подарочные сертификаты')
+                    lm = [
+                        { name: 'Подарочные сертификаты', link: '/giftCard' },
+                        lm_underwear,
+                        lm_swimsuit,
+                        { name: 'Бренды', link: '/Brands' },
+                        ...lm_catalog,
                         {
                             name: 'Личный кабинет',
                             link: '/profileData',
                         },
-                        { name: 'Бренды', link: '/Brands' },
-                        lm_underwear,
-                        lm_swimsuit,
                         { name: 'Избранные товары', link: '/favorite' },
-                        ...lm_catalog,
                         { name: 'О нас', link: '/About' },
                         { name: 'Контакты', link: '/Contacts' },
                         { name: 'Фотогалерея', link: '/photoAlbum' },
                         { name: 'Статьи', link: '/articles' },
                         { name: 'Доставка', link: '/delivery' },
-                    ];
+                    ]
+                }
             }
 
             return lm;

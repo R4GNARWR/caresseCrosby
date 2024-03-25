@@ -15,7 +15,7 @@ export default new Vuex.Store({
 
     snack_message: {},
     headerPadding: 0,
-    loader: 0,
+    loader: false,
     loggedIn: false,
     user_info: {},
     // user_position:[],

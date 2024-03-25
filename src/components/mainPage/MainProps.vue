@@ -3,13 +3,13 @@
         <v-container>
             <v-row>
                 <v-col md="3" sm="6" cols="12">
-                    <div class="main-props__card">
+                    <a href="https://wa.me/79177471561?text=Здравствуйте%20у%20меня%20вопрос:" target="_blank" class="main-props__card">
                         <img src="/svg/props1.svg" alt="">
                         <div class="main-props__card-content">
-                            <div class="main-props__card-content-label">Подберем точный размер</div>
-                            <div class="main-props__card-content-text">Максимально точно подбираем размер под каждого клиента</div>
+                            <div class="main-props__card-content-label">Сопровождение брафиттера</div>
+                            <div class="main-props__card-content-text">Брафиттер с вами на всех этапах подбора белья онлайн</div>
                         </div>
-                    </div>
+                    </a>
                 </v-col>
                 <v-col md="3" sm="6" cols="12">
                     <div class="main-props__card">
@@ -21,20 +21,20 @@
                     </div>
                 </v-col>
                 <v-col md="3" sm="6" cols="12">
-                    <div class="main-props__card">
+                    <router-link to="/delivery" class="main-props__card">
                         <img src="/svg/props3.svg" alt="">
                         <div class="main-props__card-content">
-                            <div class="main-props__card-content-label">Индивидуальный подход</div>
-                            <div class="main-props__card-content-text">Удовлетворяем потребности каждого клиента</div>
+                            <div class="main-props__card-content-label">Возврат и обмен</div>
+                            <div class="main-props__card-content-text">Белье и купальники, купленные онлайн, подлежат обмену и возврату в течение 14 дней.</div>
                         </div>
-                    </div>
+                    </router-link>
                 </v-col>
                 <v-col md="3" sm="6" cols="12">
                     <div class="main-props__card">
                         <img src="/svg/props4.svg" alt="">
                         <div class="main-props__card-content">
-                            <div class="main-props__card-content-label">Разнообразие выбора</div>
-                            <div class="main-props__card-content-text">У нас широкий ассортимент различных моделей и размеров </div>
+                            <div class="main-props__card-content-label">Большой размерный и модельный ряд</div>
+                            <div class="main-props__card-content-text">150 размеров бюстгальтеров, 10 размеров трусиков, большие размеры купальников. </div>
                         </div>
                     </div>
                 </v-col>
@@ -53,6 +53,7 @@ export default {
     display: flex;
     column-gap: 2.4rem;
     align-items: center;
+    text-decoration:none;
     img
     {
         width: 3.2rem;
@@ -78,6 +79,7 @@ export default {
 @media (max-width: 960px) {
     .main-props__card
     {
+        
         column-gap: 24px;
         img
         {

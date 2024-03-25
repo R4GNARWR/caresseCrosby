@@ -8,11 +8,7 @@
 
     <MainCategories></MainCategories>
     <MainBanner></MainBanner>
-    <keep-alive>
-        <SwiperCards name="Популярное" :slidesArray="popularProducts.slice(0, 20)"
-            v-if="popularProducts && popularProducts.length > 0"></SwiperCards>
-    </keep-alive>
-    <MainAbout></MainAbout>
+    <!-- <MainAbout></MainAbout> -->
     <keep-alive>
         <SwiperCards name="Новое поступление" :slidesArray="newProducts.slice(0, 20)"
             v-if="newProducts && newProducts.length > 0"></SwiperCards>
@@ -68,12 +64,12 @@ export default {
                 },
                 {
                     id: 3,
-                    labelText: 'Узнайте свой <span> <br> настоящий </span> размер ♥',
+                    labelText: 'Оформление онлайн — <br> сертификата за 2 минуты',
                     labelColor: 'white',
                     yearColor: 'white',
-                    buttonText: 'Узнать размер',
+                    buttonText: 'Оформить сертификат',
                     buttonColor: 'white',
-                    buttonDestination: '/sizeTable',
+                    buttonDestination: '/giftCard',
                     backgroundImageSrc: '/img/mainSlider3.jpg',
                 },
                 {
@@ -98,12 +94,12 @@ export default {
                 },
                 {
                     id: 6,
-                    labelText: 'То, что ближе всего <br><span> - должно быть нежным </span>',
+                    labelText: 'Оформление онлайн — <br> сертификата за 2 минуты',
                     labelColor: 'white',
                     yearColor: 'white',
-                    buttonText: 'В каталог',
+                    buttonText: 'Оформить сертификат',
                     buttonColor: 'white',
-                    buttonDestination: '/catalogAll',
+                    buttonDestination: '/giftCard',
                     backgroundImageSrc: '/img/mainSlider6.jpg'
                 },
             ],

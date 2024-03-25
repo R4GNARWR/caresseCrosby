@@ -47,8 +47,8 @@ export default {
                     name: "Средства ухода",
                 },
                 {
-                    id: 'search/?query=купальник',
-                    name: "Купальники",
+                    id: 'search/?query=умные купальники',
+                    name: "Умные купальники",
                 },
                 {
                     id: 24420,
